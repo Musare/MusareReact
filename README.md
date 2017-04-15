@@ -1,6 +1,6 @@
 # MusareNode
 This is a rewrite of the original [Musare](https://github.com/Musare/MusareMeteor)
-in NodeJS, Express, SocketIO and VueJS. Everything is ran in it's own docker container, but you can also run it without Docker.
+in NodeJS, Express, SocketIO and React. Everything is ran in it's own docker container, but you can also run it without Docker.
 
 The site is available at [https://musare.com](https://musare.com).
 
@@ -10,11 +10,11 @@ The site is available at [https://musare.com](https://musare.com).
    * MongoDB
    * Redis
    * Nginx (not required)
-   * VueJS
+   * React
 
 ### Frontend
-The frontend is a [vue-cli](https://github.com/vuejs/vue-cli) generated,
-[vue-loader](https://github.com/vuejs/vue-loader) single page app, that's
+The frontend is a [React](https://github.com/facebook/react) single page app that uses
+[react-router](https://github.com/ReactTraining/react-router),
 served over Nginx or express. The Nginx server not only serves the frontend, but
 also serves as a load balancer for requests going to the backend.
 
@@ -77,7 +77,7 @@ Once you've installed the required tools:
 
 Now you have different paths here.
 
-####Docker
+#### Docker
 
 1. Build the backend and frontend Docker images (from the main folder)
 
@@ -135,13 +135,13 @@ Now you have different paths here.
 
    * Docker ToolBox: The output of `docker-machine ip default`
 
-####Non-docker
+#### Non-docker
 
 Steps 1-4 are things you only have to do once. The steps to start servers follow.
 
-1. In the main folder, create a folder called `.database`
+1. In the root folder, create a folder called `.database`
 
-2. Create a file called `startMongo.cmd` in the main folder with the contents:
+2. Create a file called `startMongo.cmd` in the root folder with the contents:
 
 		"C:\Program Files\MongoDB\Server\3.2\bin\mongod.exe" --dbpath "D:\Programming\HTML\MusareNode\.database"
 
@@ -183,7 +183,7 @@ Steps 1-4 are things you only have to do once. The steps to start servers follow
 
 	And again, make sure that the paths lead to the proper config and executable.
 
-####Non-docker start servers
+##### Starting Servers
 
 **Automatic**
 
@@ -193,7 +193,7 @@ Steps 1-4 are things you only have to do once. The steps to start servers follow
 
 1. Run `startRedis.cmd` and `startMongo.cmd` to start Redis and Mongo.
 
-2. In a command prompt with the pwd of frontend, run `npm run development-watch`
+2. In a command prompt with the pwd of frontend, run `npm run dev`
 
 3. In a command prompt with the pwd of backend, run `nodemon`
 
@@ -263,17 +263,17 @@ Run this command in your shell. You will have to do this command for every shell
 
 6. `nodemon backend/index.js`
 
-### Calling Toasts
+<!--### Calling Toasts
 
 You can call Toasts using our custom package, [`vue-roaster`](https://github.com/atjonathan/vue-roaster), using the following code:
 
 ```js
 import { Toast } from 'vue-roaster';
 Toast.methods.addToast('', 0);
-```
+```-->
 
 ## Contact
 
-There are multiple ways to contact us. You can send an email to [musaremusic@gmail.com](musaremusic@gmail.com) or [krisvos130@gmail.com](krisvos130@gmail.com).
+There are multiple ways to contact us. You can send an email to [musaremusic@gmail.com](musaremusic@gmail.com).
 
 You can also message us on [Facebook](https://www.facebook.com/MusareMusic), [Twitter](https://twitter.com/MusareApp) or on our [Discord](https://discord.gg/Y5NxYGP).

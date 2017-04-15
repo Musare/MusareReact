@@ -3,7 +3,7 @@ FROM node
 RUN apt-get update
 RUN apt-get install nginx -y
 
-RUN npm install -g webpack@1.14.0
+RUN npm install -g webpack@2.2.1
 
 RUN mkdir -p /opt
 WORKDIR /opt
@@ -15,4 +15,4 @@ RUN mkdir -p /run/nginx
 
 EXPOSE 80
 
-CMD nginx -c /opt/app/nginx.conf; cd /opt/app; npm run development-watch
+CMD nginx -c /opt/app/nginx.conf; cd /opt/app; npm run dev
