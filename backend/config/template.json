@@ -30,17 +30,15 @@
 	},
 	"cors": {
 		"origin": [
-			"http://localhost",
-			"http://192.168.99.100",
-			"http://dev.musare.com"
+			"http://localhost"
 		]
 	},
   	"redis": {
-	  	"url": "redis://redis:6379/0",
+	  	"url": "redis://localhost:6379/0",
 	    "password": "PASSWORD"
 	},
   	"mongo": {
-	  	"url": "mongodb://musare:PASSWORD@mongo:27017/musare"
+	  	"url": "mongodb://musare:PASSWORD@localhost:27017/musare"
 	},
   	"cookie": {
 	  	"domain": "",
