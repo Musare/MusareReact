@@ -16,6 +16,10 @@ module.exports = {
 	"env": {
 		"browser": true
 	},
+	"globals": {
+		"io": true,
+		"grecaptcha": true
+	},
 	"rules": {
 		"linebreak-style": ["error", "windows"],
 		"arrow-body-style": 0,

@@ -20,9 +20,17 @@ export default {
 	},
 	childRoutes: [
 		{
-			path: "home",
+			path: "login",
 			getComponent(location, cb) {
-				System.import("views/Home")
+				System.import("views/Auth/Login")
+					.then(loadRoute(cb, false))
+					.catch(errorLoading);
+			},
+		},
+		{
+			path: "register",
+			getComponent(location, cb) {
+				System.import("views/Auth/Register")
 					.then(loadRoute(cb, false))
 					.catch(errorLoading);
 			},

@@ -6,9 +6,15 @@ export default class Menu extends Component {
 	render() {
 		return (
 			<div className="Menu">
-				<IndexLink to="home">
+				<IndexLink to="/">
 					Home
 				</IndexLink>
+				<Link to="login">
+					Login
+				</Link>
+				<Link to="register">
+					Register
+				</Link>
 				<Link to="template">
 					Template
 				</Link>

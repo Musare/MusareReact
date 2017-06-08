@@ -11,6 +11,10 @@ import rootReducer from "reducers";
 import Routes from "routes";
 import DevTools from "dev/redux-dev-tools";
 
+import io from "io";
+
+import config from "../../config/default";
+
 import "../styles/main.scss";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -33,6 +37,16 @@ if (isProduction) {
 		enhancer
 	);
 }
+
+io.init(config.serverDomain);
+io.getSocket(socket => {
+	socket.on("ready", (status, role, username, userId) => {
+		// auth.data(status, role, username, userId);
+	});
+	socket.on("keep.event:banned", ban => {
+		// auth.setBanned(ban);
+	});
+});
 
 ReactDOM.render(
 	<Provider store={ store }>

@@ -1,9 +1,9 @@
 {
   "name": "musare-frontend",
   "version": "1.0.0",
-	"description": "A modern, open-source, collaborative music app https://musare.com",
+  "description": "A modern, open-source, collaborative music app https://musare.com",
   "main": "app/js/index.js",
-	"author": "Musare Team",
+  "author": "Musare Team",
   "repository": "https://github.com/Musare/MusareNode",
   "scripts": {
     "dev": "webpack --watch",
@@ -52,6 +52,7 @@
     "es6-promise": "^3.1.2",
     "immutable": "^3.8.1",
     "isomorphic-fetch": "^2.2.1",
+    "prop-types": "^15.5.10",
     "react": "^15.4.0",
     "react-dom": "^15.4.0",
     "react-redux": "^4.4.0",
