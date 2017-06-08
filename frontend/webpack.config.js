@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 
+const CleanupPlugin = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const autoprefixer = require("autoprefixer");
@@ -23,67 +24,72 @@ const plugins = [
 	new webpack.optimize.OccurrenceOrderPlugin(),
 	new webpack.HotModuleReplacementPlugin(),
 	new webpack.NoEmitOnErrorsPlugin(),
-  new webpack.DefinePlugin({
-    "process.env": {
+	new webpack.DefinePlugin({
+		"process.env": {
 			NODE_ENV: JSON.stringify(nodeEnv),
-    },
-  }),
-  new webpack.NamedModulesPlugin(),
-  new webpack.LoaderOptionsPlugin({
-    options: {
-      postcss: [
-        autoprefixer({
-          browsers: [
-            "last 3 version",
-            "ie >= 10",
-          ],
-        }),
-      ],
-      context: path.join(__dirname, "./app"),
-    },
-  }),
+		},
+	}),
+	new webpack.NamedModulesPlugin(),
+	new CleanupPlugin(["dist"], {
+		verbose: true,
+		dry: true,
+		watch: true,
+	}),
+	new webpack.LoaderOptionsPlugin({
+		options: {
+			postcss: [
+				autoprefixer({
+					browsers: [
+						"last 3 version",
+						"ie >= 10",
+					],
+				}),
+			],
+			context: path.join(__dirname, "./app"),
+		},
+	}),
 ];
 
 const rules = [
-  {
-    test: /\.(js|jsx)$/,
-    exclude: /node_modules/,
-    use: [
-      "babel-loader",
-    ],
-  },
-  {
-    test: /\.(png|gif|jpg|svg)$/,
-    include: path.join(__dirname, "./app/assets/images"),
-    use: "url-loader?limit=20480&name=assets/[name]-[hash].[ext]",
-  },
+	{
+		test: /\.(js|jsx)$/,
+		exclude: /node_modules/,
+		use: [
+			"babel-loader",
+		],
+	},
+	{
+		test: /\.(png|gif|jpg|svg)$/,
+		include: path.join(__dirname, "./app/assets/images"),
+		use: "url-loader?limit=20480&name=assets/[name]-[hash].[ext]",
+	},
 ];
 
 if (nodeEnv === "production") {
-  plugins.push(
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false,
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        screw_ie8: true,
-        conditionals: true,
-        unused: true,
-        comparisons: true,
-        sequences: true,
-        dead_code: true,
-        evaluate: true,
-        if_return: true,
-        join_vars: true,
-      },
-      output: {
-        comments: false,
-      },
-    }),
-    new ExtractTextPlugin("style-[hash].css")
-  );
+	plugins.push(
+		new webpack.LoaderOptionsPlugin({
+			minimize: true,
+			debug: false,
+		}),
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				warnings: false,
+				screw_ie8: true,
+				conditionals: true,
+				unused: true,
+				comparisons: true,
+				sequences: true,
+				dead_code: true,
+				evaluate: true,
+				if_return: true,
+				join_vars: true,
+			},
+			output: {
+				comments: false,
+			},
+		}),
+		new ExtractTextPlugin("style-[hash].css")
+	);
 
   rules.push({
 		test: /\.scss$/,
@@ -107,37 +113,37 @@ if (nodeEnv === "production") {
 }
 
 module.exports = {
-  devtool: nodeEnv === "production" ? "eval" : "source-map",
-  context: path.join(__dirname, "./app"),
-  entry: {
-    app: "./js/index.js",
-    vendor: [
-      "babel-polyfill",
-      "es6-promise",
-      "immutable",
-      "isomorphic-fetch",
-      "react-dom",
-      "react-redux",
-      "react-router",
-      "react",
-      "redux-thunk",
-      "redux",
-    ],
-  },
-  output: {
-    path: path.join(__dirname, "./dist"),
-    publicPath: "/",
-    filename: "[name]-[hash].js",
-  },
-  module: {
-    rules,
-  },
-  resolve: {
-    extensions: [".webpack-loader.js", ".web-loader.js", ".loader.js", ".js", ".jsx"],
-    modules: [
-      path.resolve(__dirname, "node_modules"),
-      path.join(__dirname, "./app/js"),
-    ],
-  },
-  plugins
+	devtool: nodeEnv === "production" ? "eval" : "source-map",
+	context: path.join(__dirname, "./app"),
+	entry: {
+		app: "./js/index.js",
+		vendor: [
+			"babel-polyfill",
+			"es6-promise",
+			"immutable",
+			"isomorphic-fetch",
+			"react-dom",
+			"react-redux",
+			"react-router",
+			"react",
+			"redux-thunk",
+			"redux",
+		],
+	},
+	output: {
+		path: path.join(__dirname, "./dist"),
+		publicPath: "/",
+		filename: "[name]-[hash].js",
+	},
+	module: {
+		rules,
+	},
+	resolve: {
+		extensions: [".webpack-loader.js", ".web-loader.js", ".loader.js", ".js", ".jsx"],
+		modules: [
+			path.resolve(__dirname, "node_modules"),
+			path.join(__dirname, "./app/js"),
+		],
+	},
+	plugins
 };
