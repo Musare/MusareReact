@@ -15,12 +15,9 @@ export function ban(reason) {
 	};
 }
 
-export function authenticate(loggedIn, role, username, userId) {
+export function authenticate(data) {
 	return {
 		type: AUTHENTICATE,
-		loggedIn,
-		role,
-		username,
-		userId,
+		data,
 	};
 }

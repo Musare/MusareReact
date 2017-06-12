@@ -27,10 +27,10 @@ const actionsMap = {
 	},
 	[AUTHENTICATE]: (state, action) => {
 		return state.merge({
-			loggedIn: action.loggedIn,
-			role: action.role,
-			username: action.username,
-			userId: action.userId,
+			loggedIn: action.data.loggedIn,
+			role: action.data.role,
+			username: action.data.username,
+			userId: action.data.userId,
 		});
 	},
 };

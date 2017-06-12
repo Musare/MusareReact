@@ -22,7 +22,7 @@ export default class App extends Component {
 		io.init(config.serverDomain);
 		io.getSocket(socket => {
 			socket.on("ready", (status, role, username, userId) => {
-				dispatch(authenticate(status, role, username, userId));
+				dispatch(authenticate({ status, role, username, userId }));
 			});
 			socket.on("keep.event:banned", reason => dispatch(ban(reason)));
 		});
