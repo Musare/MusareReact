@@ -28,6 +28,14 @@ export default {
 			},
 		},
 		{
+			path: "logout",
+			getComponent(location, cb) {
+				System.import("views/Auth/Logout")
+					.then(loadRoute(cb, false))
+					.catch(errorLoading);
+			},
+		},
+		{
 			path: "register",
 			getComponent(location, cb) {
 				System.import("views/Auth/Register")
