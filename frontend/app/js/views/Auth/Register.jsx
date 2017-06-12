@@ -59,7 +59,7 @@ export default class Register extends Component {
 					}
 				} else {
 					// return res.message, temporarily:
-					alert(res.message);
+					alert(res.message); // eslint-disable-line no-alert
 				}
 			});
 		});

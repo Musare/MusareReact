@@ -84,6 +84,6 @@ export default {
 		callbacks.general.general.forEach(callback => callback(this.socket));
 		callbacks.general.persist.forEach(callback => callback(this.socket));
 
-		callbacks.general = { general: [], persist: [] }
-	}
-}
+		callbacks.general = { general: [], persist: [] };
+	},
+};

@@ -40,7 +40,7 @@ export default class Login extends Component {
 					location.reload(); // if we could avoid this, then that would be better
 				} else {
 					// return res.message, temporarily:
-					alert(res.message);
+					alert(res.message); // eslint-disable-line no-alert
 				}
 			});
 		});

@@ -31,6 +31,7 @@ module.exports = {
 		"new-cap": 0,
 		"no-plusplus": 0,
 		"no-return-assign": 0,
+		"no-underscore-dangle": 0,
 		"quote-props": 0,
 		"template-curly-spacing": [2, "always"],
 		"comma-dangle": ["error", {

@@ -1,14 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 
 import { ban, authenticate } from "actions/app";
 import Menu from "components/Global/Menu";
 
 import io from "../../io";
 import config from "../../../../config/default";
-
-@connect()
 
 export default class App extends Component {
 	static propTypes = {
@@ -32,12 +29,9 @@ export default class App extends Component {
 		const { children } = this.props;
 
 		return (
-			<div className="App">
+			<div>
 				<Menu />
-
-				<div className="Page">
-					{ children }
-				</div>
+				<div>{ children }</div>
 			</div>
 		);
 	}

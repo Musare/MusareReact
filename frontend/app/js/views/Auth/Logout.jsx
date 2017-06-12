@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import io from "../../io";
-import config from "../../../../config/default";
 
 export default class Login extends Component {
 	constructor() {
@@ -21,7 +19,7 @@ export default class Login extends Component {
 					location.reload(); // if we could avoid this, then that would be better
 				} else {
 					// return res.message, temporarily:
-					alert(res.message);
+					alert(res.message); // eslint-disable-line no-alert
 				}
 			});
 		});
