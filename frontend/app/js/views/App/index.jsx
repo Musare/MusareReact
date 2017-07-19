@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Route, Switch } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -8,12 +9,36 @@ import Menu from "components/Global/Menu";
 import io from "../../io";
 import config from "../../../../config/default";
 
+const asyncComponent = getComponent => {
+	return class AsyncComponent extends React.Component {
+		static Component = null;
+		state = { Component: AsyncComponent.Component };
+
+		componentWillMount() {
+			if (!this.state.Component) {
+				getComponent().then(Component => { // eslint-disable-line no-shadow
+					AsyncComponent.Component = Component;
+					this.setState({ Component });
+				});
+			}
+		}
+		render() {
+			const { Component } = this.state; // eslint-disable-line no-shadow
+			if (Component) return <Component { ...this.props } />;
+			return null;
+		}
+	};
+};
+
 @connect()
 
-export default class App extends Component {
+export default class App extends Component { // eslint-disable-line react/no-multi-comp
 	static propTypes = {
-		children: PropTypes.object,
 		dispatch: PropTypes.func,
+	}
+
+	static defaultProps = {
+		dispatch: () => {},
 	}
 
 	componentDidMount() {
@@ -29,12 +54,54 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { children } = this.props;
-
 		return (
 			<div>
 				<Menu />
-				<div>{ children }</div>
+				<div>
+					<Switch>
+						<Route
+							exact
+							path="/login"
+							component={ asyncComponent(() =>
+								System.import("views/Auth/Login").then(module => module.default)
+							) }
+						/>
+						<Route
+							exact
+							path="/logout"
+							component={ asyncComponent(() =>
+								System.import("views/Auth/Logout").then(module => module.default)
+							) }
+						/>
+						<Route
+							exact
+							path="/register"
+							component={ asyncComponent(() =>
+								System.import("views/Auth/Register").then(module => module.default)
+							) }
+						/>
+						<Route
+							exact
+							path="/template"
+							component={ asyncComponent(() =>
+								System.import("views/Template").then(module => module.default)
+							) }
+						/>
+						<Route
+							exact
+							path="/"
+							component={ asyncComponent(() =>
+								System.import("views/Home").then(module => module.default)
+							) }
+						/>
+						<Route
+							path="*"
+							component={ asyncComponent(() =>
+								System.import("views/NotFound").then(module => module.default)
+							) }
+						/>
+					</Switch>
+				</div>
 			</div>
 		);
 	}

@@ -91,15 +91,15 @@ if (nodeEnv === "production") {
 		new ExtractTextPlugin("style-[hash].css")
 	);
 
-  rules.push({
+	rules.push({
 		test: /\.scss$/,
 		loader: ExtractTextPlugin.extract({
 			fallback: "style-loader",
 			use: "css-loader!postcss-loader!sass-loader",
-		})
+		}),
 	});
 } else {
-  rules.push({
+	rules.push({
 		test: /\.scss$/,
 		exclude: /node_modules/,
 		use: [
@@ -108,7 +108,7 @@ if (nodeEnv === "production") {
 			"css-loader",
 			"postcss-loader",
 			"sass-loader?sourceMap",
-		]
+		],
 	});
 }
 
@@ -124,7 +124,7 @@ module.exports = {
 			"isomorphic-fetch",
 			"react-dom",
 			"react-redux",
-			"react-router",
+			"react-router-dom",
 			"react",
 			"redux-thunk",
 			"redux",
@@ -145,5 +145,5 @@ module.exports = {
 			path.join(__dirname, "./app/js"),
 		],
 	},
-	plugins
+	plugins,
 };

@@ -2,14 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware, compose } from "redux";
-import { Router, browserHistory } from "react-router";
+import { BrowserRouter, Route } from "react-router-dom";
 import thunk from "redux-thunk";
 import "babel-polyfill";
 import logger from "dev/logger";
 
 import rootReducer from "reducers";
-import Routes from "routes";
 import DevTools from "dev/redux-dev-tools";
+
+import App from "views/App";
 
 import "../styles/main.scss";
 
@@ -36,12 +37,12 @@ if (isProduction) {
 
 ReactDOM.render(
 	<Provider store={ store }>
-		{ isProduction ?
-			<Router history={ browserHistory } routes={ Routes } /> :
-			<div>
-				<Router history={ browserHistory } routes={ Routes } />
-				<DevTools />
-			</div> }
+		<div>
+			<BrowserRouter>
+				<Route path="/" component={ App } />
+			</BrowserRouter>
+			{ !isProduction ? <DevTools /> : "" }
+		</div>
 	</Provider>,
 	document.getElementById("root")
 );
