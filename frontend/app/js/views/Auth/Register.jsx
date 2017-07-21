@@ -75,6 +75,7 @@ export default class Register extends Component {
 				<label htmlFor="password">Password</label>
 				<input type="password" id="password" value={ this.state.password } onChange={ event => this.updateField("password", event) } />
 				<div id="recaptcha" />
+				<p>By logging in/registering you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
 				<button onClick={ this.register }>Register</button>
 			</div>
 		);
