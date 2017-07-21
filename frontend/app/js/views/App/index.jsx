@@ -8,6 +8,7 @@ import Menu from "components/Global/Menu";
 
 import io from "../../io";
 import config from "../../../../config/default";
+import AuthRoute from "../Auth/AuthRoute";
 
 const asyncComponent = getComponent => {
 	return class AsyncComponent extends React.Component {
@@ -22,6 +23,7 @@ const asyncComponent = getComponent => {
 				});
 			}
 		}
+
 		render() {
 			const { Component } = this.state; // eslint-disable-line no-shadow
 			if (Component) return <Component { ...this.props } />;
@@ -59,26 +61,29 @@ export default class App extends Component { // eslint-disable-line react/no-mul
 				<Menu />
 				<div>
 					<Switch>
-						<Route
+						<AuthRoute
 							exact
 							path="/login"
 							component={ asyncComponent(() =>
 								System.import("views/Auth/Login").then(module => module.default)
 							) }
+							authRequired={ false }
 						/>
-						<Route
+						<AuthRoute
 							exact
 							path="/logout"
 							component={ asyncComponent(() =>
 								System.import("views/Auth/Logout").then(module => module.default)
 							) }
+							authRequired={ true }
 						/>
-						<Route
+						<AuthRoute
 							exact
 							path="/register"
 							component={ asyncComponent(() =>
 								System.import("views/Auth/Register").then(module => module.default)
 							) }
+							authRequired={ false }
 						/>
 						<Route
 							exact

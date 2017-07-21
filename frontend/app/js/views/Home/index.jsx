@@ -13,6 +13,11 @@ export default class Home extends Component {
 		dispatch: PropTypes.func,
 	}
 
+	static defaultProps = {
+		counter: 0,
+		dispatch: () => {},
+	}
+
 	constructor() {
 		super();
 

@@ -5,13 +5,6 @@ import io from "../../io";
 import config from "../../../../config/default";
 
 export default class Register extends Component {
-	static propTypes = {
-		password: PropTypes.string,
-		username: PropTypes.string,
-		email: PropTypes.string,
-		recaptcha: PropTypes.string,
-	}
-
 	constructor() {
 		super();
 

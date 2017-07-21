@@ -5,11 +5,6 @@ import io from "../../io";
 import config from "../../../../config/default";
 
 export default class Login extends Component {
-	static propTypes = {
-		password: PropTypes.string,
-		email: PropTypes.string,
-	}
-
 	constructor() {
 		super();
 
