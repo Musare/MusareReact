@@ -48,8 +48,8 @@ export default class App extends Component { // eslint-disable-line react/no-mul
 
 		io.init(config.serverDomain);
 		io.getSocket(socket => {
-			socket.on("ready", (status, role, username, userId) => {
-				dispatch(authenticate({ status, role, username, userId }));
+			socket.on("ready", (loggedIn, role, username, userId) => {
+				dispatch(authenticate({ loggedIn, role, username, userId }));
 			});
 			socket.on("keep.event:banned", reason => dispatch(ban(reason)));
 		});

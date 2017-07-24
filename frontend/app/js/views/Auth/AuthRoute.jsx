@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Redirect, Route } from "react-router-dom";
 
 @connect(state => ({
-	loggedIn: state.app.get("loggedIn"),
+	loggedIn: state.user.get("loggedIn"),
 }))
 
 export default class AuthRoute extends Component {
