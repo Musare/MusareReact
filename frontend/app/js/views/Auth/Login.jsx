@@ -1,3 +1,5 @@
+import CustomInput from "./CustomInput.jsx";
+
 import React, { Component } from "react";
 
 import io from "../../io";
@@ -47,17 +49,12 @@ export default class Login extends Component {
 	render() {
 		return (
 			<div>
-				<label htmlFor="email">Email</label>
-				<input type="text" id="email" value={ this.state.email } onChange={ event => this.updateField("email", event) } />
-				<label htmlFor="password">Password</label>
-				<input type="password" id="password" value={ this.state.password } onChange={ event => this.updateField("password", event) } />
+				<CustomInput label="Email" placeholder="Email" inputType="email" type="email" name="email" value={ this.state.email } customInputEvents={ { onChange: event => this.updateField("email", event) } } />
+				<CustomInput label="Password" placeholder="Password" inputType="password" type="password" name="password" value={ this.state.password } customInputEvents={ { onChange: event => this.updateField("password", event) } } />
 				<p>By logging in/registering you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
 				<button onClick={ this.login }>Login</button>
 				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>
-					<div className="icon">
-						<img alt="GitHub Icon" src="/assets/images/social/github.svg" />
-					</div>
-					&nbsp;&nbsp;Login with GitHub
+					<img alt="GitHub Icon" src="/assets/images/social/github.svg" /> &nbsp;&nbsp;Login with GitHub
 				</a>
 				<a href="/reset_password">Forgot password?</a>
 			</div>
