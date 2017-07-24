@@ -51,7 +51,7 @@ export default class Login extends Component {
 				<input type="text" id="email" value={ this.state.email } onChange={ event => this.updateField("email", event) } />
 				<label htmlFor="password">Password</label>
 				<input type="password" id="password" value={ this.state.password } onChange={ event => this.updateField("password", event) } />
-				<p>By logging in/registering you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
+				<p>By logging in/registering you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
 				<button onClick={ this.login }>Login</button>
 				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>
 					<div className="icon">
@@ -59,6 +59,7 @@ export default class Login extends Component {
 					</div>
 					&nbsp;&nbsp;Login with GitHub
 				</a>
+				<a href="/reset_password">Forgot password?</a>
 			</div>
 		);
 	}
