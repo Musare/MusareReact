@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
@@ -34,9 +34,12 @@ const asyncComponent = getComponent => {
 
 @connect()
 
-export default class App extends Component { // eslint-disable-line react/no-multi-comp
+class App extends Component { // eslint-disable-line react/no-multi-comp
 	static propTypes = {
 		dispatch: PropTypes.func,
+		history: PropTypes.shape({
+			push: PropTypes.func.isRequired,
+		}).isRequired,
 	}
 
 	static defaultProps = {
@@ -53,6 +56,11 @@ export default class App extends Component { // eslint-disable-line react/no-mul
 			});
 			socket.on("keep.event:banned", reason => dispatch(ban(reason)));
 		});
+
+		if (localStorage.getItem("github_redirect")) {
+			this.props.history.push(localStorage.getItem("github_redirect"));
+			localStorage.removeItem("github_redirect");
+		}
 	}
 
 	render() {
@@ -111,3 +119,5 @@ export default class App extends Component { // eslint-disable-line react/no-mul
 		);
 	}
 }
+
+export default withRouter(App);

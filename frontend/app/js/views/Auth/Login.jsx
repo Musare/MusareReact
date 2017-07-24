@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 
 import io from "../../io";
 import config from "../../../../config/default";
@@ -41,6 +40,10 @@ export default class Login extends Component {
 		});
 	}
 
+	githubRedirect() {
+		localStorage.setItem("github_redirect", window.location.pathname);
+	}
+
 	render() {
 		return (
 			<div>
@@ -50,6 +53,12 @@ export default class Login extends Component {
 				<input type="password" id="password" value={ this.state.password } onChange={ event => this.updateField("password", event) } />
 				<p>By logging in/registering you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
 				<button onClick={ this.login }>Login</button>
+				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>
+					<div className="icon">
+						<img alt="GitHub Icon" src="/assets/images/social/github.svg" />
+					</div>
+					&nbsp;&nbsp;Login with GitHub
+				</a>
 			</div>
 		);
 	}

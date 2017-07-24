@@ -24,6 +24,10 @@ export default class Home extends Component {
 		this.handleIncrement = this.handleIncrement.bind(this);
 	}
 
+	componentDidMount() {
+
+	}
+
 	handleIncrement() {
 		const { dispatch } = this.props;
 

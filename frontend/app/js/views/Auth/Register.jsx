@@ -58,6 +58,10 @@ export default class Register extends Component {
 		});
 	}
 
+	githubRedirect() {
+		localStorage.setItem("github_redirect", window.location.pathname);
+	}
+
 	render() {
 		return (
 			<div>
@@ -70,6 +74,12 @@ export default class Register extends Component {
 				<div id="recaptcha" />
 				<p>By logging in/registering you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.</p>
 				<button onClick={ this.register }>Register</button>
+				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>
+					<div className="icon">
+						<img alt="GitHub Icon" src="/assets/images/social/github.svg" />
+					</div>
+					&nbsp;&nbsp;Login with GitHub
+				</a>
 			</div>
 		);
 	}
