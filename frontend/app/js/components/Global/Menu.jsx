@@ -16,18 +16,18 @@ export default class Menu extends Component {
 		loggedIn: false,
 	}
 
+	getLink(to, text, canShow = true) {
+		return (canShow) ? <NavLink to={ to } >{ text }</NavLink> : "";
+	}
+
 	render() {
 		return (
 			<div className="Menu">
-				<NavLink to="/">Home</NavLink>
-				{ this.props.loggedIn ?
-					<NavLink to="logout">Logout</NavLink> :
-					<div>
-						<NavLink to="login">Login</NavLink>
-						<NavLink to="register">Register</NavLink>
-					</div>
-				}
-				<NavLink to="template">Template</NavLink>
+				{this.getLink("/", "Home")}
+				{this.getLink("login", "Login", !this.props.loggedIn)}
+				{this.getLink("register", "Register", !this.props.loggedIn)}
+				{this.getLink("settings", "Settings", this.props.loggedIn)}
+				{this.getLink("Logout", "Logout", this.props.loggedIn)}
 			</div>
 		);
 	}
