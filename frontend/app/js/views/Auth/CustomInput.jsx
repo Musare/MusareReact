@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import reactTriggerChange from "react-trigger-change";
 
 const regex = {
 	azAZ09_: /^[A-Za-z0-9_]+$/,
@@ -44,6 +45,7 @@ export default class CustomInput extends Component {
 		placeholder: PropTypes.string,
 		customInputEvents: PropTypes.object,
 		validationCallback: PropTypes.func,
+		onRef: PropTypes.func,
 	};
 
 	static defaultProps = {
@@ -55,6 +57,7 @@ export default class CustomInput extends Component {
 		placeholder: "",
 		customInputEvents: {},
 		validationCallback: () => {},
+		onRef: () => {},
 	};
 
 	static validationCallback = (ctx) => {
@@ -65,10 +68,10 @@ export default class CustomInput extends Component {
 		};
 	};
 
-	static hasInvalidInput = (inputInvalid) => {
+	static hasInvalidInput = (inputInvalid, properties) => {
 		let invalid = false;
-		Object.values(inputInvalid).forEach((value) => {
-			if (value) invalid = true;
+		properties.forEach((property) => {
+			if (inputInvalid[property]) invalid = true;
 		});
 		return invalid;
 	};
@@ -97,6 +100,13 @@ export default class CustomInput extends Component {
 				oldOnChange(event);
 			};
 		} else this.state.customInputEvents.onChange = this.onChangeHandler;
+	}
+
+	componentDidMount() {
+		this.props.onRef(this);
+	}
+	componentWillUnmount() {
+		this.props.onRef(null);
 	}
 
 	onBlurHandler = () => {
@@ -133,6 +143,11 @@ export default class CustomInput extends Component {
 		this.props.validationCallback(this.props.name, errors.length > 0);
 	};
 
+	triggerChangeEvent = () => {
+		reactTriggerChange(this.inputElement);
+		this.validateInput();
+	};
+
 	render() {
 		return (
 			<label htmlFor={ this.props.name }>
@@ -141,9 +156,10 @@ export default class CustomInput extends Component {
 					placeholder={ this.props.placeholder }
 					type={ this.props.inputType }
 					name={ this.props.name }
-					value={ this.state.value }
+					value={ this.props.value }
 					className={ (this.state.errors.length > 0) ? "has-validation-errors" : "" }
 					{ ...this.state.customInputEvents }
+					ref={ (input) => this.inputElement = input }
 				/>
 				{ this.listErrors() }
 			</label>

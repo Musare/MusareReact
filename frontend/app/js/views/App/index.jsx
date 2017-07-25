@@ -93,6 +93,14 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							) }
 							authRequired={ false }
 						/>
+						<AuthRoute
+							exact
+							path="/settings"
+							component={ asyncComponent(() =>
+								System.import("views/Auth/Settings").then(module => module.default)
+							) }
+							authRequired={ true }
+						/>
 						<Route
 							exact
 							path="/template"
