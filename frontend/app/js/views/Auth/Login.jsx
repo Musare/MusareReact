@@ -1,6 +1,6 @@
-import CustomInput from "./CustomInput.jsx";
-
 import React, { Component } from "react";
+
+import CustomInput from "./CustomInput.jsx";
 
 import io from "../../io";
 import config from "../../../../config/default";

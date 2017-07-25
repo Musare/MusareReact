@@ -1,6 +1,39 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+const regex = {
+	azAZ09_: /^[A-Za-z0-9_]+$/,
+	az09_: /^[a-z0-9_]+$/,
+	emailSimple: /^[\x00-\x7F]+@[a-z0-9]+\.[a-z0-9]+(\.[a-z0-9]+)?$/,
+	password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]/,
+	ascii: /^[\x00-\x7F]+$/,
+};
+
+const isLength = (string, min, max) => {
+	return !(typeof string !== "string" || string.length < min || string.length > max);
+};
+
+const validation = {
+	username: (value) => {
+		const errors = [];
+		if (!isLength(value, 2, 32)) errors.push("Username must be between 2 and 32 characters long.");
+		if (!regex.azAZ09_.test(value)) errors.push("Invalid username format. Allowed characters: a-z, A-Z, 0-9 and _.");
+		return errors;
+	},
+	email: (value) => {
+		const errors = [];
+		if (!isLength(value, 3, 254)) errors.push("Email must be between 3 and 254 characters long.");
+		if (value.indexOf("@") !== value.lastIndexOf("@") || !regex.emailSimple.test(value)) errors.push("Invalid email format.");
+		return errors;
+	},
+	password: (value) => {
+		const errors = [];
+		if (!isLength(value, 6, 200)) errors.push("Password must be between 6 and 200 characters long.");
+		if (!regex.password.test(value)) errors.push("Invalid password format.");
+		return errors;
+	},
+};
+
 export default class CustomInput extends Component {
 	static propTypes = {
 		type: PropTypes.string,
@@ -10,6 +43,7 @@ export default class CustomInput extends Component {
 		label: PropTypes.string,
 		placeholder: PropTypes.string,
 		customInputEvents: PropTypes.object,
+		validationCallback: PropTypes.func,
 	};
 
 	static defaultProps = {
@@ -20,6 +54,23 @@ export default class CustomInput extends Component {
 		label: "",
 		placeholder: "",
 		customInputEvents: {},
+		validationCallback: () => {},
+	};
+
+	static validationCallback = (ctx) => {
+		return (name, invalid) => {
+			const inputInvalid = ctx.state.inputInvalid;
+			inputInvalid[name] = invalid;
+			ctx.setState({ inputInvalid });
+		};
+	};
+
+	static hasInvalidInput = (inputInvalid) => {
+		let invalid = false;
+		Object.values(inputInvalid).forEach((value) => {
+			if (value) invalid = true;
+		});
+		return invalid;
 	};
 
 	constructor(props) {
@@ -60,9 +111,11 @@ export default class CustomInput extends Component {
 
 	listErrors = () => {
 		let errors = this.state.errors;
+		let key = 0;
 		if (errors.length > 0) {
 			errors = errors.map((error) => {
-				return (<li>{ error }</li>);
+				key++;
+				return (<li key={ key }>{ error }</li>);
 			});
 			return (
 				<ul className="validation-errors">
@@ -75,22 +128,9 @@ export default class CustomInput extends Component {
 	validateInput = () => {
 		const value = this.state.value;
 		const type = this.props.type;
-		const errors = [];
-		if (type === "email") {
-			if (value.indexOf("@") === -1) {
-				errors.push(`${ this.props.label } must have at least one @.`);
-			} else if (value.lastIndexOf("@") !== value.indexOf("@")) {
-				errors.push(`${ this.props.label } must not have more than one @.`);
-			}
-		} else if (type === "password") {
-			if (value.length < 4) {
-				errors.push(`${ this.props.label } must be at least 4 characters long.`);
-			} else if (value.length > 10) {
-				errors.push(`${ this.props.label } can't be more than 10 characters long.`);
-			}
-		}
-
+		const errors = (validation[type]) ? validation[type](value) : [];
 		this.setState({ errors });
+		this.props.validationCallback(this.props.name, errors.length > 0);
 	};
 
 	render() {
