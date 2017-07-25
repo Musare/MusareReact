@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import CustomInput from "./CustomInput.jsx";
+import CustomErrors from "./CustomErrors.jsx";
 
 import io from "../../io";
 import config from "../../../../config/default";
@@ -19,6 +20,7 @@ export default class Register extends Component {
 				username: true,
 				password: true,
 			},
+			errors: []
 		};
 
 		this.register = this.register.bind(this);
@@ -40,6 +42,7 @@ export default class Register extends Component {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid)) {
 			alert("Input invalid. Fix before continuing.");
 		} else {
+			this.setState({ errors: [] });
 			io.getSocket(socket => {
 				socket.emit("users.register", this.state.username, this.state.email, this.state.password, grecaptcha.getResponse(this.state.recaptcha), res => {
 					if (res.status === "success") {
@@ -53,8 +56,7 @@ export default class Register extends Component {
 							// redirect to login
 						}
 					} else {
-						// return res.message, temporarily:
-						alert(res.message); // eslint-disable-line no-alert
+						this.setState({ errors: [res.message] });
 					}
 				});
 			});
@@ -70,6 +72,7 @@ export default class Register extends Component {
 	render() {
 		return (
 			<div>
+				<CustomErrors errors={ this.state.errors } />
 				<CustomInput label="Email" placeholder="Email" inputType="email" type="email" name="email" value={ this.state.email } customInputEvents={ { onChange: event => this.updateField("email", event) } } validationCallback={ this.validationCallback } />
 				<CustomInput label="Username" placeholder="Username" inputType="text" type="username" name="username" value={ this.state.username } customInputEvents={ { onChange: event => this.updateField("username", event) } } validationCallback={ this.validationCallback } />
 				<CustomInput label="Password" placeholder="Password" inputType="password" type="password" name="password" value={ this.state.password } customInputEvents={ { onChange: event => this.updateField("password", event) } } validationCallback={ this.validationCallback } />
