@@ -83,6 +83,7 @@ export default class CustomInput extends Component {
 			customInputEvents: props.customInputEvents,
 			errors: "",
 			value: props.value,
+			validateOnChange: false,
 		};
 
 		if (this.state.customInputEvents.onBlur) {
@@ -109,13 +110,22 @@ export default class CustomInput extends Component {
 		this.props.onRef(null);
 	}
 
+	// Triggered when user stops focusing on the input element
 	onBlurHandler = () => {
 		this.validateInput();
 	};
 
+	// Triggered when the input element's value changes
 	onChangeHandler = (event) => {
 		this.setState({
 			value: event.target.value,
+		}, () => {
+			if (this.state.validateOnChange === true) {
+				this.setState({
+					validateOnChange: false,
+				});
+				this.validateInput();
+			}
 		});
 	};
 
@@ -143,9 +153,9 @@ export default class CustomInput extends Component {
 		this.props.validationCallback(this.props.name, errors.length > 0);
 	};
 
-	triggerChangeEvent = () => {
+	triggerChangeEvent = (validateOnChange) => {
 		reactTriggerChange(this.inputElement);
-		this.validateInput();
+		this.setState({ validateOnChange });
 	};
 
 	render() {
