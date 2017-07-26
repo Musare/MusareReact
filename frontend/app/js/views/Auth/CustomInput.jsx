@@ -70,9 +70,15 @@ export default class CustomInput extends Component {
 
 	static hasInvalidInput = (inputInvalid, properties) => {
 		let invalid = false;
-		properties.forEach((property) => {
-			if (inputInvalid[property]) invalid = true;
-		});
+		if (properties) {
+			properties.forEach((property) => {
+				if (inputInvalid[property]) invalid = true;
+			});
+		} else {
+			Object.keys((key) => {
+				if (key) invalid = true;
+			});
+		}
 		return invalid;
 	};
 

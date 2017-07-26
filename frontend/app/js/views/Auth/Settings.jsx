@@ -38,11 +38,13 @@ export default class Settings extends Component {
 			inputInvalid: {
 				email: true,
 				username: true,
-				currentPassword: true,
 				newPassword: true,
-				newPasswordAgain: true,
 			},
 			errors: [],
+			savedValue: {
+				email: "",
+				username: "",
+			},
 		};
 
 		this.customInputs = {};
@@ -55,6 +57,10 @@ export default class Settings extends Component {
 						username: res.data.username,
 						passwordLinked: res.data.password,
 						gitHubLinked: res.data.github,
+						savedValue: {
+							email: res.data.email.address,
+							username: res.data.username,
+						},
 					}, () => {
 						this.customInputs.email.triggerChangeEvent(true);
 						this.customInputs.username.triggerChangeEvent(true);
@@ -67,6 +73,9 @@ export default class Settings extends Component {
 			socket.on("event:user.username.changed", username => {
 				this.setState({
 					username,
+					savedValue: {
+						username,
+					},
 				}, () => {
 					this.customInputs.username.triggerChangeEvent(true);
 				});
@@ -106,39 +115,60 @@ export default class Settings extends Component {
 		});
 	}
 
-	/* register() {
-		if (CustomInput.hasInvalidInput(this.state.inputInvalid)) {
-			alert("Input invalid. Fix before continuing.");
-		} else {
-			this.setState({ errors: [] });
-			io.getSocs.setState({ errors: [res.message] });
-					}
-				});
-			});
-		}
-	} */
-
 	/* githubRedirect() {
 		localStorage.setItem("github_redirect", window.location.pathname);
 	} */
+	isTheSame = (type) => {
+		return this.state[type] === this.state.savedValue[type];
+	};
 
 	saveChanges = () => {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["username", "email"])) {
 			alert("Input invalid. Fix before continuing.");
+		} else if (this.isTheSame("username") && this.isTheSame("email")) {
+			alert("Nothing has changed.");
 		} else {
 			this.setState({ errors: [] });
+			const email = this.state.email;
+			const username = this.state.username;
 			io.getSocket(socket => {
-				socket.emit("users.updateEmail", this.props.user.userId, this.state.email, res => {
-					if (res.status === "success") {
-						alert("Success!");
-					} else {
-						this.setState({
-							errors: this.state.errors.concat([res.message]),
-						});
-					}
-				});
+				if (!this.isTheSame("email")) {
+					socket.emit("users.updateEmail", this.props.user.userId, email, res => {
+						if (res.status === "success") {
+							alert("Success!");
+						} else {
+							this.setState({
+								errors: this.state.errors.concat([res.message]),
+							});
+						}
+					});
+				}
 
-				socket.emit("users.updateUsername", this.props.user.userId, this.state.username, res => {
+				if (!this.isTheSame("username")) {
+					socket.emit("users.updateUsername", this.props.user.userId, username, res => {
+						if (res.status === "success") {
+							alert("Success!");
+						} else {
+							this.setState({
+								errors: this.state.errors.concat([res.message]),
+							});
+						}
+					});
+				}
+			});
+		}
+	};
+
+	changePassword = () => {
+		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["newPassword"])) {
+			alert("Input invalid. Fix before continuing.");
+		} else if (!this.state.passwordLinked) {
+			alert("You don't have a password yet");
+		} else {
+			this.setState({ errors: [] });
+			const newPassword = this.state.newPassword;
+			io.getSocket(socket => {
+				socket.emit("users.updatePassword", newPassword, res => {
 					if (res.status === "success") {
 						alert("Success!");
 					} else {
@@ -165,10 +195,8 @@ export default class Settings extends Component {
 				</div>
 				<div>
 					<h2>Security</h2>
-					<CustomInput label="Current password" placeholder="Current password" inputType="password" type="password" name="currentPassword" value={ this.state.currentPassword } customInputEvents={ { onChange: event => this.updateField("currentPassword", event) } } validationCallback={ this.validationCallback } />
 					<CustomInput label="New password" placeholder="New password" inputType="password" type="password" name="newPassword" value={ this.state.newPassword } customInputEvents={ { onChange: event => this.updateField("newPassword", event) } } validationCallback={ this.validationCallback } />
-					<CustomInput label="New password again" placeholder="New password again" inputType="password" type="password" name="newPasswordAgain" value={ this.state.newPasswordAgain } customInputEvents={ { onChange: event => this.updateField("newPasswordAgain", event) } } validationCallback={ this.validationCallback } />
-					<button>Change password</button>
+					<button onClick={ this.changePassword }>Change password</button>
 					<button>Link GitHub account</button>
 					<button>Log out everywhere</button>
 				</div>
