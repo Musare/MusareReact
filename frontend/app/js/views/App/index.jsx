@@ -55,6 +55,11 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 				dispatch(authenticate({ loggedIn, role, username, userId }));
 			});
 			socket.on("keep.event:banned", reason => dispatch(ban(reason)));
+
+			socket.on("keep.event:user.session.removed", () => {
+				location.reload();
+				// TODO Give user prompt they've been logged out and let them continue.
+			});
 		});
 
 		if (localStorage.getItem("github_redirect")) {

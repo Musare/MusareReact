@@ -181,6 +181,67 @@ export default class Settings extends Component {
 		}
 	};
 
+	logOutEverywhere = () => {
+		this.setState({ errors: [] });
+		io.getSocket(socket => {
+			socket.emit("users.removeSessions", this.props.user.userId, res => {
+				if (res.status === "success") {
+					alert("Success!");
+				} else {
+					this.setState({
+						errors: this.state.errors.concat([res.message]),
+					});
+				}
+			});
+		});
+	};
+
+	unlinkGitHub = () => {
+		this.setState({ errors: [] });
+		io.getSocket(socket => {
+			socket.emit("users.unlinkGitHub", res => {
+				if (res.status === "success") {
+					alert("Success!");
+				} else {
+					this.setState({
+						errors: this.state.errors.concat([res.message]),
+					});
+				}
+			});
+		});
+	};
+
+	unlinkPassword = () => {
+		this.setState({ errors: [] });
+		io.getSocket(socket => {
+			socket.emit("users.unlinkPassword", res => {
+				if (res.status === "success") {
+					alert("Success!");
+				} else {
+					this.setState({
+						errors: this.state.errors.concat([res.message]),
+					});
+				}
+			});
+		});
+	};
+
+	linkButtons = () => {
+		const linkPassword = <button>TODO</button>;
+		const linkGitHub = <a href="http://localhost:8080/auth/github/link">Link GitHub to account</a>;
+		const unlinkGitHub = (<button onClick={ this.unlinkGitHub }>
+				Remove logging in with GitHub
+			</button>);
+		const unlinkPassword = (<button onClick={ this.unlinkPassword }>
+			Remove logging in with password
+		</button>);
+		if (this.state.passwordLinked && this.state.gitHubLinked) {
+			return [unlinkGitHub, unlinkPassword];
+		} else if (!this.state.passwordLinked) {
+			return linkPassword;
+		} return linkGitHub;
+	};
+
 	validationCallback = CustomInput.validationCallback(this);
 
 	render() {
@@ -197,8 +258,8 @@ export default class Settings extends Component {
 					<h2>Security</h2>
 					<CustomInput label="New password" placeholder="New password" inputType="password" type="password" name="newPassword" value={ this.state.newPassword } customInputEvents={ { onChange: event => this.updateField("newPassword", event) } } validationCallback={ this.validationCallback } />
 					<button onClick={ this.changePassword }>Change password</button>
-					<button>Link GitHub account</button>
-					<button>Log out everywhere</button>
+					{ this.linkButtons() }
+					<button onClick={ this.logOutEverywhere }>Log out everywhere</button>
 				</div>
 			</div>
 		);
