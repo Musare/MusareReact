@@ -19,6 +19,7 @@ backend/config/default.json
 # Front End
 frontend/node_modules
 frontend/dist
+frontend/config/default.js
 
 npm
 

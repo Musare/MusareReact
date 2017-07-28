@@ -20,7 +20,7 @@ export default class Register extends Component {
 				username: true,
 				password: true,
 			},
-			errors: []
+			errors: [],
 		};
 
 		this.register = this.register.bind(this);
