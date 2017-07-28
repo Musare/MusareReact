@@ -13,7 +13,6 @@ export default class Login extends Component {
 		this.state = {
 			password: "",
 			email: "",
-			errors: [],
 			inputInvalid: {
 				email: true,
 				password: true,
@@ -31,9 +30,9 @@ export default class Login extends Component {
 
 	login() {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid)) {
-			alert("Input invalid. Fix before continuing.");
+			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
-			this.setState({ errors: [] });
+			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.login", this.state.email, this.state.password, res => {
 					if (res.status === "success") {
@@ -45,7 +44,7 @@ export default class Login extends Component {
 						document.cookie = `SID=${ res.SID }; expires=${ date.toGMTString() }; ${ domain }${ secure }path=/`;
 						location.reload(); // if we could avoid this, then that would be better
 					} else {
-						this.setState({ errors: [res.message] });
+						this.errors.addError(res.message);
 					}
 				});
 			});
@@ -61,7 +60,7 @@ export default class Login extends Component {
 	render() {
 		return (
 			<div>
-				<CustomErrors errors={ this.state.errors } />
+				<CustomErrors onRef={ ref => (this.errors = ref) } />
 				<CustomInput label="Email" placeholder="Email" inputType="email" type="email" name="email" value={ this.state.email } customInputEvents={ { onChange: event => this.updateField("email", event) } } validationCallback={ this.validationCallback } />
 				<CustomInput label="Password" placeholder="Password" inputType="password" type="password" name="password" value={ this.state.password } customInputEvents={ { onChange: event => this.updateField("password", event) } } validationCallback={ this.validationCallback } />
 				<p>By logging in/registering you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>

@@ -3,15 +3,50 @@ import PropTypes from "prop-types";
 
 export default class CustomErrors extends Component {
 	static propTypes = {
-		errors: PropTypes.array,
+		onRef: PropTypes.func,
 	};
 
 	static defaultProps = {
-		errors: [],
+		onRef: () => {},
+	};
+
+	constructor() {
+		super();
+
+		this.state = {
+			errors: [],
+		};
+	}
+
+	componentDidMount() {
+		this.props.onRef(this);
+	}
+
+	componentWillUnmount() {
+		this.props.onRef(null);
+	}
+
+	clearErrors = () => {
+		this.setState({
+			errors: [],
+		});
+	};
+
+	addError = (error) => {
+		// TODO add error parsing, e.g. for arrays/objects
+		this.setState({
+			errors: this.state.errors.concat([error]),
+		});
+	};
+
+	clearAddError = (error) => {
+		this.setState({
+			errors: [error],
+		});
 	};
 
 	listErrors = () => {
-		let errors = this.props.errors;
+		let errors = this.state.errors;
 		let key = 0;
 		if (errors.length > 0) {
 			errors = errors.map((error) => {

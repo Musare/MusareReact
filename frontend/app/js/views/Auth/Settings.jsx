@@ -40,7 +40,6 @@ export default class Settings extends Component {
 				username: true,
 				newPassword: true,
 			},
-			errors: [],
 			savedValue: {
 				email: "",
 				username: "",
@@ -66,7 +65,7 @@ export default class Settings extends Component {
 						this.customInputs.username.triggerChangeEvent(true);
 					});
 				} else {
-					this.state.errors = ["You are currently not logged in."];
+					this.errors.addError("You are currently not logged in.");
 				}
 			});
 
@@ -124,11 +123,11 @@ export default class Settings extends Component {
 
 	saveChanges = () => {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["username", "email"])) {
-			alert("Input invalid. Fix before continuing.");
+			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else if (this.isTheSame("username") && this.isTheSame("email")) {
-			alert("Nothing has changed.");
+			this.errors.clearAddError("Username or email hasn't changed.");
 		} else {
-			this.setState({ errors: [] });
+			this.errors.clearErrors();
 			const email = this.state.email;
 			const username = this.state.username;
 			io.getSocket(socket => {
@@ -137,9 +136,7 @@ export default class Settings extends Component {
 						if (res.status === "success") {
 							alert("Success!");
 						} else {
-							this.setState({
-								errors: this.state.errors.concat([res.message]),
-							});
+							this.errors.addError(res.message);
 						}
 					});
 				}
@@ -149,9 +146,7 @@ export default class Settings extends Component {
 						if (res.status === "success") {
 							alert("Success!");
 						} else {
-							this.setState({
-								errors: this.state.errors.concat([res.message]),
-							});
+							this.errors.addError(res.message);
 						}
 					});
 				}
@@ -161,20 +156,18 @@ export default class Settings extends Component {
 
 	changePassword = () => {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["newPassword"])) {
-			alert("Input invalid. Fix before continuing.");
+			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else if (!this.state.passwordLinked) {
-			alert("You don't have a password yet");
+			this.errors.clearAddError("You don't have a password set.");
 		} else {
-			this.setState({ errors: [] });
+			this.errors.clearErrors();
 			const newPassword = this.state.newPassword;
 			io.getSocket(socket => {
 				socket.emit("users.updatePassword", newPassword, res => {
 					if (res.status === "success") {
 						alert("Success!");
 					} else {
-						this.setState({
-							errors: this.state.errors.concat([res.message]),
-						});
+						this.errors.addError(res.message);
 					}
 				});
 			});
@@ -182,45 +175,39 @@ export default class Settings extends Component {
 	};
 
 	logOutEverywhere = () => {
-		this.setState({ errors: [] });
+		this.errors.clearErrors();
 		io.getSocket(socket => {
 			socket.emit("users.removeSessions", this.props.user.userId, res => {
 				if (res.status === "success") {
 					alert("Success!");
 				} else {
-					this.setState({
-						errors: this.state.errors.concat([res.message]),
-					});
+					this.errors.addError(res.message);
 				}
 			});
 		});
 	};
 
 	unlinkGitHub = () => {
-		this.setState({ errors: [] });
+		this.errors.clearErrors();
 		io.getSocket(socket => {
 			socket.emit("users.unlinkGitHub", res => {
 				if (res.status === "success") {
 					alert("Success!");
 				} else {
-					this.setState({
-						errors: this.state.errors.concat([res.message]),
-					});
+					this.errors.addError(res.message);
 				}
 			});
 		});
 	};
 
 	unlinkPassword = () => {
-		this.setState({ errors: [] });
+		this.errors.clearErrors();
 		io.getSocket(socket => {
 			socket.emit("users.unlinkPassword", res => {
 				if (res.status === "success") {
 					alert("Success!");
 				} else {
-					this.setState({
-						errors: this.state.errors.concat([res.message]),
-					});
+					this.errors.addError(res.message);
 				}
 			});
 		});
@@ -247,7 +234,7 @@ export default class Settings extends Component {
 	render() {
 		return (
 			<div>
-				<CustomErrors errors={ this.state.errors } />
+				<CustomErrors onRef={ ref => (this.errors = ref) } />
 				<div>
 					<h2>General</h2>
 					<CustomInput label="Email" placeholder="Email" inputType="email" type="email" name="email" value={ this.state.email } customInputEvents={ { onChange: event => this.updateField("email", event) } } validationCallback={ this.validationCallback } onRef={ ref => (this.customInputs.email = ref) } />

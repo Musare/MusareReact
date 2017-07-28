@@ -39,7 +39,6 @@ export default class Settings extends Component {
 				newPassword: true,
 				newPasswordAgain: true,
 			},
-			errors: [],
 		};
 	}
 
@@ -74,9 +73,9 @@ export default class Settings extends Component {
 
 	requestResetCode = () => {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["email"])) {
-			alert("Input invalid. Fix before continuing.");
+			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
-			this.setState({ errors: [] });
+			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.requestPasswordReset", this.state.email, res => {
 					if (res.status === "success") {
@@ -85,9 +84,7 @@ export default class Settings extends Component {
 							step: 2,
 						});
 					} else {
-						this.setState({
-							errors: this.state.errors.concat([res.message]),
-						});
+						this.errors.addError(res.message);
 					}
 				});
 			});
@@ -96,9 +93,9 @@ export default class Settings extends Component {
 
 	verifyResetCode = () => {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["resetCode"])) {
-			alert("Input invalid. Fix before continuing.");
+			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
-			this.setState({ errors: [] });
+			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.verifyPasswordResetCode", this.state.resetCode, res => {
 					if (res.status === "success") {
@@ -107,9 +104,7 @@ export default class Settings extends Component {
 							step: 3,
 						});
 					} else {
-						this.setState({
-							errors: this.state.errors.concat([res.message]),
-						});
+						this.errors.addError(res.message);
 					}
 				});
 			});
@@ -118,20 +113,18 @@ export default class Settings extends Component {
 
 	changePassword = () => {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["newPassword", "newPasswordAgain"])) {
-			alert("Input invalid. Fix before continuing.");
+			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else if (this.state.newPassword !== this.state.newPasswordAgain) {
-			alert("Passwords need to be the same.");
+			this.errors.clearAddError("New password and new password again need to be the same.");
 		} else {
-			this.setState({ errors: [] });
+			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.changePasswordWithResetCode", this.state.resetCode, this.state.newPassword, res => {
 					if (res.status === "success") {
 						alert("Success!");
 						location.href = "/login";
 					} else {
-						this.setState({
-							errors: this.state.errors.concat([res.message]),
-						});
+						this.errors.addError(res.message);
 					}
 				});
 			});
@@ -161,7 +154,7 @@ export default class Settings extends Component {
 					<span className="step-line-2" />
 					<span className={ `step-circle-3 ${ this.state.step === 3 ? "step-circle-active" : "" }` }>3</span>
 				</div>
-				<CustomErrors errors={ this.state.errors } />
+				<CustomErrors onRef={ ref => (this.errors = ref) } />
 				{ this.getActions() }
 			</div>
 		);

@@ -20,7 +20,6 @@ export default class Register extends Component {
 				username: true,
 				password: true,
 			},
-			errors: [],
 		};
 
 		this.register = this.register.bind(this);
@@ -40,9 +39,9 @@ export default class Register extends Component {
 
 	register() {
 		if (CustomInput.hasInvalidInput(this.state.inputInvalid)) {
-			alert("Input invalid. Fix before continuing.");
+			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
-			this.setState({ errors: [] });
+			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.register", this.state.username, this.state.email, this.state.password, grecaptcha.getResponse(this.state.recaptcha), res => {
 					if (res.status === "success") {
@@ -56,7 +55,7 @@ export default class Register extends Component {
 							// redirect to login
 						}
 					} else {
-						this.setState({ errors: [res.message] });
+						this.errors.addError(res.message);
 					}
 				});
 			});
@@ -72,7 +71,7 @@ export default class Register extends Component {
 	render() {
 		return (
 			<div>
-				<CustomErrors errors={ this.state.errors } />
+				<CustomErrors onRef={ ref => (this.errors = ref) } />
 				<CustomInput label="Email" placeholder="Email" inputType="email" type="email" name="email" value={ this.state.email } customInputEvents={ { onChange: event => this.updateField("email", event) } } validationCallback={ this.validationCallback } />
 				<CustomInput label="Username" placeholder="Username" inputType="text" type="username" name="username" value={ this.state.username } customInputEvents={ { onChange: event => this.updateField("username", event) } } validationCallback={ this.validationCallback } />
 				<CustomInput label="Password" placeholder="Password" inputType="password" type="password" name="password" value={ this.state.password } customInputEvents={ { onChange: event => this.updateField("password", event) } } validationCallback={ this.validationCallback } />
