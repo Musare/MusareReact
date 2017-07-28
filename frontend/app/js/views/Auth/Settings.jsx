@@ -227,12 +227,12 @@ export default class Settings extends Component {
 	};
 
 	linkButtons = () => {
-		const linkPassword = <button>TODO</button>;
-		const linkGitHub = <a href="http://localhost:8080/auth/github/link">Link GitHub to account</a>;
-		const unlinkGitHub = (<button onClick={ this.unlinkGitHub }>
+		const linkPassword = <button key="linkPassword">TODO</button>;
+		const linkGitHub = <a key="linkGitHub" href="http://localhost:8080/auth/github/link">Link GitHub to account</a>;
+		const unlinkGitHub = (<button key="unlinkGitHub" onClick={ this.unlinkGitHub }>
 				Remove logging in with GitHub
 			</button>);
-		const unlinkPassword = (<button onClick={ this.unlinkPassword }>
+		const unlinkPassword = (<button key="unlinkPassword" onClick={ this.unlinkPassword }>
 			Remove logging in with password
 		</button>);
 		if (this.state.passwordLinked && this.state.gitHubLinked) {

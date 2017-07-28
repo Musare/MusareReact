@@ -106,6 +106,14 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							) }
 							authRequired={ true }
 						/>
+						<AuthRoute
+							exact
+							path="/reset_password"
+							component={ asyncComponent(() =>
+								System.import("views/Auth/ForgotPassword").then(module => module.default)
+							) }
+							authRequired={ false }
+						/>
 						<Route
 							exact
 							path="/template"

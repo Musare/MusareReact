@@ -4,7 +4,9 @@ import reactTriggerChange from "react-trigger-change";
 
 const regex = {
 	azAZ09_: /^[A-Za-z0-9_]+$/,
+	azAZ09: /^[A-Za-z0-9]+$/,
 	az09_: /^[a-z0-9_]+$/,
+	az09: /^[a-z0-9]+$/,
 	emailSimple: /^[\x00-\x7F]+@[a-z0-9]+\.[a-z0-9]+(\.[a-z0-9]+)?$/,
 	password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]/,
 	ascii: /^[\x00-\x7F]+$/,
@@ -13,6 +15,8 @@ const regex = {
 const isLength = (string, min, max) => {
 	return !(typeof string !== "string" || string.length < min || string.length > max);
 };
+
+// TODO add features where inputs need to be the same
 
 const validation = {
 	username: (value) => {
@@ -31,6 +35,12 @@ const validation = {
 		const errors = [];
 		if (!isLength(value, 6, 200)) errors.push("Password must be between 6 and 200 characters long.");
 		if (!regex.password.test(value)) errors.push("Invalid password format.");
+		return errors;
+	},
+	uniqueCode: (value) => {
+		const errors = [];
+		if (!isLength(value, 8, 8)) errors.push("Code must be 8 characters long.");
+		if (!regex.azAZ09.test(value)) errors.push("Invalid code format.");
 		return errors;
 	},
 };
