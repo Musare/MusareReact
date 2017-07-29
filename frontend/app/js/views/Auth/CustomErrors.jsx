@@ -26,10 +26,10 @@ export default class CustomErrors extends Component {
 		this.props.onRef(null);
 	}
 
-	clearErrors = () => {
+	clearErrors = (cb = () => {}) => {
 		this.setState({
 			errors: [],
-		});
+		}, cb);
 	};
 
 	addError = (error) => {

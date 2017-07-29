@@ -29,21 +29,12 @@ export default class Settings extends Component {
 
 		this.state = {
 			step: 1,
-			email: "",
 			resetCode: "",
-			newPassword: "",
-			newPasswordAgain: "",
-			inputInvalid: {
-				email: true,
-				resetCode: true,
-				newPassword: true,
-				newPasswordAgain: true,
-			},
 		};
 	}
 
 	getActions = () => {
-		const emailInput = <CustomInput key="email" label="Email" placeholder="Email" inputType="email" type="email" name="email" value={ this.state.email } customInputEvents={ { onChange: event => this.updateField("email", event) } } validationCallback={ this.validationCallback } />;
+		const emailInput = <CustomInput key="email" type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />;
 		const requestResetCodeButton = (<button key="requestResetCode" onClick={ this.requestResetCode }>
 			Request reset code
 		</button>);
@@ -51,13 +42,13 @@ export default class Settings extends Component {
 			I already have a reset code
 		</button>);
 
-		const resetCodeInput = <CustomInput key="resetCode" label="Reset code" placeholder="Reset code" inputType="text" type="uniqueCode" name="resetCode" value={ this.state.resetCode } customInputEvents={ { onChange: event => this.updateField("resetCode", event) } } validationCallback={ this.validationCallback } />;
+		const resetCodeInput = <CustomInput key="resetCode" type="uniqueCode" name="resetCode" label="Reset code" placeholder="Reset code" onRef={ ref => (this.input.email = ref) } />;
 		const verifyResetCode = (<button key="verifyResetCode" onClick={ this.verifyResetCode }>
 			Verify reset code
 		</button>);
 
-		const newPasswordInput = <CustomInput key="newPassword" label="New password" placeholder="New password" inputType="password" type="password" name="newPassword" value={ this.state.newPassword } customInputEvents={ { onChange: event => this.updateField("newPassword", event) } } validationCallback={ this.validationCallback } />;
-		const newPasswordAgainInput = <CustomInput key="newPasswordAgain" label="New password again" placeholder="New password again" inputType="password" type="password" name="newPasswordAgain" value={ this.state.newPasswordAgain } customInputEvents={ { onChange: event => this.updateField("newPasswordAgain", event) } } validationCallback={ this.validationCallback } />;
+		const newPasswordInput = <CustomInput key="newPassword" type="password" name="newPassword" label="New password" placeholder="New password" onRef={ ref => (this.input.newPassword = ref) } />;
+		const newPasswordAgainInput = <CustomInput key="newPasswordAgain" type="password" name="newPasswordAgain" label="New password again" placeholder="New password again" onRef={ ref => (this.input.newPasswordAgain = ref) } />;
 		const changePassword = (<button key="changePassword" onClick={ this.changePassword }>
 			Change password
 		</button>);
@@ -69,15 +60,13 @@ export default class Settings extends Component {
 		} return [newPasswordInput, newPasswordAgainInput, changePassword];
 	};
 
-	validationCallback = CustomInput.validationCallback(this);
-
 	requestResetCode = () => {
-		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["email"])) {
+		if (CustomInput.hasInvalidInput(this.input, ["email"])) {
 			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
 			this.errors.clearErrors();
 			io.getSocket(socket => {
-				socket.emit("users.requestPasswordReset", this.state.email, res => {
+				socket.emit("users.requestPasswordReset", this.input.email.getValue(), res => {
 					if (res.status === "success") {
 						alert("Success!");
 						this.setState({
@@ -92,16 +81,17 @@ export default class Settings extends Component {
 	};
 
 	verifyResetCode = () => {
-		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["resetCode"])) {
+		if (CustomInput.hasInvalidInput(this.input, ["resetCode"])) {
 			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
 			this.errors.clearErrors();
 			io.getSocket(socket => {
-				socket.emit("users.verifyPasswordResetCode", this.state.resetCode, res => {
+				socket.emit("users.verifyPasswordResetCode", this.input.resetCode.getValue(), res => {
 					if (res.status === "success") {
 						alert("Success!");
 						this.setState({
 							step: 3,
+							resetCode: this.input.resetCode.getValue(),
 						});
 					} else {
 						this.errors.addError(res.message);
@@ -112,14 +102,14 @@ export default class Settings extends Component {
 	};
 
 	changePassword = () => {
-		if (CustomInput.hasInvalidInput(this.state.inputInvalid, ["newPassword", "newPasswordAgain"])) {
+		if (CustomInput.hasInvalidInput(this.input, ["newPassword", "newPasswordAgain"])) {
 			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
-		} else if (this.state.newPassword !== this.state.newPasswordAgain) {
+		} else if (CustomInput.isTheSame(this.input, ["newPassword", "newPasswordAgain"])) {
 			this.errors.clearAddError("New password and new password again need to be the same.");
 		} else {
 			this.errors.clearErrors();
 			io.getSocket(socket => {
-				socket.emit("users.changePasswordWithResetCode", this.state.resetCode, this.state.newPassword, res => {
+				socket.emit("users.changePasswordWithResetCode", this.state.resetCode, this.input.newPassword.getValue(), res => {
 					if (res.status === "success") {
 						alert("Success!");
 						location.href = "/login";
@@ -136,12 +126,6 @@ export default class Settings extends Component {
 			step: 2,
 		});
 	};
-
-	updateField(field, event) {
-		this.setState({
-			[field]: event.target.value,
-		});
-	}
 
 	render() {
 		return (

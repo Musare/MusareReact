@@ -2,93 +2,102 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import reactTriggerChange from "react-trigger-change";
 
+const isLength = (string, min, max) => {
+	return !(typeof string !== "string" || string.length < min || string.length > max);
+};
+
 const regex = {
 	azAZ09_: /^[A-Za-z0-9_]+$/,
 	azAZ09: /^[A-Za-z0-9]+$/,
 	az09_: /^[a-z0-9_]+$/,
 	az09: /^[a-z0-9]+$/,
-	emailSimple: /^[\x00-\x7F]+@[a-z0-9]+\.[a-z0-9]+(\.[a-z0-9]+)?$/,
+	emailSimple: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-z0-9]+\.[a-z0-9]+(\.[a-z0-9]+)?$/,
 	password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]/,
 	ascii: /^[\x00-\x7F]+$/,
 };
 
-const isLength = (string, min, max) => {
-	return !(typeof string !== "string" || string.length < min || string.length > max);
-};
-
-// TODO add features where inputs need to be the same
-
-const validation = {
-	username: (value) => {
-		const errors = [];
-		if (!isLength(value, 2, 32)) errors.push("Username must be between 2 and 32 characters long.");
-		if (!regex.azAZ09_.test(value)) errors.push("Invalid username format. Allowed characters: a-z, A-Z, 0-9 and _.");
-		return errors;
+const dictionary = {
+	username: {
+		inputType: "text",
+		minLength: 2,
+		maxLength: 32,
+		regex: regex.azAZ09_,
+		errors: {
+			format: "Invalid username format. Allowed characters: a-z, A-Z, 0-9 and _."
+		},
 	},
-	email: (value) => {
-		const errors = [];
-		if (!isLength(value, 3, 254)) errors.push("Email must be between 3 and 254 characters long.");
-		if (value.indexOf("@") !== value.lastIndexOf("@") || !regex.emailSimple.test(value)) errors.push("Invalid email format.");
-		return errors;
+	email: {
+		inputType: "email",
+		minLength: 3,
+		maxLength: 254,
+		regex: regex.emailSimple,
+		errors: {
+			format: "Invalid email format. Email must contain one @ symbol.",
+		},
 	},
-	password: (value) => {
-		const errors = [];
-		if (!isLength(value, 6, 200)) errors.push("Password must be between 6 and 200 characters long.");
-		if (!regex.password.test(value)) errors.push("Invalid password format.");
-		return errors;
+	password: {
+		inputType: "password",
+		minLength: 6,
+		maxLength: 200,
+		regex: regex.password,
+		errors: {
+			format: "Invalid password format. Password must have at least 1 lowercase letter, 1 uppercase letter, 1 number and one special character ($@$!%*?&).",
+		},
 	},
-	uniqueCode: (value) => {
-		const errors = [];
-		if (!isLength(value, 8, 8)) errors.push("Code must be 8 characters long.");
-		if (!regex.azAZ09.test(value)) errors.push("Invalid code format.");
-		return errors;
+	uniqueCode: {
+		inputType: "text",
+		minLength: 8,
+		maxLength: 8,
+		regex: regex.azAZ09,
+		errors: {
+			length: "Code must be 8 characters long.",
+			format: "Invalid code format.",
+		}
 	},
 };
 
 export default class CustomInput extends Component {
 	static propTypes = {
 		type: PropTypes.string,
-		inputType: PropTypes.string,
 		name: PropTypes.string,
-		value: PropTypes.string,
 		label: PropTypes.string,
 		placeholder: PropTypes.string,
-		customInputEvents: PropTypes.object,
-		validationCallback: PropTypes.func,
 		onRef: PropTypes.func,
 	};
 
 	static defaultProps = {
-		type: "text",
-		inputType: "text",
+		type: "",
 		name: "",
-		value: "",
 		label: "",
 		placeholder: "",
-		customInputEvents: {},
-		validationCallback: () => {},
+		valid: false,
 		onRef: () => {},
 	};
 
-	static validationCallback = (ctx) => {
-		return (name, invalid) => {
-			const inputInvalid = ctx.state.inputInvalid;
-			inputInvalid[name] = invalid;
-			ctx.setState({ inputInvalid });
-		};
+	static initialize = (context) => {
+		context.input = {}; // eslint-disable-line no-param-reassign
 	};
 
-	static hasInvalidInput = (inputInvalid, properties) => {
+	static hasInvalidInput = (input, properties) => {
 		let invalid = false;
 		if (properties) {
 			properties.forEach((property) => {
-				if (inputInvalid[property]) invalid = true;
+				if (!input[property].isValid()) invalid = true;
 			});
 		} else {
-			Object.keys((key) => {
-				if (key) invalid = true;
+			Object.keys(input).forEach((key) => {
+				if (!input[key].isValid()) invalid = true;
 			});
 		}
+		return invalid;
+	};
+
+	static isTheSame = (input, properties) => {
+		let invalid = false;
+		let value = properties[Object.keys[0]].getValue();
+		Object.keys(input).forEach((key) => {
+			if (input[key].getValue() !== value) invalid = true;
+		});
 		return invalid;
 	};
 
@@ -96,27 +105,15 @@ export default class CustomInput extends Component {
 		super(props);
 
 		this.state = {
-			customInputEvents: props.customInputEvents,
-			errors: "",
-			value: props.value,
-			validateOnChange: false,
+			inputText: dictionary[props.type].inputText,
+			value: "",
+			original: "",
+			errors: [],
+			pristine: true,
+			disabled: false,
+			valid: false,
 		};
-
-		if (this.state.customInputEvents.onBlur) {
-			const oldOnBlur = this.state.customInputEvents.onBlur;
-			this.state.customInputEvents.onBlur = () => {
-				this.onBlurHandler();
-				oldOnBlur();
-			};
-		} else this.state.customInputEvents.onBlur = this.onBlurHandler;
-
-		if (this.state.customInputEvents.onChange) {
-			const oldOnChange = this.state.customInputEvents.onChange;
-			this.state.customInputEvents.onChange = (event) => {
-				this.onChangeHandler(event);
-				oldOnChange(event);
-			};
-		} else this.state.customInputEvents.onChange = this.onChangeHandler;
+		// More values/functions needs like isEmpty, isRequired
 	}
 
 	componentDidMount() {
@@ -126,23 +123,32 @@ export default class CustomInput extends Component {
 		this.props.onRef(null);
 	}
 
-	// Triggered when user stops focusing on the input element
-	onBlurHandler = () => {
-		this.validateInput();
+	onBlur = () => {
+		this.validate();
 	};
 
-	// Triggered when the input element's value changes
-	onChangeHandler = (event) => {
+	onFocus = () => {
+		this.setState({
+			pristine: false,
+		});
+	};
+
+	onChange = (event) => {
 		this.setState({
 			value: event.target.value,
-		}, () => {
-			if (this.state.validateOnChange === true) {
-				this.setState({
-					validateOnChange: false,
-				});
-				this.validateInput();
-			}
 		});
+	};
+
+	setValue = (value, original = false) => {
+		const state = {
+			value,
+		};
+		if (original) state.original = value;
+		this.setState(state);
+	};
+
+	getValue = () => {
+		return this.state.value;
 	};
 
 	listErrors = () => {
@@ -161,17 +167,28 @@ export default class CustomInput extends Component {
 		} return "";
 	};
 
-	validateInput = () => {
-		const value = this.state.value;
-		const type = this.props.type;
-		const errors = (validation[type]) ? validation[type](value) : [];
-		this.setState({ errors });
-		this.props.validationCallback(this.props.name, errors.length > 0);
+	isValid = () => {
+		return this.state.valid;
 	};
 
-	triggerChangeEvent = (validateOnChange) => {
-		reactTriggerChange(this.inputElement);
-		this.setState({ validateOnChange });
+	isOriginal = () => {
+		return this.state.original === this.state.value;
+	};
+
+	isPristine = () => {
+		return this.state.pristine;
+	};
+
+	validate = (cb = () => {}) => {
+		const errors = [];
+		const info = dictionary[this.props.type];
+		const value = this.state.value;
+		if (!isLength(value, info.minLength, info.maxLength)) errors.push((info.errors.length) ? info.errors.length : `Value must be between ${ info.minLength } and ${ info.maxLength } characters long.`);
+		if (!info.regex.test(value)) errors.push(info.errors.format);
+		this.setState({
+			errors,
+			valid: errors.length === 0,
+		}, cb);
 	};
 
 	render() {
@@ -180,11 +197,13 @@ export default class CustomInput extends Component {
 				<span>{ this.props.label }</span>
 				<input
 					placeholder={ this.props.placeholder }
-					type={ this.props.inputType }
+					type={ this.state.inputType }
 					name={ this.props.name }
-					value={ this.props.value }
+					value={ this.state.value }
 					className={ (this.state.errors.length > 0) ? "has-validation-errors" : "" }
-					{ ...this.state.customInputEvents }
+					onBlur={ this.onBlur }
+					onFocus={ this.onFocus }
+					onChange={ this.onChange }
 					ref={ (input) => this.inputElement = input }
 				/>
 				{ this.listErrors() }

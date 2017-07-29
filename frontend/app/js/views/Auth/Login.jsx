@@ -10,31 +10,16 @@ export default class Login extends Component {
 	constructor() {
 		super();
 
-		this.state = {
-			password: "",
-			email: "",
-			inputInvalid: {
-				email: true,
-				password: true,
-			},
-		};
-
-		this.login = this.login.bind(this);
+		CustomInput.initialize(this);
 	}
 
-	updateField(field, event) {
-		this.setState({
-			[field]: event.target.value,
-		});
-	}
-
-	login() {
-		if (CustomInput.hasInvalidInput(this.state.inputInvalid)) {
+	login = () => {
+		if (CustomInput.hasInvalidInput(this.input)) {
 			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
 			this.errors.clearErrors();
 			io.getSocket(socket => {
-				socket.emit("users.login", this.state.email, this.state.password, res => {
+				socket.emit("users.login", this.input.email.getValue(), this.input.password.getValue(), res => {
 					if (res.status === "success") {
 						const date = new Date();
 						date.setTime(new Date().getTime() + (2 * 365 * 24 * 60 * 60 * 1000));
@@ -55,14 +40,12 @@ export default class Login extends Component {
 		localStorage.setItem("github_redirect", window.location.pathname);
 	}
 
-	validationCallback = CustomInput.validationCallback(this);
-
 	render() {
 		return (
 			<div>
 				<CustomErrors onRef={ ref => (this.errors = ref) } />
-				<CustomInput label="Email" placeholder="Email" inputType="email" type="email" name="email" value={ this.state.email } customInputEvents={ { onChange: event => this.updateField("email", event) } } validationCallback={ this.validationCallback } />
-				<CustomInput label="Password" placeholder="Password" inputType="password" type="password" name="password" value={ this.state.password } customInputEvents={ { onChange: event => this.updateField("password", event) } } validationCallback={ this.validationCallback } />
+				<CustomInput type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />
+				<CustomInput type="password" name="password" label="Password" placeholder="Password" onRef={ ref => (this.input.password = ref) } />
 				<p>By logging in/registering you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
 				<button onClick={ this.login }>Login</button>
 				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>

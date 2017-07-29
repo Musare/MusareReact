@@ -10,19 +10,11 @@ export default class Register extends Component {
 	constructor() {
 		super();
 
-		this.state = {
-			password: "",
-			username: "",
-			email: "",
-			recaptcha: "",
-			inputInvalid: {
-				email: true,
-				username: true,
-				password: true,
-			},
-		};
+		CustomInput.initialize(this);
 
-		this.register = this.register.bind(this);
+		this.state = {
+			recaptcha: "",
+		};
 	}
 
 	componentDidMount() {
@@ -31,19 +23,13 @@ export default class Register extends Component {
 		});
 	}
 
-	updateField(field, event) {
-		this.setState({
-			[field]: event.target.value,
-		});
-	}
-
-	register() {
-		if (CustomInput.hasInvalidInput(this.state.inputInvalid)) {
+	register = () => {
+		if (CustomInput.hasInvalidInput(this.input)) {
 			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
 			this.errors.clearErrors();
 			io.getSocket(socket => {
-				socket.emit("users.register", this.state.username, this.state.email, this.state.password, grecaptcha.getResponse(this.state.recaptcha), res => {
+				socket.emit("users.register", this.input.username.getValue(), this.input.email.getValue(), this.input.password.getValue(), grecaptcha.getResponse(this.state.recaptcha), res => {
 					if (res.status === "success") {
 						if (res.SID) {
 							const date = new Date();
@@ -60,21 +46,19 @@ export default class Register extends Component {
 				});
 			});
 		}
-	}
+	};
 
 	githubRedirect() {
 		localStorage.setItem("github_redirect", window.location.pathname);
 	}
 
-	validationCallback = CustomInput.validationCallback(this);
-
 	render() {
 		return (
 			<div>
 				<CustomErrors onRef={ ref => (this.errors = ref) } />
-				<CustomInput label="Email" placeholder="Email" inputType="email" type="email" name="email" value={ this.state.email } customInputEvents={ { onChange: event => this.updateField("email", event) } } validationCallback={ this.validationCallback } />
-				<CustomInput label="Username" placeholder="Username" inputType="text" type="username" name="username" value={ this.state.username } customInputEvents={ { onChange: event => this.updateField("username", event) } } validationCallback={ this.validationCallback } />
-				<CustomInput label="Password" placeholder="Password" inputType="password" type="password" name="password" value={ this.state.password } customInputEvents={ { onChange: event => this.updateField("password", event) } } validationCallback={ this.validationCallback } />
+				<CustomInput type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />
+				<CustomInput type="username" name="username" label="Username" placeholder="Username" onRef={ ref => (this.input.username = ref) } />
+				<CustomInput type="password" name="password" label="Password" placeholder="Password" onRef={ ref => (this.input.password = ref) } />
 				<div id="recaptcha" />
 				<p>By logging in/registering you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
 				<button onClick={ this.register }>Register</button>
