@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import async from "async";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 import CustomInput from "./CustomInput.jsx";
 import CustomErrors from "./CustomErrors.jsx";
@@ -188,7 +189,9 @@ export default class Settings extends Component {
 	};
 
 	linkButtons = () => {
-		const linkPassword = <button key="linkPassword">TODO</button>;
+		const newPassword = <CustomInput key="newPassword" type="password" name="newPassword" label="New password" placeholder="New password" onRef={ ref => (this.input.newPassword = ref) } />;
+		const changePasswordButton = <button key="changePassword" onClick={ this.changePassword }>Change password</button>;
+		const linkPassword = <NavLink key="linkPassword" to="/settings/setpassword" >Add a password to account</NavLink>;
 		const linkGitHub = <a key="linkGitHub" href="http://localhost:8080/auth/github/link">Link GitHub to account</a>;
 		const unlinkGitHub = (<button key="unlinkGitHub" onClick={ this.unlinkGitHub }>
 				Remove logging in with GitHub
@@ -196,6 +199,7 @@ export default class Settings extends Component {
 		const unlinkPassword = (<button key="unlinkPassword" onClick={ this.unlinkPassword }>
 			Remove logging in with password
 		</button>);
+		if (this.state.passwordLinked) return [newPassword, changePasswordButton];
 		if (this.state.passwordLinked && this.state.gitHubLinked) {
 			return [unlinkGitHub, unlinkPassword];
 		} else if (!this.state.passwordLinked) {
@@ -215,8 +219,6 @@ export default class Settings extends Component {
 				</div>
 				<div>
 					<h2>Security</h2>
-					<CustomInput type="password" name="newPassword" label="New password" placeholder="New password" onRef={ ref => (this.input.newPassword = ref) } />
-					<button onClick={ this.changePassword }>Change password</button>
 					{ this.linkButtons() }
 					<button onClick={ this.logOutEverywhere }>Log out everywhere</button>
 				</div>

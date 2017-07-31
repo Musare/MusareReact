@@ -748,12 +748,12 @@ module.exports = {
 	verifyPasswordCode: hooks.loginRequired((session, code, cb, userId) => {
 		async.waterfall([
 			(next) => {
-				if (!code || typeof code !== 'string') return next('Invalid code1.');
+				if (!code || typeof code !== 'string') return next('Invalid code.');
 				db.models.user.findOne({"services.password.set.code": code, _id: userId}, next);
 			},
 
 			(user, next) => {
-				if (!user) return next('Invalid code2.');
+				if (!user) return next('Invalid code.');
 				if (user.services.password.set.expires < new Date()) return next('That code has expired.');
 				next(null);
 			}
@@ -784,12 +784,12 @@ module.exports = {
 	changePasswordWithCode: hooks.loginRequired((session, code, newPassword, cb, userId) => {
 		async.waterfall([
 			(next) => {
-				if (!code || typeof code !== 'string') return next('Invalid code1.');
+				if (!code || typeof code !== 'string') return next('Invalid code.');
 				db.models.user.findOne({"services.password.set.code": code}, next);
 			},
 
 			(user, next) => {
-				if (!user) return next('Invalid code2.');
+				if (!user) return next('Invalid code.');
 				if (!user.services.password.set.expires > new Date()) return next('That code has expired.');
 				next();
 			},

@@ -108,6 +108,14 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						/>
 						<AuthRoute
 							exact
+							path="/settings/setpassword"
+							component={ asyncComponent(() =>
+								System.import("views/Auth/SetPassword").then(module => module.default)
+							) }
+							authRequired={ true }
+						/>
+						<AuthRoute
+							exact
 							path="/reset_password"
 							component={ asyncComponent(() =>
 								System.import("views/Auth/ForgotPassword").then(module => module.default)
