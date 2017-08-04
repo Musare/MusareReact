@@ -27,6 +27,8 @@ export default class Settings extends Component {
 	constructor(props) {
 		super(props);
 
+		CustomInput.initialize(this);
+
 		this.state = {
 			step: 1,
 			resetCode: "",

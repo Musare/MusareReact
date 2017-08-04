@@ -52,7 +52,7 @@ const dictionary = {
 		errors: {
 			length: "Code must be 8 characters long.",
 			format: "Invalid code format.",
-		}
+		},
 	},
 };
 
@@ -105,7 +105,7 @@ export default class CustomInput extends Component {
 		super(props);
 
 		this.state = {
-			inputText: dictionary[props.type].inputText,
+			inputType: dictionary[props.type].inputType,
 			value: "",
 			original: "",
 			errors: [],

@@ -199,12 +199,19 @@ export default class Settings extends Component {
 		const unlinkPassword = (<button key="unlinkPassword" onClick={ this.unlinkPassword }>
 			Remove logging in with password
 		</button>);
-		if (this.state.passwordLinked) return [newPassword, changePasswordButton];
+
+		const toReturn = [];
+		if (this.state.passwordLinked) {
+			toReturn.push(newPassword);
+			toReturn.push(changePasswordButton);
+		}
 		if (this.state.passwordLinked && this.state.gitHubLinked) {
-			return [unlinkGitHub, unlinkPassword];
+			toReturn.push(unlinkGitHub);
+			toReturn.push(unlinkPassword);
 		} else if (!this.state.passwordLinked) {
-			return linkPassword;
-		} return linkGitHub;
+			toReturn.push(linkPassword);
+		} else toReturn.push(linkGitHub);
+		return toReturn;
 	};
 
 	render() {
