@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 
+import config from "../../../../config/default";
+
 import CustomInput from "./CustomInput.jsx";
 import CustomErrors from "./CustomErrors.jsx";
 
@@ -192,7 +194,7 @@ export default class Settings extends Component {
 		const newPassword = <CustomInput key="newPassword" type="password" name="newPassword" label="New password" placeholder="New password" onRef={ ref => (this.input.newPassword = ref) } />;
 		const changePasswordButton = <button key="changePassword" onClick={ this.changePassword }>Change password</button>;
 		const linkPassword = <NavLink key="linkPassword" to="/settings/setpassword" >Add a password to account</NavLink>;
-		const linkGitHub = <a key="linkGitHub" href="http://localhost:8080/auth/github/link">Link GitHub to account</a>;
+		const linkGitHub = <a key="linkGitHub" href={ config.serverDomain + "/auth/github/link" }>Link GitHub to account</a>;
 		const unlinkGitHub = (<button key="unlinkGitHub" onClick={ this.unlinkGitHub }>
 				Remove logging in with GitHub
 			</button>);
