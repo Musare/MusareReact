@@ -35,7 +35,7 @@ export default class Register extends Component {
 							const date = new Date();
 							date.setTime(new Date().getTime() + (2 * 365 * 24 * 60 * 60 * 1000));
 							const secure = (config.cookie.secure) ? "secure=true; " : "";
-							document.cookie = `SID=${ res.SID }; expires=${ date.toGMTString() }; domain=${ config.cookie.domain }; ${ secure }path=/`;
+							document.cookie = `${ config.cookie.sidName }=${ res.SID }; expires=${ date.toGMTString() }; domain=${ config.cookie.domain }; ${ secure }path=/`;
 							location.reload(); // if we could avoid this, then that would be better
 						} else {
 							// redirect to login

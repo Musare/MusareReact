@@ -26,7 +26,7 @@ export default class Login extends Component {
 						const secure = (config.cookie.secure) ? "secure=true; " : "";
 						let domain = "";
 						if (config.cookie.domain !== "localhost") domain = ` domain=${ config.cookie.domain };`;
-						document.cookie = `SID=${ res.SID }; expires=${ date.toGMTString() }; ${ domain }${ secure }path=/`;
+						document.cookie = `${ config.cookie.sidName }=${ res.SID }; expires=${ date.toGMTString() }; ${ domain }${ secure }path=/`;
 						location.reload(); // if we could avoid this, then that would be better
 					} else {
 						this.errors.addError(res.message);

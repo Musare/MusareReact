@@ -5,6 +5,7 @@ export default {
   	"serverDomain": "",
   	"cookie": {
 		"domain": "",
-		"secure": false
+		"secure": false,
+		"sidName": "SID",
 	}
 }

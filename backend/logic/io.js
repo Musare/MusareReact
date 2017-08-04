@@ -5,6 +5,7 @@
 const app = require('./app');
 const actions = require('./actions');
 const async = require('async');
+const config = require('config');
 const cache = require('./cache');
 const utils = require('./utils');
 const db = require('./db');
@@ -25,7 +26,7 @@ module.exports = {
 		this.io.use((socket, next) => {
 			if (lockdown) return;
 			let cookies = socket.request.headers.cookie;
-			let SID = utils.cookies.parseCookies(cookies).SID;
+			let SID = utils.cookies.parseCookies(cookies)[config.cookie.sidName];
 
 			socket.ip = socket.request.headers['x-forwarded-for'] || '0.0.0.0';
 

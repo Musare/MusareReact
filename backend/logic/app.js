@@ -69,7 +69,7 @@ const lib = {
 				`client_id=${config.get('apis.github.client')}`,
 				`redirect_uri=${config.get('serverDomain')}/auth/github/authorize/callback`,
 				`scope=user:email`,
-				`state=${req.cookies.SID}`
+				`state=${req.cookies[config.cookie.sidName]}`
 			].join('&');
 			res.redirect(`https://github.com/login/oauth/authorize?${params}`);
 		});
@@ -193,7 +193,7 @@ const lib = {
 					if (err) return redirectOnErr(res, err.message);
 					let date = new Date();
 					date.setTime(new Date().getTime() + (2 * 365 * 24 * 60 * 60 * 1000));
-					res.cookie('SID', sessionId, {
+					res.cookie(config.cookie.sidName, sessionId, {
 						expires: date,
 						secure: config.get("cookie.secure"),
 						path: "/",
