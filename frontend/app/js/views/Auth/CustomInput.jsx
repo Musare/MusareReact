@@ -95,7 +95,7 @@ export default class CustomInput extends Component {
 	static isTheSame = (input, properties) => {
 		let invalid = false;
 		const value = input[properties[0]].getValue();
-		Object.keys(properties).forEach((key) => {
+		properties.forEach((key) => {
 			if (input[key].getValue() !== value) invalid = true;
 		});
 		return invalid;
