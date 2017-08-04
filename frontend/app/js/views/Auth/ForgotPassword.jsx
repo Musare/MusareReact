@@ -44,7 +44,7 @@ export default class Settings extends Component {
 			I already have a reset code
 		</button>);
 
-		const resetCodeInput = <CustomInput key="resetCode" type="uniqueCode" name="resetCode" label="Reset code" placeholder="Reset code" onRef={ ref => (this.input.email = ref) } />;
+		const resetCodeInput = <CustomInput key="resetCode" type="uniqueCode" name="resetCode" label="Reset code" placeholder="Reset code" onRef={ ref => (this.input.resetCode = ref) } />;
 		const verifyResetCode = (<button key="verifyResetCode" onClick={ this.verifyResetCode }>
 			Verify reset code
 		</button>);
