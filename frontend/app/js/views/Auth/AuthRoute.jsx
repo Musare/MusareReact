@@ -5,12 +5,14 @@ import { Redirect, Route } from "react-router-dom";
 
 @connect(state => ({
 	loggedIn: state.user.get("loggedIn"),
+	authProcessed: state.user.get("authProcessed"),
 }))
 
 export default class AuthRoute extends Component {
 	static propTypes = {
 		loggedIn: PropTypes.bool,
 		authRequired: PropTypes.bool,
+		authProcessed: PropTypes.bool,
 		component: PropTypes.oneOfType([
 			PropTypes.element,
 			PropTypes.func,
@@ -20,16 +22,19 @@ export default class AuthRoute extends Component {
 	static defaultProps = {
 		loggedIn: false,
 		authRequired: true,
+		authProcessed: false,
 		component: () => {},
 	}
 
 	render() {
-		const { authRequired } = this.props;
-		if (this.props.loggedIn) {
-			if (authRequired) return <Route props={ this.props } component={ this.props.component } />;
-			return <Redirect to={ "/" } />;
+		const { authRequired, loggedIn, authProcessed } = this.props;
+		if (!authRequired) return <Route props={ this.props } component={ this.props.component } />;
+		else if (authProcessed) {
+			if (loggedIn) {
+				return <Route props={ this.props } component={ this.props.component } />;
+			}
+			return <Redirect to={ "/login" } />;
 		}
-		if (authRequired) return <Redirect to={ "/login" } />;
-		return <Route props={ this.props } component={ this.props.component } />;
+		return <h1>Loading...</h1>;
 	}
 }

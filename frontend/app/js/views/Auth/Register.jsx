@@ -42,6 +42,7 @@ export default class Register extends Component {
 						}
 					} else {
 						this.errors.addError(res.message);
+						grecaptcha.reset();
 					}
 				});
 			});

@@ -7,6 +7,7 @@ import {
 
 const initialState = Map({
 	loggedIn: false,
+	authProcessed: false,
 	role: "default",
 	username: "",
 	userId: "",
@@ -28,6 +29,7 @@ const actionsMap = {
 	[AUTHENTICATE]: (state, action) => {
 		return state.merge({
 			loggedIn: action.data.loggedIn,
+			authProcessed: true,
 			role: action.data.role,
 			username: action.data.username,
 			userId: action.data.userId,
