@@ -112,12 +112,19 @@ const lib = {
 								db.models.user.findOne({_id: session.userId}, next);
 							},
 
-							(user, next) => {
-								if (!user) return next('User not found.');
-								if (user.services.github && user.services.github.id) return next('Account already has GitHub linked.');
-								db.models.user.update({_id: user._id}, {$set: {"services.github": {id: body.id, access_token}}}, {runValidators: true}, (err) => {
+							(linkingUser, next) => {
+								if (!linkingUser) return next('User not found.');
+								if (linkingUser.services.github && linkingUser.services.github.id) return next('Account already has GitHub linked.');
+								db.models.user.findOne({"services.github.id": body.id}, (err, user) => {
+									next(err, user, linkingUser);
+								});
+							},
+
+							(user, linkingUser, next) => {
+								if (user) return next('There is already an account that uses that GitHub account to log in.');
+								db.models.user.update({_id: linkingUser._id}, {$set: {"services.github": {id: body.id, access_token}}}, {runValidators: true}, (err) => {
 									if (err) return next(err);
-									next(null, user, body);
+									next(null, linkingUser, body);
 								});
 							},
 
