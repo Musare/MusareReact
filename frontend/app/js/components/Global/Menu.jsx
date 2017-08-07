@@ -22,13 +22,13 @@ export default class Menu extends Component {
 
 	render() {
 		return (
-			<div className="Menu">
+			<header className="Menu">
 				{this.getLink("/", "Home")}
 				{this.getLink("/login", "Login", !this.props.loggedIn)}
 				{this.getLink("/register", "Register", !this.props.loggedIn)}
 				{this.getLink("/settings", "Settings", this.props.loggedIn)}
 				{this.getLink("/logout", "Logout", this.props.loggedIn)}
-			</div>
+			</header>
 		);
 	}
 }

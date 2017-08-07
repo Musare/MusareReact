@@ -37,14 +37,11 @@ const asyncComponent = getComponent => {
 class App extends Component { // eslint-disable-line react/no-multi-comp
 	static propTypes = {
 		dispatch: PropTypes.func,
-		history: PropTypes.shape({
-			push: PropTypes.func.isRequired,
-		}).isRequired,
-	}
+	};
 
 	static defaultProps = {
 		dispatch: () => {},
-	}
+	};
 
 	componentDidMount() {
 		const { dispatch } = this.props;
@@ -63,7 +60,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 		});
 
 		if (localStorage.getItem("github_redirect")) {
-			this.props.history.push(localStorage.getItem("github_redirect"));
+			// TODO
 			localStorage.removeItem("github_redirect");
 		}
 	}
@@ -72,78 +69,69 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 		return (
 			<div>
 				<Menu />
-				<div>
-					<Switch>
-						<AuthRoute
-							exact
-							path="/login"
-							component={ asyncComponent(() =>
-								System.import("views/Auth/Login").then(module => module.default)
-							) }
-							authRequired={ false }
-						/>
-						<AuthRoute
-							exact
-							path="/logout"
-							component={ asyncComponent(() =>
-								System.import("views/Auth/Logout").then(module => module.default)
-							) }
-							authRequired={ true }
-						/>
-						<AuthRoute
-							exact
-							path="/register"
-							component={ asyncComponent(() =>
-								System.import("views/Auth/Register").then(module => module.default)
-							) }
-							authRequired={ false }
-						/>
-						<AuthRoute
-							exact
-							path="/settings"
-							component={ asyncComponent(() =>
-								System.import("views/Auth/Settings").then(module => module.default)
-							) }
-							authRequired={ true }
-						/>
-						<AuthRoute
-							exact
-							path="/settings/setpassword"
-							component={ asyncComponent(() =>
-								System.import("views/Auth/SetPassword").then(module => module.default)
-							) }
-							authRequired={ true }
-						/>
-						<AuthRoute
-							exact
-							path="/reset_password"
-							component={ asyncComponent(() =>
-								System.import("views/Auth/ForgotPassword").then(module => module.default)
-							) }
-							authRequired={ false }
-						/>
-						<Route
-							exact
-							path="/template"
-							component={ asyncComponent(() =>
-								System.import("views/Template").then(module => module.default)
-							) }
-						/>
-						<Route
-							exact
-							path="/"
-							component={ asyncComponent(() =>
-								System.import("views/Home").then(module => module.default)
-							) }
-						/>
-						<Route
-							path="*"
-							component={ asyncComponent(() =>
-								System.import("views/NotFound").then(module => module.default)
-							) }
-						/>
-					</Switch>
-				</div>
+				<Switch>
+					<AuthRoute
+						exact
+						path="/login"
+						component={ asyncComponent(() =>
+							System.import("views/Auth/Login").then(module => module.default)
+						) }
+						authRequired={ false }
+					/>
+					<AuthRoute
+						exact
+						path="/logout"
+						component={ asyncComponent(() =>
+							System.import("views/Auth/Logout").then(module => module.default)
+						) }
+						authRequired={ true }
+					/>
+					<AuthRoute
+						exact
+						path="/register"
+						component={ asyncComponent(() =>
+							System.import("views/Auth/Register").then(module => module.default)
+						) }
+						authRequired={ false }
+					/>
+					<AuthRoute
+						exact
+						path="/settings"
+						component={ asyncComponent(() =>
+							System.import("views/Auth/Settings").then(module => module.default)
+						) }
+						authRequired={ true }
+					/>
+					<AuthRoute
+						exact
+						path="/settings/setpassword"
+						component={ asyncComponent(() =>
+							System.import("views/Auth/SetPassword").then(module => module.default)
+						) }
+						authRequired={ true }
+					/>
+					<AuthRoute
+						exact
+						path="/reset_password"
+						component={ asyncComponent(() =>
+							System.import("views/Auth/ForgotPassword").then(module => module.default)
+						) }
+						authRequired={ false }
+					/>
+					<Route
+						exact
+						path="/"
+						component={ asyncComponent(() =>
+							System.import("views/Home").then(module => module.default)
+						) }
+					/>
+					<Route
+						path="*"
+						component={ asyncComponent(() =>
+							System.import("views/NotFound").then(module => module.default)
+						) }
+					/>
+				</Switch>
 			</div>
 		);
 	}

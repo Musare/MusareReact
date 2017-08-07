@@ -7,13 +7,12 @@ import thunk from "redux-thunk";
 import "babel-polyfill";
 
 import rootReducer from "reducers";
-import DevTools from "dev/redux-dev-tools";
 
 import App from "views/App";
 
 import "../styles/main.scss";
 
-const isProduction = process.env.NODE_ENV === "production";
+// const isProduction = process.env.NODE_ENV === "production";
 let store = null;
 
 const middleware = applyMiddleware(thunk);
@@ -24,12 +23,9 @@ store = createStore(
 
 ReactDOM.render(
 	<Provider store={ store }>
-		<div>
-			<BrowserRouter>
-				<Route path="/" component={ App } />
-			</BrowserRouter>
-			{ !isProduction ? <DevTools /> : "" }
-		</div>
+		<BrowserRouter>
+			<App />
+		</BrowserRouter>
 	</Provider>,
 	document.getElementById("root")
 );
