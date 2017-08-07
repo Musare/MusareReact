@@ -6,8 +6,8 @@ import { connect } from "react-redux";
 import { ban, authenticate } from "actions/app";
 import Menu from "components/Global/Menu";
 
-import io from "../../io";
 import config from "config";
+import io from "../../io";
 import AuthRoute from "../Auth/AuthRoute";
 
 const asyncComponent = getComponent => {

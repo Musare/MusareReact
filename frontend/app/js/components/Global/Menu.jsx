@@ -10,11 +10,11 @@ import { NavLink } from "react-router-dom";
 export default class Menu extends Component {
 	static propTypes = {
 		loggedIn: PropTypes.bool,
-	}
+	};
 
 	static defaultProps = {
 		loggedIn: false,
-	}
+	};
 
 	getLink(to, text, canShow = true) {
 		return (canShow) ? <NavLink to={ to } >{ text }</NavLink> : "";
