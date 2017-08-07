@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { increment } from "actions/app";
 
+import config from "config";
+
 @connect(state => ({
 	counter: state.app.get("counter"),
 }))

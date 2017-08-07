@@ -4,7 +4,7 @@ import CustomInput from "./CustomInput.jsx";
 import CustomErrors from "./CustomErrors.jsx";
 
 import io from "../../io";
-import config from "../../../../config/default";
+import config from "config";
 
 export default class Login extends Component {
 	constructor() {

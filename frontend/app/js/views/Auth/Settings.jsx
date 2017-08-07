@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 
-import config from "../../../../config/default";
+import config from "config";
 
 import CustomInput from "./CustomInput.jsx";
 import CustomErrors from "./CustomErrors.jsx";

@@ -1,11 +1,11 @@
 export default {
-    "recaptcha": {
-		"key": ""
+	"recaptcha": {
+		"key": "",
 	},
-  	"serverDomain": "",
-  	"cookie": {
+	"serverDomain": "",
+	"cookie": {
 		"domain": "",
 		"secure": false,
 		"sidName": "SID",
-	}
-}
+	},
+};

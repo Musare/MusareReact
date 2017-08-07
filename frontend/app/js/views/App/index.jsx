@@ -7,7 +7,7 @@ import { ban, authenticate } from "actions/app";
 import Menu from "components/Global/Menu";
 
 import io from "../../io";
-import config from "../../../../config/default";
+import config from "config";
 import AuthRoute from "../Auth/AuthRoute";
 
 const asyncComponent = getComponent => {
