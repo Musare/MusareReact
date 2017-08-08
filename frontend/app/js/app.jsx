@@ -76,7 +76,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						component={ asyncComponent(() =>
 							System.import("views/Auth/Login").then(module => module.default)
 						) }
-						authRequired={ false }
+						auth="disallowed"
 					/>
 					<AuthRoute
 						exact
@@ -84,7 +84,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						component={ asyncComponent(() =>
 							System.import("views/Auth/Logout").then(module => module.default)
 						) }
-						authRequired={ true }
+						auth="required"
 					/>
 					<AuthRoute
 						exact
@@ -92,7 +92,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						component={ asyncComponent(() =>
 							System.import("views/Auth/Register").then(module => module.default)
 						) }
-						authRequired={ false }
+						auth="disallowed"
 					/>
 					<AuthRoute
 						exact
@@ -100,7 +100,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						component={ asyncComponent(() =>
 							System.import("views/Auth/Settings").then(module => module.default)
 						) }
-						authRequired={ true }
+						auth="required"
 					/>
 					<AuthRoute
 						exact
@@ -108,7 +108,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						component={ asyncComponent(() =>
 							System.import("views/Auth/Settings/SetPassword").then(module => module.default)
 						) }
-						authRequired={ true }
+						auth="required"
 					/>
 					<AuthRoute
 						exact
@@ -116,20 +116,22 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						component={ asyncComponent(() =>
 							System.import("views/Auth/ForgotPassword").then(module => module.default)
 						) }
-						authRequired={ false }
+						auth="disallowed"
 					/>
-					<Route
+					<AuthRoute
 						exact
 						path="/"
 						component={ asyncComponent(() =>
 							System.import("views/Home").then(module => module.default)
 						) }
+						auth="ignored"
 					/>
-					<Route
+					<AuthRoute
 						path="*"
 						component={ asyncComponent(() =>
 							System.import("views/Errors/Error404").then(module => module.default)
 						) }
+						auth="ignored"
 					/>
 				</Switch>
 			</div>
