@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 import config from "config";
 
 import CustomInput from "components/CustomInput.jsx";
-import CustomErrors from "components/CustomErrors.jsx";
+import CustomMessages from "components/CustomMessages.jsx";
 
 import io from "io";
 
@@ -48,7 +48,7 @@ export default class Settings extends Component {
 						gitHubLinked: res.data.github,
 					});
 				} else {
-					this.errors.addError("You are currently not logged in.");
+					this.messages.addError("You are currently not logged in.");
 				}
 			});
 
@@ -89,6 +89,7 @@ export default class Settings extends Component {
 	} */
 
 	saveChanges = () => {
+		this.messages.clearErrorSuccess();
 		async.waterfall([
 			(next) => {
 				if (this.input.username.isPristine()) this.input.username.validate(next);
@@ -100,20 +101,19 @@ export default class Settings extends Component {
 			},
 		], () => {
 			if (CustomInput.hasInvalidInput(this.input, ["username", "email"])) {
-				this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+				this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 			} else if (this.input.username.isOriginal() && this.input.email.isOriginal()) {
-				this.errors.clearAddError("Username or email hasn't changed.");
+				this.messages.clearAddError("Username or email hasn't changed.");
 			} else {
-				this.errors.clearErrors();
 				const email = this.input.email.getValue();
 				const username = this.input.username.getValue();
 				io.getSocket(socket => {
 					if (!this.input.email.isOriginal()) {
 						socket.emit("users.updateEmail", this.props.user.userId, email, res => {
 							if (res.status === "success") {
-								alert("Success!");
+								this.messages.clearAddSuccess("Successfully updated email.");
 							} else {
-								this.errors.addError(res.message);
+								this.messages.addError(res.message);
 							}
 						});
 					}
@@ -121,9 +121,9 @@ export default class Settings extends Component {
 					if (!this.input.username.isOriginal()) {
 						socket.emit("users.updateUsername", this.props.user.userId, username, res => {
 							if (res.status === "success") {
-								alert("Success!");
+								this.messages.clearAddSuccess("Successfully updated username.");
 							} else {
-								this.errors.addError(res.message);
+								this.messages.addError(res.message);
 							}
 						});
 					}
@@ -133,18 +133,18 @@ export default class Settings extends Component {
 	};
 
 	changePassword = () => {
+		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input, ["newPassword"])) {
-			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else if (!this.state.passwordLinked) {
-			this.errors.clearAddError("You don't have a password set.");
+			this.messages.clearAddError("You don't have a password set.");
 		} else {
-			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.updatePassword", this.input.newPassword.getValue(), res => {
 					if (res.status === "success") {
-						alert("Success!");
+						this.messages.clearAddSuccess("Successfully changed password.");
 					} else {
-						this.errors.addError(res.message);
+						this.messages.addError(res.message);
 					}
 				});
 			});
@@ -152,39 +152,39 @@ export default class Settings extends Component {
 	};
 
 	logOutEverywhere = () => {
-		this.errors.clearErrors();
+		this.messages.clearErrorSuccess();
 		io.getSocket(socket => {
 			socket.emit("users.removeSessions", this.props.user.userId, res => {
 				if (res.status === "success") {
-					alert("Success!");
+					this.messages.clearAddSuccess("Successfully logged out everywhere.");
 				} else {
-					this.errors.addError(res.message);
+					this.messages.addError(res.message);
 				}
 			});
 		});
 	};
 
 	unlinkGitHub = () => {
-		this.errors.clearErrors();
+		this.messages.clearErrorSuccess();
 		io.getSocket(socket => {
 			socket.emit("users.unlinkGitHub", res => {
 				if (res.status === "success") {
-					alert("Success!");
+					this.messages.clearAddSuccess("Successfully unlinked GitHub.");
 				} else {
-					this.errors.addError(res.message);
+					this.messages.addError(res.message);
 				}
 			});
 		});
 	};
 
 	unlinkPassword = () => {
-		this.errors.clearErrors();
+		this.messages.clearErrorSuccess();
 		io.getSocket(socket => {
 			socket.emit("users.unlinkPassword", res => {
 				if (res.status === "success") {
-					alert("Success!");
+					this.messages.clearAddSuccess("Successfully unlinked password.");
 				} else {
-					this.errors.addError(res.message);
+					this.messages.addError(res.message);
 				}
 			});
 		});
@@ -219,7 +219,7 @@ export default class Settings extends Component {
 	render() {
 		return (
 			<div>
-				<CustomErrors onRef={ ref => (this.errors = ref) } />
+				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<div>
 					<h2>General</h2>
 					<CustomInput type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />

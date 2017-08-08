@@ -18,7 +18,7 @@ export default class Login extends Component {
 					document.cookie = "SID=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 					location.reload(); // if we could avoid this, then that would be better
 				} else {
-					// return res.message, temporarily:
+					// TODO change this
 					alert(res.message); // eslint-disable-line no-alert
 				}
 			});

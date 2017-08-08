@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import CustomInput from "components/CustomInput.jsx";
-import CustomErrors from "components/CustomErrors.jsx";
+import CustomMessages from "components/CustomMessages.jsx";
 
 import io from "io";
 
@@ -41,12 +41,12 @@ export default class Settings extends Component {
 						passwordLinked: res.data.password,
 					});
 				} else {
-					this.errors.addError("You are currently not logged in.");
+					this.messages.addError("You are currently not logged in.");
 				}
 			});
 
 			socket.on("event:user.linkPassword", () => {
-				alert("A password for your account has been set. We will now redirect you to the settings page.");
+				this.messages.clearAddInfo("A password for your account has been set. Redirecting you to the settings page.");
 				location.href = "/settings";
 			});
 		});
@@ -76,19 +76,19 @@ export default class Settings extends Component {
 	};
 
 	setPassword = () => {
+		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input, ["newPassword", "newPasswordAgain"])) {
-			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else if (CustomInput.isTheSame(this.input, ["newPassword", "newPasswordAgain"])) {
-			this.errors.clearAddError("New password and new password again need to be the same.");
+			this.messages.clearAddError("New password and new password again need to be the same.");
 		} else {
-			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.changePasswordWithCode", this.state.code, this.input.newPassword.getValue(), res => {
 					if (res.status === "success") {
-						alert("Success!");
+						this.messages.clearAddSuccess("Successfully set password. Redirecting you to the settings page.");
 						location.href = "/settings";
 					} else {
-						this.errors.addError(res.message);
+						this.messages.addError(res.message);
 					}
 				});
 			});
@@ -96,36 +96,37 @@ export default class Settings extends Component {
 	};
 
 	requestCode = () => {
-		this.errors.clearErrors();
+		this.messages.clearErrorSuccess();
 		io.getSocket(socket => {
 			socket.emit("users.requestPassword", res => {
 				if (res.status === "success") {
-					alert("Success!");
+					this.messages.clearAddSuccess("Successfully requested code.");
+					this.messages.clearAddInfo("We have sent a unique code to your email address.");
 					this.setState({
 						step: 2,
 					});
 				} else {
-					this.errors.addError(res.message);
+					this.messages.addError(res.message);
 				}
 			});
 		});
 	};
 
 	verifyCode = () => {
+		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input, ["code"])) {
-			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
-			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.verifyPasswordCode", this.input.code.getValue(), res => {
 					if (res.status === "success") {
-						alert("Success!");
+						this.messages.clearAddSuccess("Successfully verified code.");
 						this.setState({
 							step: 3,
 							code: this.input.code.getValue(),
 						});
 					} else {
-						this.errors.addError(res.message);
+						this.messages.addError(res.message);
 					}
 				});
 			});
@@ -136,7 +137,7 @@ export default class Settings extends Component {
 		return (
 			<div>
 				<h1>Set Password</h1>
-				<CustomErrors onRef={ ref => (this.errors = ref) } />
+				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				{ this.getActions() }
 			</div>
 		);

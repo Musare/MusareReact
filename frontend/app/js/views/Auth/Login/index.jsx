@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import CustomInput from "components/CustomInput.jsx";
-import CustomErrors from "components/CustomErrors.jsx";
+import CustomMessages from "components/CustomMessages.jsx";
 
 import io from "io";
 import config from "config";
@@ -14,10 +14,10 @@ export default class Login extends Component {
 	}
 
 	login = () => {
+		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input)) {
-			this.errors.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
 		} else {
-			this.errors.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.login", this.input.email.getValue(), this.input.password.getValue(), res => {
 					if (res.status === "success") {
@@ -29,7 +29,7 @@ export default class Login extends Component {
 						document.cookie = `${ config.cookie.sidName }=${ res.SID }; expires=${ date.toGMTString() }; ${ domain }${ secure }path=/`;
 						location.reload(); // if we could avoid this, then that would be better
 					} else {
-						this.errors.addError(res.message);
+						this.messages.addError(res.message);
 					}
 				});
 			});
@@ -43,7 +43,7 @@ export default class Login extends Component {
 	render() {
 		return (
 			<div>
-				<CustomErrors onRef={ ref => (this.errors = ref) } />
+				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<CustomInput type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />
 				<CustomInput type="password" name="password" label="Password" placeholder="Password" onRef={ ref => (this.input.password = ref) } />
 				<p>By logging in/registering you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
