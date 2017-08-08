@@ -77,6 +77,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Login").then(module => module.default)
 						) }
 						auth="disallowed"
+						title="Login"
 					/>
 					<AuthRoute
 						exact
@@ -85,6 +86,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Logout").then(module => module.default)
 						) }
 						auth="required"
+						title="Logout"
 					/>
 					<AuthRoute
 						exact
@@ -93,6 +95,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Register").then(module => module.default)
 						) }
 						auth="disallowed"
+						title="Register"
 					/>
 					<AuthRoute
 						exact
@@ -101,6 +104,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Settings").then(module => module.default)
 						) }
 						auth="required"
+						title="Settings"
 					/>
 					<AuthRoute
 						exact
@@ -109,6 +113,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Settings/SetPassword").then(module => module.default)
 						) }
 						auth="required"
+						title="Set password"
 					/>
 					<AuthRoute
 						exact
@@ -117,6 +122,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/ForgotPassword").then(module => module.default)
 						) }
 						auth="disallowed"
+						title="Reset password"
 					/>
 					<AuthRoute
 						exact
@@ -125,6 +131,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Home").then(module => module.default)
 						) }
 						auth="ignored"
+						title="Homepage"
 					/>
 					<AuthRoute
 						path="*"
@@ -132,6 +139,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Errors/Error404").then(module => module.default)
 						) }
 						auth="ignored"
+						title="404"
 					/>
 				</Switch>
 			</div>

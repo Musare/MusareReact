@@ -14,6 +14,7 @@ import io from "io";
 export default class AuthRoute extends Component {
 	static propTypes = {
 		loggedIn: PropTypes.bool,
+		title: PropTypes.string,
 		role: PropTypes.string,
 		auth: PropTypes.string,
 		authProcessed: PropTypes.bool,
@@ -26,6 +27,7 @@ export default class AuthRoute extends Component {
 
 	static defaultProps = {
 		loggedIn: false,
+		title: "Musare",
 		role: "default",
 		auth: "ignored",
 		authProcessed: false,
@@ -51,6 +53,10 @@ export default class AuthRoute extends Component {
 		} else state.waitingFor = "auth";
 
 		this.state = state;
+	}
+
+	componentWillUpdate(nextProps) {
+		document.title = `${ nextProps.title } - Musare`;
 	}
 
 	getStationData = () => {
