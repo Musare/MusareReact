@@ -3,7 +3,7 @@ import { Map } from "immutable";
 import {
 	BAN,
 	AUTHENTICATE,
-} from "actions/app";
+} from "actions/auth";
 
 const initialState = Map({
 	loggedIn: false,

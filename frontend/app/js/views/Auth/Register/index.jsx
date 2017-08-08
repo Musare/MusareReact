@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 
-import CustomInput from "./CustomInput.jsx";
-import CustomErrors from "./CustomErrors.jsx";
+import CustomInput from "components/CustomInput.jsx";
+import CustomErrors from "components/CustomErrors.jsx";
 
-import io from "../../io";
+import io from "io";
 import config from "config";
 
 export default class Register extends Component {

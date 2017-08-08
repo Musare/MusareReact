@@ -6,10 +6,10 @@ import { NavLink } from "react-router-dom";
 
 import config from "config";
 
-import CustomInput from "./CustomInput.jsx";
-import CustomErrors from "./CustomErrors.jsx";
+import CustomInput from "components/CustomInput.jsx";
+import CustomErrors from "components/CustomErrors.jsx";
 
-import io from "../../io";
+import io from "io";
 
 @connect(state => ({
 	user: {

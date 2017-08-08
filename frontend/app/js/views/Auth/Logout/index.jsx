@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import io from "../../io";
+import io from "io";
 
 export default class Login extends Component {
 	constructor() {

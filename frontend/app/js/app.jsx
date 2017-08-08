@@ -3,12 +3,12 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { ban, authenticate } from "actions/app";
-import Menu from "components/Global/Menu";
+import { ban, authenticate } from "actions/auth";
+import Navbar from "components/Global/Navbar";
 
 import config from "config";
-import io from "../../io";
-import AuthRoute from "../Auth/AuthRoute";
+import AuthRoute from "components/AuthRoute";
+import io from "./io";
 
 const asyncComponent = getComponent => {
 	return class AsyncComponent extends React.Component {
@@ -68,7 +68,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 	render() {
 		return (
 			<div>
-				<Menu />
+				<Navbar />
 				<Switch>
 					<AuthRoute
 						exact
@@ -106,7 +106,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						exact
 						path="/settings/setpassword"
 						component={ asyncComponent(() =>
-							System.import("views/Auth/SetPassword").then(module => module.default)
+							System.import("views/Auth/Settings/SetPassword").then(module => module.default)
 						) }
 						authRequired={ true }
 					/>
@@ -128,7 +128,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					<Route
 						path="*"
 						component={ asyncComponent(() =>
-							System.import("views/NotFound").then(module => module.default)
+							System.import("views/Errors/Error404").then(module => module.default)
 						) }
 					/>
 				</Switch>

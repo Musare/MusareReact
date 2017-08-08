@@ -205,6 +205,20 @@ async.waterfall([
 			const app = express();
 			app.listen(config.get("frontendPort"));
 			const rootDir = __dirname.substr(0, __dirname.lastIndexOf("backend")) + "frontend/dist/";
+			const rootDirAssets = __dirname.substr(0, __dirname.lastIndexOf("backend")) + "frontend/app/";
+
+			app.get("/assets/*", (req, res) => {
+				const path = req.path;
+				console.log(rootDirAssets, path, rootDirAssets + path);
+				fs.access(rootDirAssets + path, function(err) {
+					console.log("Error: ", !!err);
+					if (!err) {
+						res.sendFile(rootDirAssets + path);
+					} else {
+						res.redirect("/");
+					}
+				});
+			});
 
 			app.get("/*", (req, res) => {
 				const path = req.path;

@@ -8,7 +8,7 @@ import "babel-polyfill";
 
 import rootReducer from "reducers";
 
-import App from "views/App";
+import App from "./app";
 
 import "../styles/main.scss";
 

@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import CustomInput from "./CustomInput.jsx";
-import CustomErrors from "./CustomErrors.jsx";
+import CustomInput from "components/CustomInput.jsx";
+import CustomErrors from "components/CustomErrors.jsx";
 
-import io from "../../io";
+import io from "io";
 
 @connect(state => ({
 	user: {
