@@ -21,8 +21,14 @@ frontend/node_modules
 frontend/dist
 frontend/config/default.js
 
+# Translation
+translation/node_modules
+translation/config/default.json
+
 npm
 
 # Logs
 log
 .env
+
+locales/

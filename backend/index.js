@@ -206,6 +206,22 @@ async.waterfall([
 			app.listen(config.get("frontendPort"));
 			const rootDir = __dirname.substr(0, __dirname.lastIndexOf("backend")) + "frontend/dist/";
 			const rootDirAssets = __dirname.substr(0, __dirname.lastIndexOf("backend")) + "frontend/app/";
+			const rootDirLocales = __dirname.substr(0, __dirname.lastIndexOf("backend"));
+
+			app.get("/locales/*", (req, res) => {
+				let path = req.path;
+				path = path.replace(/\//g, "\\");
+				path = path.replace("\\locales", "locales");
+				console.log(rootDirLocales, path, rootDirLocales + path);
+				fs.access(rootDirLocales + path, function(err) {
+					console.log("Error: ", !!err);
+					if (!err) {
+						res.sendFile(rootDirLocales + path);
+					} else {
+						res.redirect("/");
+					}
+				});
+			});
 
 			app.get("/assets/*", (req, res) => {
 				const path = req.path;
@@ -213,7 +229,7 @@ async.waterfall([
 				fs.access(rootDirAssets + path, function(err) {
 					console.log("Error: ", !!err);
 					if (!err) {
-						res.sendFile(rootDirAssets + path);
+						res.sendJSON({});
 					} else {
 						res.redirect("/");
 					}
