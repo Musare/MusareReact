@@ -210,8 +210,6 @@ async.waterfall([
 
 			app.get("/locales/*", (req, res) => {
 				let path = req.path;
-				path = path.replace(/\//g, "\\");
-				path = path.replace("\\locales", "locales");
 				console.log(rootDirLocales, path, rootDirLocales + path);
 				fs.access(rootDirLocales + path, function(err) {
 					console.log("Error: ", !!err);
