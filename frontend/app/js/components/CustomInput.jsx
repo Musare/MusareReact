@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import reactTriggerChange from "react-trigger-change";
+const i18next = require("i18next");
+
+const t = i18next.t;
 
 const isLength = (string, min, max) => {
 	return !(typeof string !== "string" || string.length < min || string.length > max);
@@ -23,7 +25,7 @@ const dictionary = {
 		maxLength: 32,
 		regex: regex.azAZ09_,
 		errors: {
-			format: "Invalid username format. Allowed characters: a-z, A-Z, 0-9 and _."
+			format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
 		},
 	},
 	email: {
@@ -32,7 +34,7 @@ const dictionary = {
 		maxLength: 254,
 		regex: regex.emailSimple,
 		errors: {
-			format: "Invalid email format. Email must contain one @ symbol.",
+			format: t("general:invalidEmailFormat"),
 		},
 	},
 	password: {
@@ -41,7 +43,7 @@ const dictionary = {
 		maxLength: 200,
 		regex: regex.password,
 		errors: {
-			format: "Invalid password format. Password must have at least 1 lowercase letter, 1 uppercase letter, 1 number and one special character ($@$!%*?&).",
+			format: t("general:invalidPasswordFormat", { characters: "$@$!%*?&" }),
 		},
 	},
 	uniqueCode: {
@@ -50,8 +52,8 @@ const dictionary = {
 		maxLength: 8,
 		regex: regex.azAZ09,
 		errors: {
-			length: "Code must be 8 characters long.",
-			format: "Invalid code format.",
+			length: t("general:invalidCodeLength", { length: 8 }),
+			format: t("general:invalidCodeFormat"),
 		},
 	},
 };
@@ -183,7 +185,7 @@ export default class CustomInput extends Component {
 		const errors = [];
 		const info = dictionary[this.props.type];
 		const value = this.state.value;
-		if (!isLength(value, info.minLength, info.maxLength)) errors.push((info.errors.length) ? info.errors.length : `Value must be between ${ info.minLength } and ${ info.maxLength } characters long.`);
+		if (!isLength(value, info.minLength, info.maxLength)) errors.push((info.errors.length) ? info.errors.length : t("general:valueMustBeBetween", { min: info.minLength, max: info.maxLength }));
 		if (!info.regex.test(value)) errors.push(info.errors.format);
 		this.setState({
 			errors,

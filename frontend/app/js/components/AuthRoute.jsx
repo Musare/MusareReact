@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Redirect, Route } from "react-router-dom";
+import { translate } from "react-i18next";
 
 import io from "io";
 
@@ -11,6 +12,7 @@ import io from "io";
 	authProcessed: state.user.get("authProcessed"),
 }))
 
+@translate(["general"], { wait: true })
 export default class AuthRoute extends Component {
 	static propTypes = {
 		loggedIn: PropTypes.bool,
@@ -23,6 +25,7 @@ export default class AuthRoute extends Component {
 			PropTypes.func,
 		]),
 		computedMatch: PropTypes.object,
+		t: PropTypes.func,
 	};
 
 	static defaultProps = {
@@ -33,6 +36,7 @@ export default class AuthRoute extends Component {
 		authProcessed: false,
 		component: () => {},
 		computedMatch: {},
+		t: () => {},
 	};
 
 	constructor(props) {
@@ -71,7 +75,7 @@ export default class AuthRoute extends Component {
 	};
 
 	render() {
-		const { auth, role, loggedIn, authProcessed } = this.props;
+		const { auth, role, loggedIn, authProcessed, t } = this.props;
 		const { stationName, waitingFor, receivedStationData, stationData } = this.state;
 
 		if (this.state.continue) {
@@ -97,6 +101,6 @@ export default class AuthRoute extends Component {
 				return <Redirect to={ "/" } />;
 			}
 		}
-		return <h1>Loading...</h1>;
+		return <h1>{ t("general:loading") }</h1>;
 	}
 }

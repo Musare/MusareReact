@@ -2,11 +2,22 @@ import React, { Component } from "react";
 
 import CustomInput from "components/CustomInput.jsx";
 import CustomMessages from "components/CustomMessages.jsx";
+import PropTypes from "prop-types";
+import { translate } from "react-i18next";
 
 import io from "io";
 import config from "config";
 
+@translate(["login"], { wait: true })
 export default class Login extends Component {
+	static propTypes = {
+		t: PropTypes.func,
+	};
+
+	static defaultProps = {
+		t: () => {},
+	};
+
 	constructor() {
 		super();
 
@@ -16,7 +27,7 @@ export default class Login extends Component {
 	login = () => {
 		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input)) {
-			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else {
 			io.getSocket(socket => {
 				socket.emit("users.login", this.input.email.getValue(), this.input.password.getValue(), res => {
@@ -41,17 +52,20 @@ export default class Login extends Component {
 	}
 
 	render() {
+		const { t } = this.props;
+
 		return (
 			<div>
+				<h1>{ t("login:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
-				<CustomInput type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />
-				<CustomInput type="password" name="password" label="Password" placeholder="Password" onRef={ ref => (this.input.password = ref) } />
-				<p>By logging in/registering you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
-				<button onClick={ this.login }>Login</button>
+				<CustomInput type="email" name="email" label={ t("general:emailInput") } placeholder={ t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />
+				<CustomInput type="password" name="password" label={ t("general:passwordInput") } placeholder={ t("general:passwordInput") } onRef={ ref => (this.input.password = ref) } />
+				<p>{ t("login:byLoggingIn", { termsOfService: <a href="/terms">{ t("general:termsOfService") }</a>, privacyPolicy: <a href="/privacy">{ t("general:privacyPolicy") }</a> }) }</p>
+				<button onClick={ this.login }>{ t("login:login") }</button>
 				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>
-					<img alt="GitHub Icon" src="/assets/images/social/github.svg" /> &nbsp;&nbsp;Login with GitHub
+					{ t("login:loginWithGitHub") }
 				</a>
-				<a href="/reset_password">Forgot password?</a>
+				<a href="/reset_password">{ t("login:forgotPassword") }</a>
 			</div>
 		);
 	}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 
 import CustomInput from "components/CustomInput.jsx";
 import CustomMessages from "components/CustomMessages.jsx";
@@ -13,15 +14,18 @@ import io from "io";
 	},
 }))
 
-export default class Settings extends Component {
+@translate(["setPassword"], { wait: true })
+export default class SetPassword extends Component {
 	static propTypes = {
 		user: PropTypes.object,
+		t: PropTypes.func,
 	};
 
 	static defaultProps = {
 		user: {
 			userId: "",
 		},
+		t: () => {},
 	};
 
 	constructor(props) {
@@ -41,12 +45,12 @@ export default class Settings extends Component {
 						passwordLinked: res.data.password,
 					});
 				} else {
-					this.messages.addError("You are currently not logged in.");
+					this.messages.addError(this.props.t("general:notLoggedInError"));
 				}
 			});
 
 			socket.on("event:user.linkPassword", () => {
-				this.messages.clearAddInfo("A password for your account has been set. Redirecting you to the settings page.");
+				this.messages.clearAddInfo(this.props.t("setPassword:passwordHasBeenSet"));
 				location.href = "/settings";
 			});
 		});
@@ -54,18 +58,18 @@ export default class Settings extends Component {
 
 	getActions = () => {
 		const requestCodeButton = (<button key="requestCode" onClick={ this.requestCode }>
-			Request code
+			{ this.props.t("setPassword:requestCode") }
 		</button>);
 
-		const codeInput = <CustomInput key="code" type="uniqueCode" name="code" label="Code" placeholder="Code" onRef={ ref => (this.input.code = ref) } />;
+		const codeInput = <CustomInput key="code" type="uniqueCode" name="code" label={ this.props.t("general:codeInput") } placeholder={ this.props.t("general:codeInput") } onRef={ ref => (this.input.code = ref) } />;
 		const verifyCodeButton = (<button key="verifyCode" onClick={ this.verifyCode }>
-			Verify code
+			{ this.props.t("verifyCode") }
 		</button>);
 
-		const newPasswordInput = <CustomInput key="newPassword" type="password" name="newPassword" label="New password" placeholder="New password" onRef={ ref => (this.input.newPassword = ref) } />;
-		const newPasswordAgainInput = <CustomInput key="newPasswordAgain" type="password" name="newPasswordAgain" label="New password again" placeholder="New password again" onRef={ ref => (this.input.newPasswordAgain = ref) } />;
+		const newPasswordInput = <CustomInput key="newPassword" type="password" name="newPassword" label={ this.props.t("general:newPasswordInput") } placeholder={ this.props.t("general:newPasswordInput") } onRef={ ref => (this.input.newPassword = ref) } />;
+		const newPasswordAgainInput = <CustomInput key="newPasswordAgain" type="password" name="newPasswordAgain" label={ this.props.t("general:newPasswordAgainInput") } placeholder={ this.props.t("general:newPasswordAgainInput") } onRef={ ref => (this.input.newPasswordAgain = ref) } />;
 		const setPassword = (<button key="setPassword" onClick={ this.setPassword }>
-			Change password
+			{ this.props.t("setPassword:setPassword") }
 		</button>);
 
 		if (this.state.step === 1) {
@@ -78,14 +82,14 @@ export default class Settings extends Component {
 	setPassword = () => {
 		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input, ["newPassword", "newPasswordAgain"])) {
-			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else if (CustomInput.isTheSame(this.input, ["newPassword", "newPasswordAgain"])) {
-			this.messages.clearAddError("New password and new password again need to be the same.");
+			this.messages.clearAddError(this.props.t("general:newPasswordNewPasswordAgainSameError"));
 		} else {
 			io.getSocket(socket => {
 				socket.emit("users.changePasswordWithCode", this.state.code, this.input.newPassword.getValue(), res => {
 					if (res.status === "success") {
-						this.messages.clearAddSuccess("Successfully set password. Redirecting you to the settings page.");
+						this.messages.clearAddSuccess(this.props.t("setPassword:successfullySetPassword"));
 						location.href = "/settings";
 					} else {
 						this.messages.addError(res.message);
@@ -100,8 +104,8 @@ export default class Settings extends Component {
 		io.getSocket(socket => {
 			socket.emit("users.requestPassword", res => {
 				if (res.status === "success") {
-					this.messages.clearAddSuccess("Successfully requested code.");
-					this.messages.clearAddInfo("We have sent a unique code to your email address.");
+					this.messages.clearAddSuccess(this.props.t("setPassword:successfullyRequestedCode"));
+					this.messages.clearAddInfo(this.props.t("setPassword:weHaveSentAUniqueCode"));
 					this.setState({
 						step: 2,
 					});
@@ -115,12 +119,12 @@ export default class Settings extends Component {
 	verifyCode = () => {
 		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input, ["code"])) {
-			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else {
 			io.getSocket(socket => {
 				socket.emit("users.verifyPasswordCode", this.input.code.getValue(), res => {
 					if (res.status === "success") {
-						this.messages.clearAddSuccess("Successfully verified code.");
+						this.messages.clearAddSuccess(this.props.t("setPassword:successfullyVerifiedCode"));
 						this.setState({
 							step: 3,
 							code: this.input.code.getValue(),
@@ -136,7 +140,7 @@ export default class Settings extends Component {
 	render() {
 		return (
 			<div>
-				<h1>Set Password</h1>
+				<h1><h1>{ t("setPassword:title") }</h1></h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				{ this.getActions() }
 			</div>

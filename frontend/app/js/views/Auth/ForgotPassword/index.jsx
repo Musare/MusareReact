@@ -1,27 +1,21 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 
 import CustomInput from "components/CustomInput.jsx";
 import CustomErrors from "components/CustomMessages.jsx";
 
 import io from "io";
 
-@connect(state => ({
-	user: {
-		userId: state.user.get("userId"),
-	},
-}))
-
-export default class Settings extends Component {
+@translate(["forgotPassword"], { wait: true })
+export default class ForgotPassword extends Component {
 	static propTypes = {
-		user: PropTypes.object,
+		t: PropTypes.func,
 	};
 
 	static defaultProps = {
-		user: {
-			userId: "",
-		},
+		t: () => {},
 	};
 
 	constructor(props) {
@@ -36,23 +30,23 @@ export default class Settings extends Component {
 	}
 
 	getActions = () => {
-		const emailInput = <CustomInput key="email" type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />;
+		const emailInput = <CustomInput key="email" type="email" name="email" label={ this.props.t("general:emailInput") } placeholder={ this.props.t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />;
 		const requestResetCodeButton = (<button key="requestResetCode" onClick={ this.requestResetCode }>
-			Request reset code
+			{ this.props.t("forgotPassword:requestResetCode") }
 		</button>);
 		const iAlreadyHaveAResetCodeButton = (<button key="skipRequestResetCode" onClick={ this.skipRequestResetCode }>
-			I already have a reset code
+			{ this.props.t("forgotPassword:requestResetCode") }
 		</button>);
 
-		const resetCodeInput = <CustomInput key="resetCode" type="uniqueCode" name="resetCode" label="Reset code" placeholder="Reset code" onRef={ ref => (this.input.resetCode = ref) } />;
+		const resetCodeInput = <CustomInput key="resetCode" type="uniqueCode" name="resetCode" label={ this.props.t("general:resetCodeInput") } placeholder={ this.props.t("general:resetCodeInput") } onRef={ ref => (this.input.resetCode = ref) } />;
 		const verifyResetCode = (<button key="verifyResetCode" onClick={ this.verifyResetCode }>
-			Verify reset code
+			{ this.props.t("forgotPassword:verifyResetCode") }
 		</button>);
 
-		const newPasswordInput = <CustomInput key="newPassword" type="password" name="newPassword" label="New password" placeholder="New password" onRef={ ref => (this.input.newPassword = ref) } />;
-		const newPasswordAgainInput = <CustomInput key="newPasswordAgain" type="password" name="newPasswordAgain" label="New password again" placeholder="New password again" onRef={ ref => (this.input.newPasswordAgain = ref) } />;
+		const newPasswordInput = <CustomInput key="newPassword" type="password" name="newPassword" label={ this.props.t("general:newPasswordInput") } placeholder={ this.props.t("general:newPasswordInput") } onRef={ ref => (this.input.newPassword = ref) } />;
+		const newPasswordAgainInput = <CustomInput key="newPasswordAgain" type="password" name="newPasswordAgain" label={ this.props.t("general:newPasswordAgainInput") } placeholder={ this.props.t("general:newPasswordAgainInput") } onRef={ ref => (this.input.newPasswordAgain = ref) } />;
 		const changePassword = (<button key="changePassword" onClick={ this.changePassword }>
-			Change password
+			{ this.props.t("forgotPassword:changePassword") }
 		</button>);
 
 		if (this.state.step === 1) {
@@ -64,14 +58,14 @@ export default class Settings extends Component {
 
 	requestResetCode = () => {
 		if (CustomInput.hasInvalidInput(this.input, ["email"])) {
-			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else {
 			this.messages.clearAll();
 			io.getSocket(socket => {
 				socket.emit("users.requestPasswordReset", this.input.email.getValue(), res => {
 					if (res.status === "success") {
-						this.messages.clearAddSuccess("Successfully requested reset code.");
-						this.messages.clearAddInfo("We have sent a unique reset code to your email address.");
+						this.messages.clearAddSuccess(this.props.t("forgotPassword:successfullyRequestedResetCode"));
+						this.messages.clearAddInfo(this.props.t("forgotPassword:weHaveSentAUniqueResetCode"));
 						this.setState({
 							step: 2,
 						});
@@ -85,13 +79,13 @@ export default class Settings extends Component {
 
 	verifyResetCode = () => {
 		if (CustomInput.hasInvalidInput(this.input, ["resetCode"])) {
-			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else {
 			this.messages.clearErrors();
 			io.getSocket(socket => {
 				socket.emit("users.verifyPasswordResetCode", this.input.resetCode.getValue(), res => {
 					if (res.status === "success") {
-						this.messages.clearAddSuccess("Successfully verified reset code.");
+						this.messages.clearAddSuccess(this.props.t("forgotPassword:successfullyVerifiedResetCode"));
 						this.setState({
 							step: 3,
 							resetCode: this.input.resetCode.getValue(),
@@ -107,14 +101,14 @@ export default class Settings extends Component {
 	changePassword = () => {
 		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input, ["newPassword", "newPasswordAgain"])) {
-			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else if (CustomInput.isTheSame(this.input, ["newPassword", "newPasswordAgain"])) {
-			this.messages.clearAddError("New password and new password again need to be the same.");
+			this.messages.clearAddError(this.props.t("general:newPasswordNewPasswordAgainSameError"));
 		} else {
 			io.getSocket(socket => {
 				socket.emit("users.changePasswordWithResetCode", this.state.resetCode, this.input.newPassword.getValue(), res => {
 					if (res.status === "success") {
-						this.messages.clearAddSuccess("Successfully changed password. Redirecting you to the login page.");
+						this.messages.clearAddSuccess(this.props.t("forgotPassword:successfullyChangedPassword"));
 						// TODO Maybe add 5s delay and replace location.href everywhere
 						location.href = "/login";
 					} else {
@@ -132,9 +126,11 @@ export default class Settings extends Component {
 	};
 
 	render() {
+		const { t } = this.props;
+
 		return (
 			<div>
-				<h1>Reset password</h1>
+				<h1>{ t("forgotPassword:title") }</h1>
 				<div className="steps">
 					<span className={ `step-circle-1 ${ this.state.step === 1 ? "step-circle-active" : "" }` }>1</span>
 					<span className="step-line-1" />

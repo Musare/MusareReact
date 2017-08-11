@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+const i18n = require("i18n");
+
+const t = i18n.default.translator.translate;
+
 export default class CustomMessages extends Component {
 	static propTypes = {
 		onRef: PropTypes.func,
@@ -107,9 +111,9 @@ export default class CustomMessages extends Component {
 				return (<li key={ key }>{ message }</li>);
 			});
 			let text = "";
-			if (type === "error") text = "Something went wrong";
-			else if (type === "info") text = "Info";
-			else if (type === "success") text = "Success";
+			if (type === "error") text = t("customMessages:somethingWentWrong");
+			else if (type === "info") text = t("customMessages:info");
+			else if (type === "success") text = t("customMessages:success");
 
 			return (
 				<div key={ type } className={ type }>

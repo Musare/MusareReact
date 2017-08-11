@@ -3,6 +3,7 @@ import async from "async";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { translate } from "react-i18next";
 
 import config from "config";
 
@@ -17,15 +18,18 @@ import io from "io";
 	},
 }))
 
+@translate(["settings"], { wait: true })
 export default class Settings extends Component {
 	static propTypes = {
 		user: PropTypes.object,
+		t: PropTypes.func,
 	};
 
 	static defaultProps = {
 		user: {
 			userId: "",
 		},
+		t: () => {},
 	};
 
 	constructor(props) {
@@ -48,7 +52,7 @@ export default class Settings extends Component {
 						gitHubLinked: res.data.github,
 					});
 				} else {
-					this.messages.addError("You are currently not logged in.");
+					this.messages.addError(this.props.t("general:notLoggedInError"));
 				}
 			});
 
@@ -101,9 +105,9 @@ export default class Settings extends Component {
 			},
 		], () => {
 			if (CustomInput.hasInvalidInput(this.input, ["username", "email"])) {
-				this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+				this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 			} else if (this.input.username.isOriginal() && this.input.email.isOriginal()) {
-				this.messages.clearAddError("Username or email hasn't changed.");
+				this.messages.clearAddError(this.props.t("settings:usernameOrEmailHasntChanged"));
 			} else {
 				const email = this.input.email.getValue();
 				const username = this.input.username.getValue();
@@ -111,7 +115,7 @@ export default class Settings extends Component {
 					if (!this.input.email.isOriginal()) {
 						socket.emit("users.updateEmail", this.props.user.userId, email, res => {
 							if (res.status === "success") {
-								this.messages.clearAddSuccess("Successfully updated email.");
+								this.messages.clearAddSuccess(this.props.t("settings:successfullyUpdatedEmail"));
 							} else {
 								this.messages.addError(res.message);
 							}
@@ -121,7 +125,7 @@ export default class Settings extends Component {
 					if (!this.input.username.isOriginal()) {
 						socket.emit("users.updateUsername", this.props.user.userId, username, res => {
 							if (res.status === "success") {
-								this.messages.clearAddSuccess("Successfully updated username.");
+								this.messages.clearAddSuccess(this.props.t("settings:successfullyUpdatedUsername"));
 							} else {
 								this.messages.addError(res.message);
 							}
@@ -135,7 +139,7 @@ export default class Settings extends Component {
 	changePassword = () => {
 		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input, ["newPassword"])) {
-			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else if (!this.state.passwordLinked) {
 			this.messages.clearAddError("You don't have a password set.");
 		} else {
@@ -156,7 +160,7 @@ export default class Settings extends Component {
 		io.getSocket(socket => {
 			socket.emit("users.removeSessions", this.props.user.userId, res => {
 				if (res.status === "success") {
-					this.messages.clearAddSuccess("Successfully logged out everywhere.");
+					this.messages.clearAddSuccess(this.props.t("settings:successfullyLoggedOutEverywhere"));
 				} else {
 					this.messages.addError(res.message);
 				}
@@ -169,7 +173,7 @@ export default class Settings extends Component {
 		io.getSocket(socket => {
 			socket.emit("users.unlinkGitHub", res => {
 				if (res.status === "success") {
-					this.messages.clearAddSuccess("Successfully unlinked GitHub.");
+					this.messages.clearAddSuccess(this.props.t("settings:successfullyUnlinkedGitHub"));
 				} else {
 					this.messages.addError(res.message);
 				}
@@ -182,7 +186,7 @@ export default class Settings extends Component {
 		io.getSocket(socket => {
 			socket.emit("users.unlinkPassword", res => {
 				if (res.status === "success") {
-					this.messages.clearAddSuccess("Successfully unlinked password.");
+					this.messages.clearAddSuccess(this.props.t("settings:successfullyUnlinkedPassword"));
 				} else {
 					this.messages.addError(res.message);
 				}
@@ -191,16 +195,20 @@ export default class Settings extends Component {
 	};
 
 	linkButtons = () => {
-		const newPassword = <CustomInput key="newPassword" type="password" name="newPassword" label="New password" placeholder="New password" onRef={ ref => (this.input.newPassword = ref) } />;
-		const changePasswordButton = <button key="changePassword" onClick={ this.changePassword }>Change password</button>;
-		const linkPassword = <NavLink key="linkPassword" to="/settings/setpassword" >Add a password to account</NavLink>;
-		const linkGitHub = <a key="linkGitHub" href={ config.serverDomain + "/auth/github/link" }>Link GitHub to account</a>;
-		const unlinkGitHub = (<button key="unlinkGitHub" onClick={ this.unlinkGitHub }>
-				Remove logging in with GitHub
-			</button>);
-		const unlinkPassword = (<button key="unlinkPassword" onClick={ this.unlinkPassword }>
-			Remove logging in with password
-		</button>);
+		const newPassword = <CustomInput key="newPassword" type="password" name="newPassword" label={ this.props.t("general:newPasswordInput") } placeholder={ this.props.t("general:newPasswordInput") } onRef={ ref => (this.input.newPassword = ref) } />;
+		const changePasswordButton = <button key="changePassword" onClick={ this.changePassword }>{ this.props.t("settings:changePassword") }</button>;
+		const linkPassword = <NavLink key="linkPassword" to="/settings/setpassword" >{ this.props.t("settings:addAPasswordToAccount") }</NavLink>;
+		const linkGitHub = <a key="linkGitHub" href={ config.serverDomain + "/auth/github/link" }>{ this.props.t("settings:linkGitHubToAccount") }</a>;
+		const unlinkGitHub = (
+			<button key="unlinkGitHub" onClick={ this.unlinkGitHub }>
+				{ this.props.t("settings:removeLoggingInWithGitHub") }
+			</button>
+		);
+		const unlinkPassword = (
+			<button key="unlinkPassword" onClick={ this.unlinkPassword }>
+				{ this.props.t("settings:removeLoggingInWithPassword") }
+			</button>
+		);
 
 		const toReturn = [];
 		if (this.state.passwordLinked) {
@@ -217,19 +225,22 @@ export default class Settings extends Component {
 	};
 
 	render() {
+		const { t } = this.props;
+
 		return (
 			<div>
+				<h1>{ t("settings:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<div>
-					<h2>General</h2>
-					<CustomInput type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />
-					<CustomInput type="username" name="username" label="Username" placeholder="Username" onRef={ ref => (this.input.username = ref) } />
-					<button onClick={ this.saveChanges }>Save changes</button>
+					<h2>{ this.props.t("settings:general") }</h2>
+					<CustomInput type="email" name="email" label={ this.props.t("general:emailInput") } placeholder={ this.props.t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />
+					<CustomInput type="username" name="username" label={ this.props.t("general:usernameInput") } placeholder={ this.props.t("general:usernameInput") } onRef={ ref => (this.input.username = ref) } />
+					<button onClick={ this.saveChanges }>{ this.props.t("settings:saveChanges") }</button>
 				</div>
 				<div>
-					<h2>Security</h2>
+					<h2>{ this.props.t("settings:security") }</h2>
 					{ this.linkButtons() }
-					<button onClick={ this.logOutEverywhere }>Log out everywhere</button>
+					<button onClick={ this.logOutEverywhere }>{ this.props.t("settings:logOutEverywhere") }</button>
 				</div>
 			</div>
 		);

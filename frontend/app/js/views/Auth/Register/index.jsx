@@ -2,11 +2,22 @@ import React, { Component } from "react";
 
 import CustomInput from "components/CustomInput.jsx";
 import CustomMessages from "components/CustomMessages.jsx";
+import PropTypes from "prop-types";
+import { translate } from "react-i18next";
 
 import io from "io";
 import config from "config";
 
+@translate(["register"], { wait: true })
 export default class Register extends Component {
+	static propTypes = {
+		t: PropTypes.func,
+	};
+
+	static defaultProps = {
+		t: () => {},
+	};
+
 	constructor() {
 		super();
 
@@ -26,7 +37,7 @@ export default class Register extends Component {
 	register = () => {
 		this.messages.clearErrorSuccess();
 		if (CustomInput.hasInvalidInput(this.input)) {
-			this.messages.clearAddError("Some fields are incorrect. Please fix them before continuing.");
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else {
 			io.getSocket(socket => {
 				socket.emit("users.register", this.input.username.getValue(), this.input.email.getValue(), this.input.password.getValue(), grecaptcha.getResponse(this.state.recaptcha), res => {
@@ -54,21 +65,19 @@ export default class Register extends Component {
 	}
 
 	render() {
+		const { t } = this.props;
+
 		return (
 			<div>
+				<h1>{ t("register:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
-				<CustomInput type="email" name="email" label="Email" placeholder="Email" onRef={ ref => (this.input.email = ref) } />
-				<CustomInput type="username" name="username" label="Username" placeholder="Username" onRef={ ref => (this.input.username = ref) } />
-				<CustomInput type="password" name="password" label="Password" placeholder="Password" onRef={ ref => (this.input.password = ref) } />
+				<CustomInput type="email" name="email" label={ t("general:emailInput") } placeholder={ t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />
+				<CustomInput type="username" name="username" label={ t("general:usernameInput") } placeholder={ t("general:usernameInput") } onRef={ ref => (this.input.username = ref) } />
+				<CustomInput type="password" name="password" label={ t("general:passwordInput") } placeholder={ t("general:passwordInput") } onRef={ ref => (this.input.password = ref) } />
 				<div id="recaptcha" />
-				<p>By logging in/registering you agree to our <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>.</p>
-				<button onClick={ this.register }>Register</button>
-				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>
-					<div className="icon">
-						<img alt="GitHub Icon" src="/assets/images/social/github.svg" />
-					</div>
-					&nbsp;&nbsp;Login with GitHub
-				</a>
+				<p>{ t("register:byLoggingIn", { termsOfService: <a href="/terms">{ t("general:termsOfService") }</a>, privacyPolicy: <a href="/privacy">{ t("general:privacyPolicy") }</a> }) }</p>
+				<button onClick={ this.register }>{ t("register:register") }</button>
+				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>{ t("register:registerWithGitHub") }</a>
 			</div>
 		);
 	}

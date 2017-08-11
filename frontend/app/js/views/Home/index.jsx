@@ -18,10 +18,6 @@ export default class Home extends Component {
 		return (
 			<div>
 				<h2>{ t("home:title") }</h2>
-				<h2>{ t("home:officialStations") }</h2>
-				<h2>{ t("home:communityStations") }</h2>
-				<h2>{ t("home:users", { context: "male", count: 5 }) }</h2>
-				<h2>{ t("home:users", { context: "female", count: 1 }) }</h2>
 			</div>
 		);
 	}
