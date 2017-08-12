@@ -138,6 +138,8 @@ export default class SetPassword extends Component {
 	};
 
 	render() {
+		const { t } = this.props;
+
 		return (
 			<div>
 				<h1><h1>{ t("setPassword:title") }</h1></h1>
