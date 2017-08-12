@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { translate } from "react-i18next";
 
 import { ban, authenticate } from "actions/auth";
 import Navbar from "components/Global/Navbar";
@@ -9,10 +10,6 @@ import Navbar from "components/Global/Navbar";
 import config from "config";
 import AuthRoute from "components/AuthRoute";
 import io from "./io";
-
-const i18next = require("i18next");
-
-const t = i18next.t;
 
 const asyncComponent = getComponent => {
 	return class AsyncComponent extends React.Component {
@@ -37,14 +34,16 @@ const asyncComponent = getComponent => {
 };
 
 @connect()
-
+@translate(["pages"], { wait: false })
 class App extends Component { // eslint-disable-line react/no-multi-comp
 	static propTypes = {
 		dispatch: PropTypes.func,
+		t: PropTypes.func,
 	};
 
 	static defaultProps = {
 		dispatch: () => {},
+		t: () => {},
 	};
 
 	componentDidMount() {
@@ -70,6 +69,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 	}
 
 	render() {
+		const { t } = this.props;
+
 		return (
 			<div>
 				<Navbar />

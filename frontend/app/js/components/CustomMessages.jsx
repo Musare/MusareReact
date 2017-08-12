@@ -5,6 +5,8 @@ const i18next = require("i18next");
 
 const t = i18next.t;
 
+i18next.loadNamespaces("customMessages");
+
 export default class CustomMessages extends Component {
 	static propTypes = {
 		onRef: PropTypes.func,

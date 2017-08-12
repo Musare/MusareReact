@@ -227,7 +227,7 @@ async.waterfall([
 				fs.access(rootDirAssets + path, function(err) {
 					console.log("Error: ", !!err);
 					if (!err) {
-						res.sendJSON({});
+						res.json({});
 					} else {
 						res.redirect("/");
 					}
