@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-const i18n = require("i18n");
+const i18next = require("i18next");
 
-const t = i18n.default.translator.translate;
+const t = i18next.t;
 
 export default class CustomMessages extends Component {
 	static propTypes = {
@@ -37,7 +37,7 @@ export default class CustomMessages extends Component {
 	};
 
 	addError = (error) => {
-		this.add("errors", error);
+		this.add("error", error);
 	};
 
 	clearAddError = (error) => {
@@ -91,6 +91,7 @@ export default class CustomMessages extends Component {
 
 	add = (type, message) => {
 		// TODO add error parsing, e.g. for arrays/objects
+		console.log("CM_ADD", type, message, this.state[type]);
 		this.setState({
 			[type]: this.state[type].concat([message]),
 		});

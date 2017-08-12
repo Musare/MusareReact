@@ -10,6 +10,10 @@ import config from "config";
 import AuthRoute from "components/AuthRoute";
 import io from "./io";
 
+const i18next = require("i18next");
+
+const t = i18next.t;
+
 const asyncComponent = getComponent => {
 	return class AsyncComponent extends React.Component {
 		static Component = null;
@@ -77,7 +81,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Login").then(module => module.default)
 						) }
 						auth="disallowed"
-						title="Login"
+						title={ t("pages:login") }
 					/>
 					<AuthRoute
 						exact
@@ -95,7 +99,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Register").then(module => module.default)
 						) }
 						auth="disallowed"
-						title="Register"
+						title={ t("pages:register") }
 					/>
 					<AuthRoute
 						exact
@@ -104,7 +108,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Settings").then(module => module.default)
 						) }
 						auth="required"
-						title="Settings"
+						title={ t("pages:settings") }
 					/>
 					<AuthRoute
 						exact
@@ -113,7 +117,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/Settings/SetPassword").then(module => module.default)
 						) }
 						auth="required"
-						title="Set password"
+						title={ t("pages:setPassword") }
 					/>
 					<AuthRoute
 						exact
@@ -122,7 +126,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Auth/ForgotPassword").then(module => module.default)
 						) }
 						auth="disallowed"
-						title="Reset password"
+						title={ t("pages:resetPassword") }
 					/>
 					<AuthRoute
 						exact
@@ -131,7 +135,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Home").then(module => module.default)
 						) }
 						auth="ignored"
-						title="Homepage"
+						title={ t("pages:homepage") }
 					/>
 					<AuthRoute
 						path="*"
@@ -139,7 +143,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							System.import("views/Errors/Error404").then(module => module.default)
 						) }
 						auth="ignored"
-						title="404"
+						title={ t("pages:error404") }
 					/>
 				</Switch>
 			</div>
