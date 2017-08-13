@@ -1,0 +1,132 @@
+@import "../colors";
+@import "../breakpoints";
+
+label {
+	color: $musare_color_primary_gray;
+	display: block;
+
+	span {
+		display: block;
+	}
+
+	input {
+		border: solid $musare_color_primary_blue;
+		display: block;
+		box-sizing: border-box;
+		width: 100%;
+
+		&.has-validation-errors {
+			border-color: $musare_color_primary_red;
+		}
+	}
+
+	ul {
+		display: block;
+		list-style-position: inside;
+		color: $musare_color_primary_red;
+	}
+}
+
+@include responsive(smallest) {
+	label {
+		margin-bottom: 12px;
+
+		span {
+			font-size: 14px;
+			line-height: 19px;
+			margin-left: 4px;
+			margin-bottom: 4px;
+		}
+
+		input {
+			border-width: 1px;
+			font-size: 19px;
+			line-height: 26px;
+			padding: 12px;
+		}
+
+		ul {
+			margin-top: 4px;
+			font-size: 12px;
+			line-height: 16px;
+		}
+	}
+}
+
+@include responsive(small) {
+	label {
+		margin-bottom: 26px;
+
+		span {
+			font-size: 23px;
+			line-height: 31px;
+			margin-left: 8px;
+			margin-bottom: 8px;
+		}
+
+		input {
+			border-width: 2px;
+			font-size: 32px;
+			line-height: 43px;
+			padding: 26px;
+		}
+
+		ul {
+			margin-top: 8px;
+			font-size: 21px;
+			line-height: 28px;
+		}
+	}
+}
+
+@include responsive(medium) {
+	label {
+		margin-bottom: 39px;
+
+		span {
+			font-size: 34px;
+			line-height: 46px;
+			margin-left: 12px;
+			margin-bottom: 12px;
+		}
+
+		input {
+			border-width: 3px;
+			font-size: 48px;
+			line-height: 64px;
+			padding: 39px;
+		}
+
+		ul {
+			margin-top: 12px;
+			font-size: 31px;
+			line-height: 41px;
+		}
+	}
+}
+
+@include responsive(large) {
+	label {
+		margin-bottom: 32px;
+
+		span {
+			font-size: 18px;
+			line-height: 24px;
+			margin-left: 4px;
+			margin-bottom: 12px;
+		}
+
+		input {
+			border-width: 2px;
+			font-size: 27px;
+			line-height: 36px;
+			padding: 27px;
+		}
+
+		ul {
+			margin-top: 8px;
+			font-size: 17px;
+			line-height: 22px;
+		}
+	}
+}

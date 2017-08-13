@@ -5,6 +5,8 @@ import CustomMessages from "components/CustomMessages.jsx";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
 
+import "login.scss";
+
 import io from "io";
 import config from "config";
 
@@ -55,18 +57,18 @@ export default class Login extends Component {
 		const { t } = this.props;
 
 		return (
-			<div>
+			<main>
 				<h1>{ t("login:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<CustomInput type="email" name="email" label={ t("general:emailInput") } placeholder={ t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />
 				<CustomInput type="password" name="password" label={ t("general:passwordInput") } placeholder={ t("general:passwordInput") } onRef={ ref => (this.input.password = ref) } />
 				<p>{ t("login:byLoggingIn", { termsOfService: <a href="/terms">{ t("general:termsOfService") }</a>, privacyPolicy: <a href="/privacy">{ t("general:privacyPolicy") }</a> }) }</p>
 				<button onClick={ this.login }>{ t("login:login") }</button>
-				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>
+				<a href={ `${ config.serverDomain }/auth/github/authorize` } className="button" onClick={ this.githubRedirect }>
 					{ t("login:loginWithGitHub") }
 				</a>
-				<a href="/reset_password">{ t("login:forgotPassword") }</a>
-			</div>
+				<a href="/reset_password" className="button">{ t("login:forgotPassword") }</a>
+			</main>
 		);
 	}
 }

@@ -1,9 +1,12 @@
 // @import "musare-theme";
+@import "colors";
+@import "breakpoints";
 
 html, body {
 	margin: 0;
 	padding: 0;
 	font-family: "Segoe UI";
+	min-width: 320px;
 }
 
 * {
@@ -11,8 +14,75 @@ html, body {
 	margin: 0;
 }
 
-button {
-	outline: none;
-	box-shadow: none;
-	border: none;
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+}
+
+h1 {
+	text-shadow: 0 3px 6px $musare_shadow_color;
+	color: $musare_color_primary_gray;
+	text-align: center;
+}
+
+main {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+@include responsive(smallest) {
+	h1 {
+		font-size: 32px;
+		line-height: 43px;
+		margin-bottom: 16px;
+	}
+
+	main {
+		margin-top: 16px;
+		width: calc(100% - 20px);
+	}
+}
+
+@include responsive(small) {
+	h1 {
+		font-size: 60px;
+		line-height: 80px;
+		margin-bottom: 52px; // TODO Check if this shouldn't be 32px
+	}
+
+	main {
+		margin-top: 32px;
+		width: calc(100% - 40px);
+	}
+}
+
+@include responsive(medium) {
+	h1 {
+		font-size: 90px;
+		line-height: 120px;
+		margin-bottom: 51px; // TODO Check if this shouldn't be 48px
+	}
+
+	main {
+		margin-top: 48px;
+		width: calc(100% - 60px);
+	}
+}
+
+@include responsive(large) {
+	h1 {
+		font-size: 48px;
+		line-height: 64px;
+		margin-bottom: 32px;
+	}
+
+	main {
+		margin-top: 32px;
+		width: 500px;
+	}
+}
+
+@include responsive(largest) {
+	main {
+		width: 800px;
+	}
 }

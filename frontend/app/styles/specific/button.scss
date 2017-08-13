@@ -1,0 +1,64 @@
+@import "../colors";
+@import "../breakpoints";
+
+button, .button {
+	outline: none;
+	box-shadow: none;
+	border: none;
+	background-color: $musare_color_primary_blue;
+	color: $musare_color_white;
+	text-align: center;
+	display: block;
+	width: 100%;
+	text-decoration: none;
+	transition: .1s ease;
+
+	&:hover, &:focus {
+		background-color: $musare_color_secondary_blue;
+		cursor: pointer;
+	}
+
+	&[disabled] {
+		opacity: .4;
+	}
+}
+
+@include responsive(smallest) {
+	button, .button {
+		font-size: 21px;
+		line-height: 28px;
+		padding: 11px 0;
+		margin-bottom: 16px;
+	}
+}
+
+@include responsive(small) {
+	button, .button {
+		font-size: 39px;
+		line-height: 52px;
+		padding: 22.5px 0;
+		margin-bottom: 26px;
+	}
+}
+
+@include responsive(medium) {
+	button, .button {
+		font-size: 57px;
+		line-height: 76px;
+		padding: 11px 0;
+		margin-bottom: 39px;
+	}
+}
+
+@include responsive(large) {
+	button, .button {
+		font-size: 36px;
+		line-height: 48px;
+		padding: 21px 0;
+		margin-bottom: 32px;
+	}
+}
+
+@include responsive(largest) {
+
+}
