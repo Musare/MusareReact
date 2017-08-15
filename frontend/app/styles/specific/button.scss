@@ -25,10 +25,20 @@ button, .button {
 
 .gray-button {
 	background-color: $musare_color_secondary_gray;
+
+	&:hover, &:focus {
+		background-color: $musare_color_primary_gray; //TODO Fix these colors
+		cursor: pointer;
+	}
 }
 
 .red-button {
 	background-color: $musare_color_primary_red;
+
+	&:hover, &:focus {
+		background-color: $musare_color_secondary_red; //TODO Fix these colors
+		cursor: pointer;
+	}
 }
 
 @include responsive(smallest) {

@@ -64,7 +64,7 @@ export default class Login extends Component {
 				<CustomInput type="password" name="password" label={ t("general:passwordInput") } placeholder={ t("general:passwordInput") } onRef={ ref => (this.input.password = ref) } />
 				<p>{ t("login:byLoggingIn", { termsOfService: <a href="/terms">{ t("general:termsOfService") }</a>, privacyPolicy: <a href="/privacy">{ t("general:privacyPolicy") }</a> }) }</p>
 				<button onClick={ this.login }>{ t("login:login") }</button>
-				<a href={ `${ config.serverDomain }/auth/github/authorize` } className="button" onClick={ this.githubRedirect }>
+				<a href={ `${ config.serverDomain }/auth/github/authorize` } className="button gray-button" onClick={ this.githubRedirect }>
 					{ t("login:loginWithGitHub") }
 				</a>
 				<a href="/reset_password" className="button">{ t("login:forgotPassword") }</a>
