@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 
+import "setPassword.scss";
+
 import CustomInput from "components/CustomInput.jsx";
 import CustomErrors from "components/CustomMessages.jsx";
 
@@ -35,7 +37,7 @@ export default class ForgotPassword extends Component {
 			{ this.props.t("forgotPassword:requestResetCode") }
 		</button>);
 		const iAlreadyHaveAResetCodeButton = (<button key="skipRequestResetCode" onClick={ this.skipRequestResetCode }>
-			{ this.props.t("forgotPassword:requestResetCode") }
+			{ this.props.t("forgotPassword:iAlreadyHaveAResetCode") }
 		</button>);
 
 		const resetCodeInput = <CustomInput key="resetCode" type="uniqueCode" name="resetCode" label={ this.props.t("general:resetCodeInput") } placeholder={ this.props.t("general:resetCodeInput") } onRef={ ref => (this.input.resetCode = ref) } />;
@@ -129,18 +131,18 @@ export default class ForgotPassword extends Component {
 		const { t } = this.props;
 
 		return (
-			<div>
+			<main>
 				<h1>{ t("forgotPassword:title") }</h1>
 				<div className="steps">
-					<span className={ `step-circle-1 ${ this.state.step === 1 ? "step-circle-active" : "" }` }>1</span>
-					<span className="step-line-1" />
-					<span className={ `step-circle-2 ${ this.state.step === 2 ? "step-circle-active" : "" }` }>2</span>
-					<span className="step-line-2" />
-					<span className={ `step-circle-3 ${ this.state.step === 3 ? "step-circle-active" : "" }` }>3</span>
+					<span className={ `step-circle ${ this.state.step === 1 ? "step-circle-active" : "" }` }>1</span>
+					<span className="step-line" />
+					<span className={ `step-circle ${ this.state.step === 2 ? "step-circle-active" : "" }` }>2</span>
+					<span className="step-line" />
+					<span className={ `step-circle ${ this.state.step === 3 ? "step-circle-active" : "" }` }>3</span>
 				</div>
 				<CustomErrors onRef={ ref => (this.messages = ref) } />
 				{ this.getActions() }
-			</div>
+			</main>
 		);
 	}
 }

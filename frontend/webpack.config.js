@@ -32,7 +32,7 @@ const plugins = [
 	new webpack.NamedModulesPlugin(),
 	new CleanupPlugin(["dist"], {
 		verbose: true,
-		dry: true,
+		dry: false,
 		watch: true,
 	}),
 	new webpack.LoaderOptionsPlugin({

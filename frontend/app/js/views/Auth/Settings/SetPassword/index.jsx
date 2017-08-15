@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 
+import "setPassword.scss";
+
 import CustomInput from "components/CustomInput.jsx";
 import CustomMessages from "components/CustomMessages.jsx";
 
@@ -141,11 +143,11 @@ export default class SetPassword extends Component {
 		const { t } = this.props;
 
 		return (
-			<div>
+			<main>
 				<h1><h1>{ t("setPassword:title") }</h1></h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				{ this.getActions() }
-			</div>
+			</main>
 		);
 	}
 }
