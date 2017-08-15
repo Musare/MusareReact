@@ -21,10 +21,6 @@ main {
 			transform-origin: 152px 0;
 		}
 	}
-
-	.github-button {
-		background-color: $musare_color_secondary_gray;
-	}
 }
 
 @include responsive(smallest) {

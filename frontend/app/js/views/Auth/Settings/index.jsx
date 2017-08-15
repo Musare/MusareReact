@@ -6,6 +6,7 @@ import { NavLink } from "react-router-dom";
 import { translate } from "react-i18next";
 
 import config from "config";
+import "settings.scss";
 
 import CustomInput from "components/CustomInput.jsx";
 import CustomMessages from "components/CustomMessages.jsx";
@@ -197,15 +198,15 @@ export default class Settings extends Component {
 	linkButtons = () => {
 		const newPassword = <CustomInput key="newPassword" type="password" name="newPassword" label={ this.props.t("general:newPasswordInput") } placeholder={ this.props.t("general:newPasswordInput") } onRef={ ref => (this.input.newPassword = ref) } />;
 		const changePasswordButton = <button key="changePassword" onClick={ this.changePassword }>{ this.props.t("settings:changePassword") }</button>;
-		const linkPassword = <NavLink key="linkPassword" to="/settings/setpassword" >{ this.props.t("settings:addAPasswordToAccount") }</NavLink>;
-		const linkGitHub = <a key="linkGitHub" href={ config.serverDomain + "/auth/github/link" }>{ this.props.t("settings:linkGitHubToAccount") }</a>;
+		const linkPassword = <NavLink key="linkPassword" className="button" to="/settings/setpassword" >{ this.props.t("settings:addAPasswordToAccount") }</NavLink>;
+		const linkGitHub = <a key="linkGitHub" className="gray-button" href={ config.serverDomain + "/auth/github/link" }>{ this.props.t("settings:linkGitHubToAccount") }</a>;
 		const unlinkGitHub = (
-			<button key="unlinkGitHub" onClick={ this.unlinkGitHub }>
+			<button key="unlinkGitHub" className="red-button" onClick={ this.unlinkGitHub }>
 				{ this.props.t("settings:removeLoggingInWithGitHub") }
 			</button>
 		);
 		const unlinkPassword = (
-			<button key="unlinkPassword" onClick={ this.unlinkPassword }>
+			<button key="unlinkPassword" className="red-button" onClick={ this.unlinkPassword }>
 				{ this.props.t("settings:removeLoggingInWithPassword") }
 			</button>
 		);
@@ -228,21 +229,23 @@ export default class Settings extends Component {
 		const { t } = this.props;
 
 		return (
-			<div>
+			<main>
 				<h1>{ t("settings:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
-				<div>
-					<h2>{ this.props.t("settings:general") }</h2>
-					<CustomInput type="email" name="email" label={ this.props.t("general:emailInput") } placeholder={ this.props.t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />
-					<CustomInput type="username" name="username" label={ this.props.t("general:usernameInput") } placeholder={ this.props.t("general:usernameInput") } onRef={ ref => (this.input.username = ref) } />
-					<button onClick={ this.saveChanges }>{ this.props.t("settings:saveChanges") }</button>
+				<div className="sections">
+					<div className="section general-section">
+						<h2>{ this.props.t("settings:general") }</h2>
+						<CustomInput type="email" name="email" label={ this.props.t("general:emailInput") } placeholder={ this.props.t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />
+						<CustomInput type="username" name="username" label={ this.props.t("general:usernameInput") } placeholder={ this.props.t("general:usernameInput") } onRef={ ref => (this.input.username = ref) } />
+						<button onClick={ this.saveChanges }>{ this.props.t("settings:saveChanges") }</button>
+					</div>
+					<div className="section security-section">
+						<h2>{ this.props.t("settings:security") }</h2>
+						{ this.linkButtons() }
+						<button className="red-button" onClick={ this.logOutEverywhere }>{ this.props.t("settings:logOutEverywhere") }</button>
+					</div>
 				</div>
-				<div>
-					<h2>{ this.props.t("settings:security") }</h2>
-					{ this.linkButtons() }
-					<button onClick={ this.logOutEverywhere }>{ this.props.t("settings:logOutEverywhere") }</button>
-				</div>
-			</div>
+			</main>
 		);
 	}
 }

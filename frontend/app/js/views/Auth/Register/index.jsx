@@ -79,7 +79,7 @@ export default class Register extends Component {
 				<div id="recaptcha" />
 				<p>{ t("register:byLoggingIn", { termsOfService: <a href="/terms">{ t("general:termsOfService") }</a>, privacyPolicy: <a href="/privacy">{ t("general:privacyPolicy") }</a> }) }</p>
 				<button onClick={ this.register }>{ t("register:register") }</button>
-				<a className="button github-button" href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>{ t("register:registerWithGitHub") }</a>
+				<a className="button gray-button" href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>{ t("register:registerWithGitHub") }</a>
 			</main>
 		);
 	}

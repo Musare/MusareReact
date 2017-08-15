@@ -23,6 +23,14 @@ button, .button {
 	}
 }
 
+.gray-button {
+	background-color: $musare_color_secondary_gray;
+}
+
+.red-button {
+	background-color: $musare_color_primary_red;
+}
+
 @include responsive(smallest) {
 	button, .button {
 		font-size: 21px;
@@ -45,7 +53,7 @@ button, .button {
 	button, .button {
 		font-size: 57px;
 		line-height: 76px;
-		padding: 11px 0;
+		padding: 33px 0;
 		margin-bottom: 39px;
 	}
 }
