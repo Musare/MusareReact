@@ -119,7 +119,7 @@ export default class CustomMessages extends Component {
 			else if (type === "success") text = t("customMessages:success");
 
 			return (
-				<div key={ type } className={ type }>
+				<div key={ type } className={ `custom-messages custom-messages-${type}` }>
 					<p>{ text }</p>
 					<ul>
 						{ messages }

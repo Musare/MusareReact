@@ -144,7 +144,7 @@ export default class SetPassword extends Component {
 
 		return (
 			<main>
-				<h1><h1>{ t("setPassword:title") }</h1></h1>
+				<h1>{ t("setPassword:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				{ this.getActions() }
 			</main>
