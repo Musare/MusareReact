@@ -5,6 +5,8 @@ import CustomMessages from "components/CustomMessages.jsx";
 import PropTypes from "prop-types";
 import { translate } from "react-i18next";
 
+import "register.scss";
+
 import io from "io";
 import config from "config";
 
@@ -68,7 +70,7 @@ export default class Register extends Component {
 		const { t } = this.props;
 
 		return (
-			<div>
+			<main>
 				<h1>{ t("register:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<CustomInput type="email" name="email" label={ t("general:emailInput") } placeholder={ t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />
@@ -77,8 +79,8 @@ export default class Register extends Component {
 				<div id="recaptcha" />
 				<p>{ t("register:byLoggingIn", { termsOfService: <a href="/terms">{ t("general:termsOfService") }</a>, privacyPolicy: <a href="/privacy">{ t("general:privacyPolicy") }</a> }) }</p>
 				<button onClick={ this.register }>{ t("register:register") }</button>
-				<a href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>{ t("register:registerWithGitHub") }</a>
-			</div>
+				<a className="button github-button" href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>{ t("register:registerWithGitHub") }</a>
+			</main>
 		);
 	}
 }

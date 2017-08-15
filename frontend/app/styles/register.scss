@@ -1,0 +1,116 @@
+@import "colors";
+@import "breakpoints";
+
+main {
+	p {
+		color: $musare_color_primary_gray;
+	}
+
+	#recaptcha {
+		> div {
+			margin-left: auto;
+			margin-right: auto;
+
+			> div {
+				width: 100%;
+				height: 100%;
+			}
+		}
+
+		iframe {
+			transform-origin: 152px 0;
+		}
+	}
+
+	.github-button {
+		background-color: $musare_color_secondary_gray;
+	}
+}
+
+@include responsive(smallest) {
+	p {
+		font-size: 12px;
+		line-height: 16px;
+		margin-bottom: 12px;
+	}
+
+	#recaptcha {
+		margin-bottom: 12px;
+
+		$scale: 320 / 304;
+
+		> div {
+			height: 78px * $scale !important;
+		}
+
+		iframe {
+			transform: scale($scale);
+		}
+	}
+}
+
+@include responsive(small) {
+	p {
+		font-size: 21px;
+		line-height: 28px;
+		margin-bottom: 26px;
+	}
+
+	#recaptcha {
+		margin-bottom: 26px;
+
+		$scale: 600 / 304;
+
+		> div {
+			height: 78px * $scale !important;
+		}
+
+		iframe {
+			transform: scale($scale);
+		}
+	}
+}
+
+@include responsive(medium) {
+	p {
+		font-size: 31px;
+		line-height: 41px;
+		margin-bottom: 39px;
+	}
+
+	#recaptcha {
+		margin-bottom: 39px;
+
+		$scale: 900 / 304;
+
+		> div {
+			height: 78px * $scale !important;
+		}
+
+		iframe {
+			transform: scale($scale);
+		}
+	}
+}
+
+@include responsive(large) {
+	p {
+		font-size: 17px;
+		line-height: 22px;
+		margin-bottom: 32px;
+	}
+
+	#recaptcha {
+		margin-bottom: 32px;
+
+		$scale: 500 / 304;
+
+		> div {
+			height: 78px * $scale !important;
+		}
+
+		iframe {
+			transform: scale($scale);
+		}
+	}
+}
