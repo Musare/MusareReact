@@ -16,7 +16,7 @@ module.exports = {
 			.use(Backend)
 			.init({
 				lng: "en",
-				debug: true,
+				debug: false,
 				fallbackLng: "en",
 				referenceLng: "en",
 				backend: {
