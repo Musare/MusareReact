@@ -21,6 +21,7 @@ const notifications = require('./logic/notifications');
 const punishments = require('./logic/punishments');
 const logger = require('./logic/logger');
 const tasks = require('./logic/tasks');
+const i18n = require('./logic/i18n');
 const config = require('config');
 
 let currentComponent;
@@ -103,6 +104,12 @@ function errorCb(message, err, component) {
 }
 
 async.waterfall([
+
+	// setup our translation
+	(next) => {
+		currentComponent = 'Translation';
+		i18n.init(next);
+	},
 
 	// setup our Redis cache
 	(next) => {
