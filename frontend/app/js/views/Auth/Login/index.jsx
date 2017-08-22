@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
 
 import CustomInput from "components/CustomInput.jsx";
 import CustomMessages from "components/CustomMessages.jsx";
 import PropTypes from "prop-types";
-import { translate } from "react-i18next";
+import { translate, Trans } from "react-i18next";
 
 import "login.scss";
 
@@ -62,7 +63,10 @@ export default class Login extends Component {
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<CustomInput type="email" name="email" label={ t("general:emailInput") } placeholder={ t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />
 				<CustomInput type="password" name="password" label={ t("general:passwordInput") } placeholder={ t("general:passwordInput") } onRef={ ref => (this.input.password = ref) } />
-				<p>{ t("login:byLoggingIn", { termsOfService: <a href="/terms">{ t("general:termsOfService") }</a>, privacyPolicy: <a href="/privacy">{ t("general:privacyPolicy") }</a> }) }</p>
+				<Trans i18nKey="login:byLoggingIn" parent="p">
+					<NavLink to="/terms"> </NavLink>
+					<NavLink to='/privacy'> </NavLink>
+				</Trans>
 				<button onClick={ this.login }>{ t("login:login") }</button>
 				<a href={ `${ config.serverDomain }/auth/github/authorize` } className="button gray-button" onClick={ this.githubRedirect }>
 					{ t("login:loginWithGitHub") }

@@ -19,7 +19,6 @@ const i18n = i18next
 		},
 		ns: ["general"],
 		defaultNS: "general",
-		keySeparator: false, // we use content as keys
 		interpolation: {
 			escapeValue: false, // not needed for react!!
 			formatSeparator: ",",

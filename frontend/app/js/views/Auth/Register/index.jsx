@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import { NavLink } from "react-router-dom";
 
 import CustomInput from "components/CustomInput.jsx";
 import CustomMessages from "components/CustomMessages.jsx";
 import PropTypes from "prop-types";
-import { translate } from "react-i18next";
+import { translate, Trans } from "react-i18next";
 
 import "register.scss";
 
@@ -77,7 +78,10 @@ export default class Register extends Component {
 				<CustomInput type="username" name="username" label={ t("general:usernameInput") } placeholder={ t("general:usernameInput") } onRef={ ref => (this.input.username = ref) } />
 				<CustomInput type="password" name="password" label={ t("general:passwordInput") } placeholder={ t("general:passwordInput") } onRef={ ref => (this.input.password = ref) } />
 				<div id="recaptcha" />
-				<p>{ t("register:byLoggingIn", { termsOfService: <a href="/terms">{ t("general:termsOfService") }</a>, privacyPolicy: <a href="/privacy">{ t("general:privacyPolicy") }</a> }) }</p>
+				<Trans i18nKey="register:byLoggingIn" parent="p">
+					<NavLink to="/terms"> </NavLink>
+					<NavLink to='/privacy'> </NavLink>
+				</Trans>
 				<button onClick={ this.register }>{ t("register:register") }</button>
 				<a className="button gray-button" href={ `${ config.serverDomain }/auth/github/authorize` } onClick={ this.githubRedirect }>{ t("register:registerWithGitHub") }</a>
 			</main>
