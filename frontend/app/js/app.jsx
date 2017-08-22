@@ -130,6 +130,22 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						title={ t("pages:resetPassword") }
 					/>
 					<AuthRoute
+						path="/terms"
+						component={ asyncComponent(() =>
+							System.import("views/Terms").then(module => module.default)
+						) }
+						auth="ignored"
+						title={ t("pages:terms") }
+					/>
+					<AuthRoute
+						path="/privacy"
+						component={ asyncComponent(() =>
+							System.import("views/Privacy").then(module => module.default)
+						) }
+						auth="ignored"
+						title={ t("pages:privacy") }
+					/>
+					<AuthRoute
 						exact
 						path="/"
 						component={ asyncComponent(() =>
