@@ -146,6 +146,14 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						title={ t("pages:privacy") }
 					/>
 					<AuthRoute
+						path="/team"
+						component={ asyncComponent(() =>
+							System.import("views/Team").then(module => module.default)
+						) }
+						auth="ignored"
+						title={ t("pages:team") }
+					/>
+					<AuthRoute
 						exact
 						path="/"
 						component={ asyncComponent(() =>
