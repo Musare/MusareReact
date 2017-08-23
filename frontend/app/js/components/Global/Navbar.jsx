@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { translate } from "react-i18next";
 
-import "navbar.scss";
-
 @connect(state => ({
 	loggedIn: state.user.get("loggedIn"),
 }))

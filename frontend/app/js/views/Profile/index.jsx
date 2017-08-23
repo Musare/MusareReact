@@ -6,8 +6,6 @@ import {translate} from "react-i18next";
 
 import CustomMessages from "components/CustomMessages.jsx";
 
-//import "profile.scss";
-
 import io from "io";
 
 @connect(state => ({

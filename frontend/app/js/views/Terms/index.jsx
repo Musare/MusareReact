@@ -5,8 +5,6 @@ import {connect} from "react-redux";
 import {NavLink} from "react-router-dom";
 import {translate} from "react-i18next";
 
-// import "termsPrivacy.scss";
-
 @translate(["terms"], {wait: true})
 export default class Terms extends Component {
 	static propTypes = {

@@ -6,7 +6,6 @@ import { NavLink } from "react-router-dom";
 import { translate } from "react-i18next";
 
 import config from "config";
-import "settings.scss";
 
 import CustomInput from "components/CustomInput.jsx";
 import CustomMessages from "components/CustomMessages.jsx";

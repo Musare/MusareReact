@@ -7,7 +7,7 @@
   "repository": "https://github.com/Musare/MusareNode",
   "scripts": {
     "dev": "webpack --watch",
-    "production": "rm -rf ./dist && SET NODE_ENV=\"production\" && webpack",
+    "production": "SET NODE_ENV=production&& webpack",
     "lint": "eslint ./app/js ./webpack.config.js -f table --ext .js --ext .jsx || true"
   },
   "devDependencies": {

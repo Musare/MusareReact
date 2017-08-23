@@ -6,8 +6,6 @@ import CustomMessages from "components/CustomMessages.jsx";
 import PropTypes from "prop-types";
 import { translate, Trans } from "react-i18next";
 
-import "login.scss";
-
 import io from "io";
 import config from "config";
 

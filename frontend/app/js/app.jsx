@@ -59,7 +59,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						exact
 						path="/login"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Auth/Login")
+							resolve: () => System.import("views/Auth/Login"),
+							name: "Login"
 						})}
 						auth="disallowed"
 						title={ t("pages:login") }
@@ -68,7 +69,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						exact
 						path="/logout"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Auth/Logout")
+							resolve: () => System.import("views/Auth/Logout"),
+							name: "Logout"
 						})}
 						auth="required"
 						title="Logout"
@@ -77,7 +79,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						exact
 						path="/register"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Auth/Register")
+							resolve: () => System.import("views/Auth/Register"),
+							name: "Register"
 						})}
 						auth="disallowed"
 						title={ t("pages:register") }
@@ -86,7 +89,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						exact
 						path="/settings"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Auth/Settings")
+							resolve: () => System.import("views/Auth/Settings"),
+							name: "Settings"
 						})}
 						auth="required"
 						title={ t("pages:settings") }
@@ -95,7 +99,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						exact
 						path="/settings/setpassword"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Auth/Settings/SetPassword")
+							resolve: () => System.import("views/Auth/Settings/SetPassword"),
+							name: "SetPassword"
 						})}
 						auth="required"
 						title={ t("pages:setPassword") }
@@ -104,7 +109,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						exact
 						path="/reset_password"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Auth/ForgotPassword")
+							resolve: () => System.import("views/Auth/ForgotPassword"),
+							name: "ForgotPassword"
 						})}
 						auth="disallowed"
 						title={ t("pages:resetPassword") }
@@ -112,7 +118,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					<AuthRoute
 						path="/terms"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Terms")
+							resolve: () => System.import("views/Terms"),
+							name: "Terms"
 						})}
 						auth="ignored"
 						title={ t("pages:terms") }
@@ -120,7 +127,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					<AuthRoute
 						path="/privacy"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Privacy")
+							resolve: () => System.import("views/Privacy"),
+							name: "Privacy"
 						})}
 						auth="ignored"
 						title={ t("pages:privacy") }
@@ -128,7 +136,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					<AuthRoute
 						path="/team"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Team")
+							resolve: () => System.import("views/Team"),
+							name: "Team"
 						})}
 						auth="ignored"
 						title={ t("pages:team") }
@@ -136,7 +145,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					<AuthRoute
 						path="/u/:username"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Profile")
+							resolve: () => System.import("views/Profile"),
+							name: "Profile"
 						})}
 						auth="ignored"
 						title={ t("pages:profile") }
@@ -145,7 +155,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						exact
 						path="/"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Home")
+							resolve: () => System.import("views/Home"),
+							name: "Home"
 						})}
 						auth="ignored"
 						title={ t("pages:homepage") }
@@ -153,7 +164,8 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					<AuthRoute
 						path="*"
 						component={ asyncComponent({
-							resolve: () => System.import("views/Errors/Error404")
+							resolve: () => System.import("views/Errors/Error404"),
+							name: "Error404"
 						})}
 						auth="ignored"
 						title={ t("pages:error404") }

@@ -12,7 +12,7 @@ import rootReducer from "reducers";
 import i18n from "./i18n";
 import App from "./app";
 
-import "../styles/main.scss";
+import "main.scss";
 
 // const isProduction = process.env.NODE_ENV === "production";
 let store = null;

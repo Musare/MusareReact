@@ -1,6 +1,13 @@
 // @import "musare-theme";
 @import "colors";
 @import "breakpoints";
+@import "login";
+@import "navbar";
+@import "register";
+@import "setPassword";
+@import "settings";
+@import "specific/button";
+@import "specific/form";
 @import url("https://fonts.googleapis.com/css?family=Roboto:100,400,500,700");
 
 html, body {

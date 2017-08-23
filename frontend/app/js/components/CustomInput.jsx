@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 const i18next = require("i18next");
-import "specific/form.scss";
 
 const t = i18next.t;
 

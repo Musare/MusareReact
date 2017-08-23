@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 
-import "setPassword.scss";
-
 import CustomInput from "components/CustomInput.jsx";
 import CustomErrors from "components/CustomMessages.jsx";
 
