@@ -396,7 +396,7 @@ module.exports = {
 						createdAt: account.createdAt,
 						statistics: account.statistics,
 						liked: account.liked,
-						disliked: account.disliked
+						disliked: account.disliked // TODO Fix this security issue and optimise this
 					}
 				});
 			}

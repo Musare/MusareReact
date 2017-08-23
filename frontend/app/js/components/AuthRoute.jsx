@@ -6,6 +6,22 @@ import { translate } from "react-i18next";
 
 import io from "io";
 
+const renderMergedProps = (component, ...rest) => {
+	const finalProps = Object.assign({}, ...rest);
+	return (
+		React.createElement(component, finalProps)
+	);
+};
+
+const PropsRoute = ({ component, ...rest }) => {
+	return (
+		<Route {...rest} render={routeProps => {
+			return renderMergedProps(component, routeProps, rest);
+		}}/>
+	);
+};
+// Above two functions are from https://github.com/ReactTraining/react-router/issues/4105#issuecomment-289195202
+
 @connect(state => ({
 	loggedIn: state.user.get("loggedIn"),
 	role: state.user.get("role"),
@@ -79,7 +95,7 @@ export default class AuthRoute extends Component {
 		const { stationName, waitingFor, receivedStationData, stationData } = this.state;
 
 		if (this.state.continue) {
-			return <Route props={ this.props } component={ this.props.component } />;
+			return <PropsRoute props={ this.props } component={ this.props.component }/>
 		} else if (waitingFor === "station" && receivedStationData) {
 			if (stationData) {
 				const props = JSON.parse(JSON.stringify(this.props));

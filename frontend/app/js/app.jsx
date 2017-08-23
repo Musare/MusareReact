@@ -11,27 +11,7 @@ import config from "config";
 import AuthRoute from "components/AuthRoute";
 import io from "./io";
 
-const asyncComponent = getComponent => {
-	return class AsyncComponent extends React.Component {
-		static Component = null;
-		state = { Component: AsyncComponent.Component };
-
-		componentWillMount() {
-			if (!this.state.Component) {
-				getComponent().then(Component => { // eslint-disable-line no-shadow
-					AsyncComponent.Component = Component;
-					this.setState({ Component });
-				});
-			}
-		}
-
-		render() {
-			const { Component } = this.state; // eslint-disable-line no-shadow
-			if (Component) return <Component { ...this.props } />;
-			return null;
-		}
-	};
-};
+import { asyncComponent } from 'react-async-component';
 
 @connect()
 @translate(["pages"], { wait: false })
@@ -78,95 +58,103 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					<AuthRoute
 						exact
 						path="/login"
-						component={ asyncComponent(() =>
-							System.import("views/Auth/Login").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Auth/Login")
+						})}
 						auth="disallowed"
 						title={ t("pages:login") }
 					/>
 					<AuthRoute
 						exact
 						path="/logout"
-						component={ asyncComponent(() =>
-							System.import("views/Auth/Logout").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Auth/Logout")
+						})}
 						auth="required"
 						title="Logout"
 					/>
 					<AuthRoute
 						exact
 						path="/register"
-						component={ asyncComponent(() =>
-							System.import("views/Auth/Register").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Auth/Register")
+						})}
 						auth="disallowed"
 						title={ t("pages:register") }
 					/>
 					<AuthRoute
 						exact
 						path="/settings"
-						component={ asyncComponent(() =>
-							System.import("views/Auth/Settings").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Auth/Settings")
+						})}
 						auth="required"
 						title={ t("pages:settings") }
 					/>
 					<AuthRoute
 						exact
 						path="/settings/setpassword"
-						component={ asyncComponent(() =>
-							System.import("views/Auth/Settings/SetPassword").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Auth/Settings/SetPassword")
+						})}
 						auth="required"
 						title={ t("pages:setPassword") }
 					/>
 					<AuthRoute
 						exact
 						path="/reset_password"
-						component={ asyncComponent(() =>
-							System.import("views/Auth/ForgotPassword").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Auth/ForgotPassword")
+						})}
 						auth="disallowed"
 						title={ t("pages:resetPassword") }
 					/>
 					<AuthRoute
 						path="/terms"
-						component={ asyncComponent(() =>
-							System.import("views/Terms").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Terms")
+						})}
 						auth="ignored"
 						title={ t("pages:terms") }
 					/>
 					<AuthRoute
 						path="/privacy"
-						component={ asyncComponent(() =>
-							System.import("views/Privacy").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Privacy")
+						})}
 						auth="ignored"
 						title={ t("pages:privacy") }
 					/>
 					<AuthRoute
 						path="/team"
-						component={ asyncComponent(() =>
-							System.import("views/Team").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Team")
+						})}
 						auth="ignored"
 						title={ t("pages:team") }
 					/>
 					<AuthRoute
+						path="/u/:username"
+						component={ asyncComponent({
+							resolve: () => System.import("views/Profile")
+						})}
+						auth="ignored"
+						title={ t("pages:profile") }
+					/>
+					<AuthRoute
 						exact
 						path="/"
-						component={ asyncComponent(() =>
-							System.import("views/Home").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Home")
+						})}
 						auth="ignored"
 						title={ t("pages:homepage") }
 					/>
 					<AuthRoute
 						path="*"
-						component={ asyncComponent(() =>
-							System.import("views/Errors/Error404").then(module => module.default)
-						) }
+						component={ asyncComponent({
+							resolve: () => System.import("views/Errors/Error404")
+						})}
 						auth="ignored"
 						title={ t("pages:error404") }
 					/>
