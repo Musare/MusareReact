@@ -210,7 +210,8 @@ function initialize() {
 
 				app.get("/locales/*", (req, res) => {
 					let path = req.path;
-					console.log(rootDirLocales, path, rootDirLocales + path);
+					res.set('Cache-Control', 'max-age=8640000000');
+
 					fs.access(rootDirLocales + path, function (err) {
 						console.log("Error: ", !!err);
 						if (!err) {
@@ -223,7 +224,8 @@ function initialize() {
 
 				app.get("/assets/*", (req, res) => {
 					const path = req.path;
-					console.log(rootDirAssets, path, rootDirAssets + path);
+					res.set('Cache-Control', 'max-age=8640000000');
+
 					fs.access(rootDirAssets + path, function (err) {
 						console.log("Error: ", !!err);
 						if (!err) {
@@ -236,8 +238,10 @@ function initialize() {
 
 				app.get("/*", (req, res) => {
 					const path = req.path;
+
 					fs.access(rootDir + path, function (err) {
 						if (!err) {
+							res.set('Cache-Control', 'max-age=8640000000');
 							res.sendFile(rootDir + path);
 						} else {
 							res.sendFile(rootDir + "index.html");
