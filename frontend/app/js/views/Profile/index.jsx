@@ -15,7 +15,7 @@ import io from "io";
 	},
 }))
 
-@translate(["settings"], {wait: true})
+@translate(["profile"], {wait: true})
 export default class Profile extends Component {
 	static propTypes = {
 		user: PropTypes.object,
