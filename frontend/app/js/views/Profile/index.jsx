@@ -56,7 +56,8 @@ export default class Profile extends Component {
 					user.dislikes = res.data.disliked.length;
 					user.songsRequested = res.data.statistics.songsRequested;
 					user.rolePretty = prettyRole[res.data.role];
-					user.role = prettyRole[res.data.role];
+					user.role = res.data.role;
+					user.userId = res.data._id;
 					document.title = user.username + " - Musare"; // TODO Improve title system
 					this.setState({ user, loaded: true, notFound: false });
 				} else {
@@ -68,7 +69,7 @@ export default class Profile extends Component {
 
 	promoteDemoteButton = () => {
 		if (this.state.loaded === false) return null;
-		if (this.props.user.role === "admin") return null;
+		if (this.props.user.role !== "admin") return null;
 
 		const demoteButton = <button onClick={ this.demoteToDefault }>{ this.props.t("profile:demoteToDefault") }</button>;
 		const promoteButton = <button onClick={ this.promoteToAdmin }>{ this.props.t("profile:promoteToAdmin") }</button>;
@@ -79,9 +80,9 @@ export default class Profile extends Component {
 	promoteDemote = (role) => {
 		this.messages.clearErrorSuccess();
 		io.getSocket(socket => {
-			socket.emit("users.updateRole", this.props.user._id, role, res => {
+			socket.emit("users.updateRole", this.state.user.userId, role, res => {
 				if (res.status === "success") {
-					this.messages.clearAddSuccess(this.props.t("profile:failedToChangeRank"));
+					this.messages.clearAddSuccess(this.props.t("profile:failedToChangeRank"));// TODO Fix
 				} else {
 					this.messages.addError(res.message);
 				}
