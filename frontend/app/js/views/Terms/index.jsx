@@ -22,9 +22,9 @@ export default class Terms extends Component {
 		return (
 			<main id="terms">
 				<h1>{t("terms:title")}</h1>
-				<h3>Last Updated: January 25, 2016</h3>
+				<h2>Last Updated: January 25, 2016</h2>
 
-				<h4>1. Introduction</h4>
+				<h3>1. Introduction</h3>
 				<p>Musare.com (“musare” or the “Site”) is a social viewing platform that allows you and your friends to
 					watch videos and listen to music together and to provide social commentary based on their
 					experiences (collectively the “Content”). Before viewing, using, or interacting with our Site you
@@ -41,7 +41,7 @@ export default class Terms extends Component {
 					Terms”). To the extent there is a conflict between these Terms and any Additional Terms, the
 					Additional Terms will control unless the Additional Terms expressly state otherwise.</p>
 
-				<h4>2. Description of Service</h4>
+				<h3>2. Description of Service</h3>
 				<p>Musare is an online platform that melds social media and entertainment. In other words, Musare is
 					designed to allow you and your friends to watch videos or listen to music together. As part of our
 					platform you will create a unique profile that will allow others to find you and for you to express
@@ -51,7 +51,7 @@ export default class Terms extends Component {
 					the Site only with involvement of a parent or guardian who agrees to these Terms and to be
 					responsible for your use.</p>
 
-				<h4>3. Accounts and Profiles</h4>
+				<h3>3. Accounts and Profiles</h3>
 				<p>In order for you to access Musare we may require that you create a unique account to associate with a
 					profile. You may be required to provide us with information, which includes, but is not limited to,
 					your name, address, email address, a unique login name and password. The Site’s practices governing
@@ -105,7 +105,7 @@ export default class Terms extends Component {
 					deleting or disabling access to Profile Pages, or any portion thereof, at any time without
 					notice.</p>
 
-				<h4>4. Site Content, Ownership, Limited License and Rights of Others</h4>
+				<h3>4. Site Content, Ownership, Limited License and Rights of Others</h3>
 				<p><b>A. Content.</b> The Site contains a variety of: (i) materials and other items relating to Musare
 					and its products and services, and similar items from our licensors and other third parties,
 					including all layout, information, articles, posts, text, data, files, images, scripts, designs,
@@ -143,7 +143,7 @@ export default class Terms extends Component {
 					of others. If you believe that your work has been infringed by means of an improper posting or
 					distribution of it via the Site, then please see Section 8 below.</p>
 
-				<h4>5. Content You Submit</h4>
+				<h3>5. Content You Submit</h3>
 				<p><b>A. General.</b> Musare may now or in the future offer users of the Site the opportunity to create,
 					build, post, upload, display, publish, distribute, transmit, broadcast, or otherwise make available
 					on or submit through the Site (collectively, “submit”) messages, avatars, text, illustrations,
@@ -237,7 +237,7 @@ export default class Terms extends Component {
 					Musare as your attorney-in-fact, with the power of substitution and delegation, which appointment is
 					coupled with an interest).</p>
 
-				<h4>6. Our Rules</h4>
+				<h3>6. Our Rules</h3>
 				<p>We may, but are not obligated to, provide our users with the ability to post and receive messages
 					from other Musare-listed users or allow you to participate in video or live chats with your friends
 					or other users. If we do, you will not use the messaging system or your username to spam, defame,
@@ -278,7 +278,7 @@ export default class Terms extends Component {
 					We may do anything from giving you a spoken warning, temporarily suspend your account, ban you, or
 					take you to Court.</p>
 
-				<h4>7. Sharing Videos and Music</h4>
+				<h3>7. Sharing Videos and Music</h3>
 				<p>Musare may permit you to share videos and music with your friends. We may also allow you to use video
 					or live chat to discuss the video or music as it is playing. Please note, however, that we do not
 					host any User-Generated Content ourselves. Instead, you must use our platform to share your video or
@@ -306,7 +306,7 @@ export default class Terms extends Component {
 					copyright notices should be sent to both us and the third party site, and you should visit their
 					terms for more information.</p>
 
-				<h4>8. DMCA Notices</h4>
+				<h3>8. DMCA Notices</h3>
 				<p>We will respond appropriately to notices of alleged copyright infringement that comply with the U.S.
 					Digital Millennium Copyright Act (“DMCA”), as set forth below. We have registered a Copyright Agent
 					with the United States Copyright Office, which limits our liability under the DMCA. If you believe
@@ -370,7 +370,7 @@ export default class Terms extends Component {
 					presented. There are penalties for submission of misleading information in connection with the
 					process described herein.</p>
 
-				<h4>9. Points and Virtual Currency</h4>
+				<h3>9. Points and Virtual Currency</h3>
 				<p>The Site may include virtual, in-game currency (“Virtual Currency”), such as credits, coins, ranks
 					(“Name Tags”), XP, cash, or points (e.g., Experience Points), that may be purchased with “real
 					world” money or obtained through spending time on the Site or otherwise interacting with a
@@ -426,10 +426,10 @@ export default class Terms extends Component {
 					LIMITED TO, THE DELETION OF THEREOF UPON THE TERMINATION, ABANDONMENT OR EXPIRATION OF YOUR
 					ACCOUNT.</p>
 
-				{ /* <h4>10. Terms of Sale</h4>
+				{ /* <h3>10. Terms of Sale</h3>
 				<p><b>SOON TO COME</b></p> */ }
 
-				<h4>11. Disclaimer and Limitation of Liability</h4>
+				<h3>11. Disclaimer and Limitation of Liability</h3>
 				<p>THE SITE AND OUR SERVICES ARE PROVIDED ON AN “AS IS” AND “AS AVAILABLE” BASIS. YOU EXPRESSLY AGREE
 					THAT USE OF THE SITE AND OUR SERVICES IS AT YOUR SOLE RISK. TO THE FULLEST EXTENT PERMISSIBLE
 					PURSUANT TO APPLICABLE LAW, WE DISCLAIM ALL WARRANTIES OF ANY KIND, WHETHER EXPRESS OR IMPLIED,
@@ -464,7 +464,7 @@ export default class Terms extends Component {
 					may reside on our network, whether or not such materials and data are produced through the use of
 					the Site.</p>
 
-				<h4>12. Indemnity</h4>
+				<h3>12. Indemnity</h3>
 				<p>You agree to indemnify, defend and hold harmless us, our parents, subsidiaries, affiliates, officers,
 					directors, employees, members, partners, agents, and suppliers, and their respective affiliates,
 					officers, directors, employees, members, shareholders, partners, and agents, from any claim, action,
@@ -475,14 +475,14 @@ export default class Terms extends Component {
 					the exclusive defense and control of any matter subject to indemnification by you. The assumption of
 					such defense or control by us, however, shall not excuse any of your indemnity obligations.</p>
 
-				<h4>13. Choice of Law</h4>
+				<h3>13. Choice of Law</h3>
 				<p>We wish to make things as simple as possible in applying this Agreement to our users, and we can’t do
 					that if a different jurisdiction’s law applies for each user who signs up based on where they live.
 					Therefore, you agree that this Agreement is subject solely to and shall be interpreted in accordance
 					with the laws applicable in the State of California, USA, without regard to its conflicts of law
 					provisions.</p>
 
-				<h4>14. Dispute Resolution</h4>
+				<h3>14. Dispute Resolution</h3>
 				<p>Certain portions of this Section 14 are deemed to be a “written agreement to arbitrate” pursuant to
 					the Federal Arbitration Act. You and Musare agree that we intend that this Section 14 satisfies the
 					“writing” requirement of the Federal Arbitration Act. This Section 14 can only be amended by mutual
@@ -585,7 +585,7 @@ export default class Terms extends Component {
 					court in Los Angeles County, California. Accordingly, you and Musare consent to the exclusive
 					personal jurisdiction and venue of such courts for such matters.</p>
 
-				<h4>15. Waiver of Injunctive or Other Equitable Relief</h4>
+				<h3>15. Waiver of Injunctive or Other Equitable Relief</h3>
 				<p>IF YOU CLAIM THAT YOU HAVE INCURRED ANY LOSS, DAMAGES, OR INJURIES IN CONNECTION WITH YOUR USE OF THE
 					SITE, THEN THE LOSSES, DAMAGES, AND INJURIES WILL NOT BE IRREPARABLE OR SUFFICIENT TO ENTITLE YOU TO
 					AN INJUNCTION OR TO OTHER EQUITABLE RELIEF OF ANY KIND. THIS MEANS THAT, IN CONNECTION WITH YOUR
@@ -595,24 +595,24 @@ export default class Terms extends Component {
 					LICENSED, USED OR CONTROLLED BY MUSARE (INCLUDING YOUR LICENSED USER-GENERATED CONTENT) OR A
 					LICENSOR OF MUSARE.</p>
 
-				<h4>16. Force Majeure</h4>
+				<h3>16. Force Majeure</h3>
 				<p>You agree that we are not responsible to you for anything that we may otherwise be responsible for,
 					if it is the result of events beyond our control, including, but not limited to, acts of God, war,
 					insurrection, riots, terrorism, crime, labor shortages (including lawful and unlawful strikes), any
 					third party site being down, communication disruption, failure or shortage of infrastructure, zombie
 					attacks, shortage of materials, or any other event beyond our control.</p>
 
-				<h4>17. Cancellation of Service</h4>
+				<h3>17. Cancellation of Service</h3>
 				<p>You agree that we may cancel our service or the Site at any time, for any reason, without warning or
 					compensation, even if we have been advised that it may result in a loss to you or any other
 					party.</p>
 
-				<h4>18. Severability</h4>
+				<h3>18. Severability</h3>
 				<p>In the event that a provision of this Agreement is found to be unlawful or otherwise unenforceable,
 					the Agreement will remain in force as though it had been entered into without that unlawful or
 					unenforceable provision being included in it.</p>
 
-				<h4>19. Update to Terms</h4>
+				<h3>19. Update to Terms</h3>
 				<p>These Terms (or if applicable Additional Terms), in the form posted at the time of your use of the
 					Site to which it applies, shall govern such use (including transactions entered during such use). AS
 					OUR SITE EVOLVES, THE TERMS AND CONDITIONS UNDER WHICH WE OFFER THE SITE MAY PROSPECTIVELY BE
@@ -634,7 +634,7 @@ export default class Terms extends Component {
 					you agree are reasonable manners of providing you notice. You can reject any new, revised or
 					Additional Terms by discontinuing use of the Site and related services.</p>
 
-				<h4>20. Investigations; Cooperation with Law Enforcement; Termination; Survival</h4>
+				<h3>20. Investigations; Cooperation with Law Enforcement; Termination; Survival</h3>
 				<p>Musare reserves the right, without any limitation, to: (i) investigate any suspected breaches of its
 					Site security or its information technology or other systems or networks, (ii) investigate any
 					suspected breaches of these Terms and any Additional Terms, (iii) investigate any information

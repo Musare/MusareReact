@@ -1,0 +1,46 @@
+@import "colors";
+@import "breakpoints";
+
+main#terms, main#privacy {
+	h2, h3, p {
+		color: $musare_color_primary_gray;
+	}
+
+	h2, h3 {
+		text-align: center;
+	}
+
+	h2 {
+		font-size: 16px;
+		line-height: 21px;
+		margin-bottom: 16px;
+	}
+
+	h3 {
+		font-size: 20px;
+		line-height: 27px;
+		margin-bottom: 16px;
+	}
+
+	p {
+		font-size: 12px;
+		line-height: 16px;
+		margin-bottom: 24px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	@include responsive(smallest) {
+		width: calc(100% - 48px);
+		margin-left: 24px;
+		margin-right: 24px; // TODO Maybe change this to 12 later
+	}
+
+	@include responsive(small) {
+		width: 552px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
