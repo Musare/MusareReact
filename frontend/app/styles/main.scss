@@ -8,6 +8,7 @@
 @import "settings";
 @import "termsPrivacy";
 @import "profile";
+@import "team";
 @import "specific/button";
 @import "specific/form";
 @import url("https://fonts.googleapis.com/css?family=Roboto:100,400,500,700");
@@ -20,11 +21,13 @@ html, body {
 	text-rendering: optimizeLegibility;
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-font-smoothing: antialiased;
+	background-color: #F5F5F5;
 }
 
 * {
 	padding: 0;
 	margin: 0;
+	border: 0;
 }
 
 h1, h2, h3, h4, h5, h6 {

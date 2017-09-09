@@ -1,0 +1,156 @@
+@import "colors";
+@import "breakpoints";
+
+main#team {
+	width: 272px;
+	margin-left: auto;
+	margin-right: auto;
+
+	.current-members {
+		margin-bottom: 24px;
+
+		.current-member {
+			width: 100%;
+			height: 86px;
+			position: relative;
+			margin-bottom: 24px;
+
+			.picture {
+				width: 64px;
+				height: 64px;
+				margin-top: 11px;
+				position: relative;
+				float: left;
+				z-index: 1;
+				border-radius: 100%;
+				box-shadow: 0 3px 6px $musare_shadow_color;
+				background-color: white;
+			}
+
+			.lines {
+				z-index: 1;
+				position: relative;
+				margin-left: 10px;
+				overflow: hidden;
+				max-width: calc(100% - 74px);
+				float: left;
+
+				.name, .line {
+					display: block;
+				}
+
+				.name {
+					margin-top: 5px;
+					text-align: center;
+					font-size: 17px;
+					line-height: 22px;
+					font-weight: 600;
+				}
+
+				.line {
+					font-size: 12px;
+					line-height: 16px;
+					b {
+						font-weight: 600;
+					}
+
+					span {
+						font-weight: 100; // TODO Figure out proper font-weight
+					}
+				}
+			}
+
+			.background {
+				height: 100%;
+				width: calc(100% - 32px);
+				background-color: $musare_color_white;
+				border: 1px solid hsla(0, 0, 29, .3); //TODO Add to colors
+				box-shadow: 0 3px 6px $musare_shadow_color;
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
+		}
+	}
+
+	.old-members {
+		.old-member {
+			width: 100%;
+			height: 70px;
+			position: relative;
+			margin-bottom: 24px;
+
+			.picture {
+				width: 64px;
+				height: 64px;
+				margin-top: 11px;
+				position: relative;
+				float: left;
+				z-index: 1;
+				border-radius: 100%;
+				background-color: $musare_color_primary_blue;
+				border: 1px solid hsla(0, 0, 29, .5); //TODO Add to colors
+				box-shadow: 0 3px 6px $musare_shadow_color;
+
+				.initial {
+					font-size: 51px;
+					line-height: 59px;
+					color: #EFEFEF; //Add to colors or change color
+					text-align: center;
+					display: block;
+				}
+			}
+
+			.lines {
+				z-index: 1;
+				position: relative;
+				margin-left: 10px;
+				overflow: hidden;
+				max-width: calc(100% - 74px);
+				float: left;
+
+				.name, .line {
+					display: block;
+				}
+
+				.name {
+					margin-top: 5px;
+					text-align: center;
+					font-size: 17px;
+					line-height: 22px;
+					font-weight: 600;
+				}
+
+				.line {
+					font-size: 12px;
+					line-height: 16px;
+					b {
+						font-weight: 600;
+					}
+
+					span {
+						font-weight: 100; // TODO Figure out proper font-weight
+					}
+				}
+			}
+
+			.background {
+				height: 100%;
+				width: calc(100% - 32px);
+				background-color: $musare_color_white;
+				border: 1px solid hsla(0, 0, 29, .3); //TODO Add to colors
+				box-shadow: 0 3px 6px $musare_shadow_color;
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
+		}
+	}
+
+	h2 {
+		font-size: 20px;
+		line-height: 27px;
+		margin-bottom: 16px;
+		text-align: center;
+	}
+}

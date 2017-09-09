@@ -85,6 +85,7 @@ header {
 			flex-direction: column;
 			position: absolute;
 			top: 64px;
+			z-index: 100;
 
 			&.show {
 				visibility: visible;
