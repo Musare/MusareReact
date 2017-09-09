@@ -129,7 +129,7 @@ export default class ForgotPassword extends Component {
 		const { t } = this.props;
 
 		return (
-			<main>
+			<main id="forgotPassword">
 				<h1>{ t("forgotPassword:title") }</h1>
 				<div className="steps">
 					<span className={ `step-circle ${ this.state.step === 1 ? "step-circle-active" : "" }` }>1</span>

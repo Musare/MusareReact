@@ -1,12 +1,28 @@
 @import "colors";
 @import "breakpoints";
 
-main {
+main#register {
 	p {
 		color: $musare_color_primary_gray;
+
+		font-size: 12px;
+		line-height: 16px;
+		margin-bottom: 16px;
 	}
 
 	#recaptcha {
+		margin-bottom: 16px;
+		$scale: 296 / 304;
+
+		> div {
+			height: 76px * $scale !important;
+			width: unset !important;
+		}
+
+		iframe {
+			transform: scale($scale);
+		}
+
 		> div {
 			margin-left: auto;
 			margin-right: auto;
@@ -18,95 +34,7 @@ main {
 		}
 
 		iframe {
-			transform-origin: 152px 0;
-		}
-	}
-}
-
-@include responsive(smallest) {
-	p {
-		font-size: 12px;
-		line-height: 16px;
-		margin-bottom: 12px;
-	}
-
-	#recaptcha {
-		margin-bottom: 12px;
-
-		$scale: 320 / 304;
-
-		> div {
-			height: 78px * $scale !important;
-		}
-
-		iframe {
-			transform: scale($scale);
-		}
-	}
-}
-
-@include responsive(small) {
-	p {
-		font-size: 21px;
-		line-height: 28px;
-		margin-bottom: 26px;
-	}
-
-	#recaptcha {
-		margin-bottom: 26px;
-
-		$scale: 600 / 304;
-
-		> div {
-			height: 78px * $scale !important;
-		}
-
-		iframe {
-			transform: scale($scale);
-		}
-	}
-}
-
-@include responsive(medium) {
-	p {
-		font-size: 31px;
-		line-height: 41px;
-		margin-bottom: 39px;
-	}
-
-	#recaptcha {
-		margin-bottom: 39px;
-
-		$scale: 900 / 304;
-
-		> div {
-			height: 78px * $scale !important;
-		}
-
-		iframe {
-			transform: scale($scale);
-		}
-	}
-}
-
-@include responsive(large) {
-	p {
-		font-size: 17px;
-		line-height: 22px;
-		margin-bottom: 32px;
-	}
-
-	#recaptcha {
-		margin-bottom: 32px;
-
-		$scale: 500 / 304;
-
-		> div {
-			height: 78px * $scale !important;
-		}
-
-		iframe {
-			transform: scale($scale);
+			transform-origin: 0 0;
 		}
 	}
 }

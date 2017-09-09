@@ -69,7 +69,7 @@ export default class Register extends Component {
 		const { t } = this.props;
 
 		return (
-			<main>
+			<main id="register">
 				<h1>{ t("register:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<CustomInput type="email" name="email" label={ t("general:emailInput") } placeholder={ t("general:emailInput") } onRef={ ref => (this.input.email = ref) } />

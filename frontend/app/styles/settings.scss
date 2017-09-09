@@ -1,18 +1,14 @@
 @import "colors";
 @import "breakpoints";
 
-main {
+main#settings {
 	h2 {
 		color: $musare_color_primary_gray;
 		text-align: center;
-	}
-}
 
-@include responsive(smallest) {
-	h2 {
 		font-size: 20px;
 		line-height: 27px;
-		margin-bottom: 12px;
+		margin-bottom: 16px;
 	}
 
 	.general-section {
@@ -22,67 +18,6 @@ main {
 	}
 
 	.security-section {
-		margin-top: 16px;
-	}
-}
-
-@include responsive(small) {
-	h2 {
-		font-size: 35px;
-		line-height: 47px;
-		margin-bottom: 26px;
-	}
-
-	.general-section {
-		button:last-child {
-			margin-bottom: 0;
-		}
-	}
-
-	.security-section {
-		margin-top: 34px;
-	}
-}
-
-@include responsive(medium) {
-	h2 {
-		font-size: 52px;
-		line-height: 69px;
-		margin-bottom: 39px;
-	}
-
-	.general-section {
-		button:last-child {
-			margin-bottom: 0;
-		}
-	}
-
-	.security-section {
-		margin-top: 51px;
-	}
-}
-
-@include responsive(large) {
-	main {
-		width: 100%;
-	}
-
-	h2 {
-		font-size: 28px;
-		line-height: 37px;
-		margin-bottom: 32px;
-	}
-
-	.sections {
-		display: flex;
-		width: 100%;
-
-		.section {
-			width: 50%;
-			margin-right: 50px;
-			margin-left: 50px;
-			margin-top: 0;
-			// TODO Remove after ranges have been introduced
-		}
+		margin-top: 24px;
 	}
 }

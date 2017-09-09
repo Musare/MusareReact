@@ -1,8 +1,8 @@
 @mixin responsive($breakpoint) {
   @if $breakpoint == "smallest" {
-	@media (min-width: 320px) {
+	//@media (min-width: 320px) {
 	  @content;
-	}
+	//}
   }
 
   @else if $breakpoint == "small" {

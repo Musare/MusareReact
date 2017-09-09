@@ -16,9 +16,9 @@ export default class Home extends Component {
 		const { t } = this.props;
 
 		return (
-			<div>
+			<main id="homepage">
 				<h2>{ t("home:title") }</h2>
-			</div>
+			</main>
 		);
 	}
 }

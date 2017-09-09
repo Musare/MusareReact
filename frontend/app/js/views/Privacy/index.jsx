@@ -20,7 +20,7 @@ export default class Privacy extends Component {
 		const {t} = this.props;
 
 		return (
-			<main>
+			<main id="privacy">
 				<h1>{t("privacy:title")}</h1>
 				<h3>Last Updated: January 25, 2016</h3>
 

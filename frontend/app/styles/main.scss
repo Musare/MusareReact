@@ -30,17 +30,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-	text-shadow: 0 3px 6px $musare_shadow_color;
 	color: $musare_color_primary_gray;
 	text-align: center;
+
+	font-size: 32px;
+	line-height: 43px;
+	margin-bottom: 16px;
 }
 
 main {
 	margin-left: auto;
 	margin-right: auto;
 
+	margin-top: 16px;
+	width: 296px;
+
 	.custom-messages {
-		border-style: solid;
+		border: solid 1px;
+		padding: 8px;
+		margin-bottom: 16px;
 
 		&.custom-messages-error {
 			border-color: $musare_color_primary_red;
@@ -59,144 +67,29 @@ main {
 
 		p {
 			font-weight: 600;
+
+			font-size: 16px;
+			line-height: 21px;
+			margin-bottom: 8px;
 		}
 
 		ul {
 			list-style-position: inside;
-		}
-	}
-}
 
-@include responsive(smallest) {
-	h1 {
-		font-size: 32px;
-		line-height: 43px;
-		margin-bottom: 16px;
-	}
-
-	main {
-		margin-top: 16px;
-		width: calc(100% - 20px);
-
-		.custom-messages {
-			border-width: 1px;
-			padding: 8px;
-			margin-bottom: 12px;
-
-			p {
-				font-size: 16px;
-				line-height: 21px;
-				margin-bottom: 8px;
-			}
-
-			ul {
-				li {
-					font-size: 14px;
-					line-height: 19px;
-				}
+			li {
+				font-size: 14px;
+				line-height: 19px;
 			}
 		}
 	}
-}
 
-@include responsive(small) {
-	h1 {
-		font-size: 60px;
-		line-height: 80px;
-		margin-bottom: 52px; // TODO Check if this shouldn't be 32px
-	}
+	a {
+		color: $musare_color_primary_blue;
+		text-decoration: none;
+		transition: .1s ease;
 
-	main {
-		margin-top: 32px;
-		width: calc(100% - 40px);
-
-		.custom-messages {
-			border-width: 2px;
-			padding: 16px;
-			margin-bottom: 26px;
-
-			p {
-				font-size: 29px;
-				line-height: 38px;
-				margin-bottom: 16px;
-			}
-
-			ul {
-				li {
-					font-size: 23px;
-					line-height: 31px;
-				}
-			}
+		&:hover, &:active {
+			color: $musare_color_secondary_blue;
 		}
-	}
-}
-
-@include responsive(medium) {
-	h1 {
-		font-size: 90px;
-		line-height: 120px;
-		margin-bottom: 51px; // TODO Check if this shouldn't be 48px
-	}
-
-	main {
-		margin-top: 48px;
-		width: calc(100% - 60px);
-
-		.custom-messages {
-			border-width: 2px;
-			padding: 24px;
-			margin-bottom: 39px;
-
-			p {
-				font-size: 43px;
-				line-height: 57px;
-				margin-bottom: 24px;
-			}
-
-			ul {
-				li {
-					font-size: 34px;
-					line-height: 46px;
-				}
-			}
-		}
-	}
-}
-
-@include responsive(large) {
-	h1 {
-		font-size: 48px;
-		line-height: 64px;
-		margin-bottom: 32px;
-	}
-
-	main {
-		margin-top: 32px;
-		width: 500px;
-
-		.custom-messages {
-			border-width: 2px;
-			padding: 16px;
-			margin-bottom: 32px;
-
-			p {
-				font-size: 28px;
-				line-height: 37px;
-				margin-bottom: 16px;
-			}
-
-			ul {
-				li {
-					font-size: 24px;
-					line-height: 32px;
-				}
-			}
-		}
-	}
-}
-
-@include responsive(largest) {
-	main {
-		width: 800px;
 	}
 }

@@ -130,12 +130,14 @@ export default class CustomMessages extends Component {
 	};
 
 	render() {
-		return (
-			<div>
-				{ this.list("error") }
-				{ this.list("info") }
-				{ this.list("success") }
-			</div>
-		);
+		if (this.state.error.length > 0 || this.state.info.length > 0 || this.state.success.length) {
+			return (
+				<div>
+					{this.list("error")}
+					{this.list("info")}
+					{this.list("success")}
+				</div>
+			);
+		} else return null;
 	}
 }

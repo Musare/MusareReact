@@ -17,7 +17,7 @@ export default class Team extends Component {
 		const { t } = this.props;
 
 		return (
-			<main>
+			<main id="team">
 				<h1>{t("team:title")}</h1>
 
 				<div className="current-members">

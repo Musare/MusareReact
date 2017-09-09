@@ -107,7 +107,7 @@ export default class Profile extends Component {
 			(notFound)
 			? <Redirect to={"/404"}/>
 			: (
-				<main>
+				<main id="profile">
 					<h1>{user.username}</h1>
 					<CustomMessages onRef={ref => (this.messages = ref)}/>
 					<p>{ t("profile:aMemberSince") } {user.joinDatePretty}</p>

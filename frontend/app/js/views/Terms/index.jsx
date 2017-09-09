@@ -20,7 +20,7 @@ export default class Terms extends Component {
 		const {t} = this.props;
 
 		return (
-			<main>
+			<main id="terms">
 				<h1>{t("terms:title")}</h1>
 				<h3>Last Updated: January 25, 2016</h3>
 

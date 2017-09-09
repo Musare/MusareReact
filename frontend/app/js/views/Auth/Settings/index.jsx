@@ -228,7 +228,7 @@ export default class Settings extends Component {
 		const { t } = this.props;
 
 		return (
-			<main>
+			<main id="settings">
 				<h1>{ t("settings:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<div className="sections">
