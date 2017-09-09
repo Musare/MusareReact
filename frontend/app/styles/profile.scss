@@ -1,0 +1,48 @@
+@import "colors";
+@import "breakpoints";
+
+main#profile {
+	color: $musare_color_primary_gray;
+
+	img {
+		width: 128px;
+		height: 128px;
+		display: block;
+		margin: 0 auto 16px;
+		border-radius: 100%;
+	}
+
+	p {
+		text-align: center;
+
+		font-size: 17px;
+		line-height: 22px;
+		margin-bottom: 16px;
+	}
+
+	.profile-details-list {
+		margin-bottom: 24px;
+
+		> span {
+			display: block;
+			margin-bottom: 16px;
+
+			b, span {
+				display: block;
+				text-align: center;
+			}
+
+			b {
+				font-weight: 600;
+				font-size: 18px;
+				line-height: 24px;
+				margin-bottom: 8px;
+			}
+
+			span {
+				font-size: 16px;
+				line-height: 21px;
+			}
+		}
+	}
+}

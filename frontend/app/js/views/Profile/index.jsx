@@ -110,24 +110,26 @@ export default class Profile extends Component {
 				<main id="profile">
 					<h1>{user.username}</h1>
 					<CustomMessages onRef={ref => (this.messages = ref)}/>
-					<p>{ t("profile:aMemberSince") } {user.joinDatePretty}</p>
-					<span>
-						<b>{ t("profile:likedSongs") }:</b>
-						<span>{ user.likes }</span>
-					</span>
-					<span>
-						<b>{ t("profile:dislikedSongs") }</b>
-						<span>{ user.dislikes }</span>
-					</span>
-					<span>
-						<b>{ t("profile:songsRequested") }</b>
-						<span>{ user.songsRequested }</span>
-					</span>
-					<span>
-						<b>{ t("profile:rank") }</b>
-						<span>{ user.rolePretty }</span>
-					</span>
 					<img src={ user.image }/>
+					<p>{ t("profile:aMemberSince") } {user.joinDatePretty}</p>
+					<div className="profile-details-list">
+						<span>
+							<b>{ t("profile:likedSongs") }:</b>
+							<span>{ user.likes }</span>
+						</span>
+						<span>
+							<b>{ t("profile:dislikedSongs") }</b>
+							<span>{ user.dislikes }</span>
+						</span>
+						<span>
+							<b>{ t("profile:songsRequested") }</b>
+							<span>{ user.songsRequested }</span>
+						</span>
+						<span>
+							<b>{ t("profile:rank") }</b>
+							<span>{ user.rolePretty }</span>
+						</span>
+					</div>
 					{ this.promoteDemoteButton() }
 				</main>
 			)
