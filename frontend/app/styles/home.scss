@@ -5,10 +5,12 @@ main#homepage {
 	width: calc(100% - 24px);
 	margin-left: 12px;
 	margin-right: 12px;
+	overflow: hidden;
 
 	.stations {
 		display: flex;
 		justify-content: center;
+		margin: -12px -12px 12px -12px;
 
 		//TODO Look into issue where margin-left might mess some stuff up sometimes for station-cards.
 
@@ -17,8 +19,7 @@ main#homepage {
 			background-color: $musare_color_white;
 			border: 1px solid hsla(204, 3, 60, .5); //TODO Change this later and/or add to colors
 			position: relative;
-			margin-left: 24px;
-			margin-bottom: 24px;
+			margin: 12px;
 
 			.station-media {
 				width: 296px;
