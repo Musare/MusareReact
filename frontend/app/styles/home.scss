@@ -1,0 +1,91 @@
+@import "colors";
+@import "breakpoints";
+
+main#homepage {
+	width: calc(100% - 24px);
+	margin-left: 12px;
+	margin-right: 12px;
+
+	.stations {
+		display: flex;
+		justify-content: center;
+
+		//TODO Look into issue where margin-left might mess some stuff up sometimes for station-cards.
+
+		.station-card {
+			width: 296px;
+			background-color: $musare_color_white;
+			border: 1px solid hsla(204, 3, 60, .5); //TODO Change this later and/or add to colors
+			position: relative;
+			margin-left: 24px;
+			margin-bottom: 24px;
+
+			.station-media {
+				width: 296px;
+				height: 296px;
+				display: block;
+
+				> * {
+					width: 296px;
+					height: 296px;
+					display: block;
+				}
+			}
+
+			.station-body {
+				padding: 20px;
+				display: block;
+				color: $musare_color_primary_gray;
+
+				h3 {
+					font-size: 23px;
+					line-height: 31px;
+					margin-bottom: 6px;
+				}
+
+				p {
+					font-size: 15px;
+					line-height: 20px;
+					font-weight: 300;
+				}
+			}
+
+			.station-footer {
+				padding: 20px;
+				display: flex;
+				align-items: flex-end;
+				justify-content: space-between;
+
+				.user-count {
+					height: 27px;
+					display: flex;
+					align-items: flex-end;
+
+					i {
+						margin-right: 6px;
+					}
+
+					span {
+						font-size: 20px;
+						line-height: 27px;
+					}
+				}
+			}
+
+			> a {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+			}
+		}
+	}
+
+	h2 {
+		font-size: 20px;
+		line-height: 27px;
+		margin-bottom: 12px;
+		text-align: center;
+	}
+}

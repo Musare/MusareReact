@@ -9,6 +9,7 @@
 @import "termsPrivacy";
 @import "profile";
 @import "team";
+@import "home";
 @import "specific/button";
 @import "specific/form";
 @import url("https://fonts.googleapis.com/css?family=Roboto:100,400,500,700");
@@ -22,6 +23,7 @@ html, body {
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-font-smoothing: antialiased;
 	background-color: #F5F5F5;
+	color: $musare_color_primary_gray;
 }
 
 * {
@@ -35,7 +37,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-	color: $musare_color_primary_gray;
 	text-align: center;
 
 	font-size: 32px;

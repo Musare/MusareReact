@@ -14,6 +14,7 @@ import config from "config";
 @connect(state => ({
 	user: {
 		userId: state.user.get("userId"),
+		role: state.user.get("role"),
 	},
 	loggedIn: state.user.get("loggedIn"),
 }))
@@ -97,26 +98,49 @@ export default class Homepage extends Component {
 		});
 	}
 
+	isOwner = (ownerId) => {
+		if (this.props.loggedIn) {
+			if (this.props.user.role === "admin") return true;
+			if (this.props.user.userId === ownerId) return true;
+		}
+
+		return false;
+	};
+
 	listStations = (type) => {
 		let stations = [];
 
-		let userId = "";
-		if (this.props.user) {
-			userId = this.props.user.userId;
-		}
-
 		this.state.stations[type].forEach((station) => {
+			let icon = null;
+			if (station.type === "official") {
+				if (station.privacy !== "public") icon =
+					<i className="material-icons" title="This station is not visible to other users.">lock</i>;
+			} else {
+				// TODO Add isOwner function globally
+				if (this.isOwner(station.ownerId)) icon =
+					<i className="material-icons" title="This is your station.">home</i>;
+				if (station.privacy !== "public") icon =
+					<i className="material-icons" title="This station is not visible to other users.">lock</i>;
+			}
+
 			stations.push(
 				(
 					<div key={station._id} className="station-card">
 						<div className="station-media">
-							<img style={{width: "64px"}} src={station.currentSong.thumbnail}/>
+							<img src={station.currentSong.thumbnail}/>
 						</div>
-						<p>{station.displayName}</p>
-						<p>{station.description}</p>
-						<p>{station.userCount}</p>
-						<p>{station.privacy}</p>
-						{ (station.type === "community" || station.owner === userId) ? <p>I am the owner</p> : null }
+						<div className="station-body">
+							<h3 className="displayName">{station.displayName}</h3>
+							<p className="description">{station.description}</p>
+						</div>
+						<div className="station-footer">
+							<div className="user-count" title="How many users there are in the station.">
+								<i className="material-icons">people</i>
+								<span>{station.userCount}</span>
+							</div>
+							{ icon }
+						</div>
+						<a href={station.type + "/" + station.name}/>
 					</div>
 				)
 			);
@@ -165,20 +189,24 @@ export default class Homepage extends Component {
 				<h1>{ t("homepage:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<h2>Official Stations</h2>
-				{ this.listStations("official") }
+				<div className="official-stations stations">
+					{ this.listStations("official") }
+				</div>
 				<h2>Community Stations</h2>
-				{ (this.props.loggedIn) ? (
-					<div className="station-card">
-						<div className="station-media">
-							<img style={{width: "64px"}} src="/assets/images/notes-transparent.png"/>
+				<div className="community-stations stations">
+					{ (this.props.loggedIn) ? (
+						<div className="station-card">
+							<div className="station-media">
+								<img src="/assets/images/notes-transparent.png"/>
+							</div>
+							<CustomInput type="stationDisplayName" name="title" label="Title" placeholder="Title" onRef={ ref => (this.input.title = ref) } />
+							<CustomInput type="stationDescription" name="description" label="Description" placeholder="Description" onRef={ ref => (this.input.description = ref) } />
+							<span onClick={this.togglePrivate}>Private</span>
+							<button onClick={this.createCommunity}>Add</button>
 						</div>
-						<CustomInput type="stationDisplayName" name="title" label="Title" placeholder="Title" onRef={ ref => (this.input.title = ref) } />
-						<CustomInput type="stationDescription" name="description" label="Description" placeholder="Description" onRef={ ref => (this.input.description = ref) } />
-						<span onClick={this.togglePrivate}>Private</span>
-						<button onClick={this.createCommunity}>Add</button>
-					</div>
-				) : null }
-				{ this.listStations("community") }
+					) : null }
+					{ this.listStations("community") }
+				</div>
 			</main>
 		);
 	}
