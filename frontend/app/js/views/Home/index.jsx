@@ -15,6 +15,7 @@ import config from "config";
 	user: {
 		userId: state.user.get("userId"),
 	},
+	loggedIn: state.user.get("loggedIn"),
 }))
 
 @translate(["homepage"], { wait: true })
@@ -37,6 +38,9 @@ export default class Homepage extends Component {
 				official: [],
 				community: [],
 			},
+			createStation: {
+				private: false,
+			}
 		};
 
 		io.getSocket(socket => {
@@ -121,8 +125,40 @@ export default class Homepage extends Component {
 		return stations;
 	};
 
+	togglePrivate = () => {
+		this.setState({
+			createStation: {
+				private: !this.state.createStation.private,
+			},
+		});
+	};
+
+	createCommunity = () => {
+		this.messages.clearErrorSuccess();
+		if (CustomInput.hasInvalidInput(this.input)) {
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
+		} else {
+			io.getSocket(socket => {
+				socket.emit("stations.create", {
+					name: this.input.title.getValue().toLowerCase(),
+					type: "community",
+					displayName: this.input.title.getValue(),
+					description: this.input.description.getValue(),
+				}, res => {
+					if (res.status === "success") {
+						location.href = "/community/" + this.input.title.getValue().toLowerCase();//TODO Remove
+					} else {
+						this.messages.addError(res.message);
+					}
+				});
+			});
+		}
+	};
+
 	render() {
 		const { t } = this.props;
+
+		//TODO Make this not re-render a lot
 
 		return (
 			<main id="homepage">
@@ -131,6 +167,17 @@ export default class Homepage extends Component {
 				<h2>Official Stations</h2>
 				{ this.listStations("official") }
 				<h2>Community Stations</h2>
+				{ (this.props.loggedIn) ? (
+					<div className="station-card">
+						<div className="station-media">
+							<img style={{width: "64px"}} src="/assets/images/notes-transparent.png"/>
+						</div>
+						<CustomInput type="stationDisplayName" name="title" label="Title" placeholder="Title" onRef={ ref => (this.input.title = ref) } />
+						<CustomInput type="stationDescription" name="description" label="Description" placeholder="Description" onRef={ ref => (this.input.description = ref) } />
+						<span onClick={this.togglePrivate}>Private</span>
+						<button onClick={this.createCommunity}>Add</button>
+					</div>
+				) : null }
 				{ this.listStations("community") }
 			</main>
 		);

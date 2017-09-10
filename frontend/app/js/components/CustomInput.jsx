@@ -56,6 +56,25 @@ const dictionary = {
 			format: t("general:invalidCodeFormat"),
 		},
 	},
+	stationDisplayName: {
+		inputType: "text",
+		minLength: 2,
+		maxLength: 32,
+		regex: regex.azAZ09_,
+		errors: {
+			//format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
+			format: "Invalid display name format",
+		},
+	},
+	stationDescription: {
+		inputType: "text",
+		minLength: 2,
+		maxLength: 200,
+		errors: {
+			//format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
+			format: "Invalid description format",
+		},
+	},
 };
 
 export default class CustomInput extends Component {
@@ -186,7 +205,7 @@ export default class CustomInput extends Component {
 		const info = dictionary[this.props.type];
 		const value = this.state.value;
 		if (!isLength(value, info.minLength, info.maxLength)) errors.push((info.errors.length) ? info.errors.length : t("general:valueMustBeBetween", { min: info.minLength, max: info.maxLength }));
-		if (!info.regex.test(value)) errors.push(info.errors.format);
+		if (info.regex && !info.regex.test(value)) errors.push(info.errors.format);
 		this.setState({
 			errors,
 			valid: errors.length === 0,
