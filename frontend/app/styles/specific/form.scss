@@ -14,7 +14,7 @@ label {
 		margin-bottom: 5px;
 	}
 
-	input {
+	input, textarea {
 		display: block;
 		box-sizing: border-box;
 		width: 100%;
@@ -22,6 +22,7 @@ label {
 		font-size: 15px;
 		line-height: 20px;
 		padding: 10px;
+		resize: none;
 
 		&.has-validation-errors {
 			border-color: $musare_color_primary_red;
@@ -35,5 +36,19 @@ label {
 		margin-top: 4px;
 		font-size: 12px;
 		line-height: 16px;
+	}
+}
+
+@mixin forPlaceholder() {
+	&::placeholder, &::-webkit-input-placeholder {
+		@content;
+	}
+
+	&:-moz-placeholder, &::-moz-placeholder {
+		@content;
+	}
+
+	&:-ms-input-placeholder, &::-ms-input-placeholder {
+		@content;
 	}
 }

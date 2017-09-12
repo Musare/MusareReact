@@ -163,14 +163,15 @@ export default class Homepage extends Component {
 			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
 		} else {
 			io.getSocket(socket => {
+				//TODO Add private value
 				socket.emit("stations.create", {
-					name: this.input.title.getValue().toLowerCase(),
+					name: this.input.stationName.getValue(),
 					type: "community",
-					displayName: this.input.title.getValue(),
-					description: this.input.description.getValue(),
+					displayName: this.input.stationDisplayName.getValue(),
+					description: this.input.stationDescription.getValue(),
 				}, res => {
 					if (res.status === "success") {
-						location.href = "/community/" + this.input.title.getValue().toLowerCase();//TODO Remove
+						location.href = "/community/" + this.input.stationName.getValue();//TODO Remove
 					} else {
 						this.messages.addError(res.message);
 					}
@@ -196,13 +197,20 @@ export default class Homepage extends Component {
 				<div className="community-stations stations">
 					{ (this.props.loggedIn) ? (
 						<div className="station-card">
-							<div className="station-media">
-								<img src="/assets/images/notes-transparent.png"/>
+							<div className="station-media station-media-icon">
+								<i className="material-icons" title="Add community station" onClick={ this.createCommunity }>add</i>
 							</div>
-							<CustomInput type="stationDisplayName" name="title" label="Title" placeholder="Title" onRef={ ref => (this.input.title = ref) } />
-							<CustomInput type="stationDescription" name="description" label="Description" placeholder="Description" onRef={ ref => (this.input.description = ref) } />
-							<span onClick={this.togglePrivate}>Private</span>
-							<button onClick={this.createCommunity}>Add</button>
+							<div className="station-body">
+								<CustomInput key="stationDisplayName" type="stationDisplayName" name="stationDisplayName" showLabel={ false } placeholder="DisplayNameHere" onRef={ ref => (this.input.stationDisplayName = ref) } />
+								<CustomInput key="stationDescription" type="stationDescription" name="stationDescription" showLabel={ false } placeholder="Description here." onRef={ ref => (this.input.stationDescription = ref) } />
+							</div>
+							<div className="station-footer">
+								<div className="nameContainer">
+									<span>musare.com/c/</span>
+									<CustomInput key="stationName" type="stationName" name="stationName" showLabel={ false } placeholder="name_here" onRef={ ref => (this.input.stationName = ref) } />
+								</div>
+								{(this.state.createStation.private) ? <i className="material-icons" title="Make this station public" onClick={ this.togglePrivate }>lock</i> : <i className="material-icons active" title="Make this station private" onClick={ this.togglePrivate }>lock</i>}
+							</div>
 						</div>
 					) : null }
 					{ this.listStations("community") }

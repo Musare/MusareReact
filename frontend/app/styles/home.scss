@@ -1,5 +1,6 @@
 @import "colors";
 @import "breakpoints";
+@import "specific/form";
 
 main#homepage {
 	width: calc(100% - 24px);
@@ -11,8 +12,6 @@ main#homepage {
 		display: flex;
 		justify-content: center;
 		margin: -12px -12px 12px -12px;
-
-		//TODO Look into issue where margin-left might mess some stuff up sometimes for station-cards.
 
 		.station-card {
 			width: 296px;
@@ -33,6 +32,17 @@ main#homepage {
 				}
 			}
 
+			.station-media-icon {
+				background-color: $musare_color_primary_blue;
+				color: #EFEFEF; //TODO Change this color and figure out proper sizes
+
+				> * {
+					font-size: 296px;
+					cursor: pointer;
+					user-select: none;
+				}
+			}
+
 			.station-body {
 				padding: 20px;
 				display: block;
@@ -48,11 +58,50 @@ main#homepage {
 					font-size: 15px;
 					line-height: 20px;
 					font-weight: 300;
+					height: 60px;
+					display: block;
+				}
+
+				label:first-child {
+					margin-bottom: 6px;
+
+					input {
+						border: 0;
+						padding: 0;
+						font-size: 23px;
+						line-height: 31px;
+						height: 31px;
+
+						color: $musare_color_primary_gray;
+
+						@include forPlaceholder() {
+							opacity: .75;
+						}
+					}
+				}
+
+				label:last-child {
+					margin-bottom: 0;
+
+					textarea {
+						border: 0;
+						padding: 0;
+						font-size: 15px;
+						line-height: 20px;
+						height: 60px;
+						font-weight: 300;
+
+						color: $musare_color_primary_gray;
+
+						@include forPlaceholder() {
+							opacity: .75;
+						}
+					}
 				}
 			}
 
 			.station-footer {
-				padding: 20px;
+				padding: 0 20px 20px 20px;
 				display: flex;
 				align-items: flex-end;
 				justify-content: space-between;
@@ -69,6 +118,44 @@ main#homepage {
 					span {
 						font-size: 20px;
 						line-height: 27px;
+					}
+				}
+
+				.nameContainer {
+					display: flex;
+					padding-top: 3px;
+
+					span {
+						font-size: 16px;
+						line-height: 21px;
+						height: 21px;
+					}
+
+					label {
+						margin-bottom: 0;
+
+						input {
+							border: 0;
+							padding: 0;
+							font-size: 16px;
+							line-height: 21px;
+
+							color: $musare_color_primary_gray;
+
+							@include forPlaceholder() {
+								opacity: .75;
+							}
+						}
+					}
+				}
+
+				i {
+					margin-left: 10px;
+					cursor: pointer;
+					user-select: none;
+
+					&.active {
+						color: $musare_color_primary_blue;
 					}
 				}
 			}

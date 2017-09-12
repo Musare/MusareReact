@@ -56,6 +56,16 @@ const dictionary = {
 			format: t("general:invalidCodeFormat"),
 		},
 	},
+	stationName: {
+		inputType: "text",
+		minLength: 2,
+		maxLength: 16,
+		regex: regex.az09_,
+		errors: {
+			//format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
+			format: "Invalid name format",
+		},
+	},
 	stationDisplayName: {
 		inputType: "text",
 		minLength: 2,
@@ -70,6 +80,7 @@ const dictionary = {
 		inputType: "text",
 		minLength: 2,
 		maxLength: 200,
+		isTextarea: true,
 		errors: {
 			//format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
 			format: "Invalid description format",
@@ -82,6 +93,7 @@ export default class CustomInput extends Component {
 		type: PropTypes.string,
 		name: PropTypes.string,
 		label: PropTypes.string,
+		showLabel: PropTypes.boolean,
 		placeholder: PropTypes.string,
 		onRef: PropTypes.func,
 	};
@@ -90,6 +102,7 @@ export default class CustomInput extends Component {
 		type: "",
 		name: "",
 		label: "",
+		showLabel: true,
 		placeholder: "",
 		valid: false,
 		onRef: () => {},
@@ -127,6 +140,7 @@ export default class CustomInput extends Component {
 
 		this.state = {
 			inputType: dictionary[props.type].inputType,
+			isTextarea: (typeof dictionary[props.type].isTextarea === "boolean") ? dictionary[props.type].isTextarea : false,
 			value: "",
 			original: "",
 			errors: [],
@@ -213,10 +227,12 @@ export default class CustomInput extends Component {
 	};
 
 	render() {
+		const ElementType = (!this.state.isTextarea) ? "input" : "textarea";
+
 		return (
 			<label htmlFor={ this.props.name }>
-				<span>{ this.props.label }</span>
-				<input
+				{(this.props.showLabel) ? <span>{ this.props.label }</span> : null}
+				<ElementType
 					placeholder={ this.props.placeholder }
 					type={ this.state.inputType }
 					name={ this.props.name }
