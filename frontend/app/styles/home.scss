@@ -123,7 +123,7 @@ main#homepage {
 
 				.nameContainer {
 					display: flex;
-					padding-top: 3px;
+					padding-top: 6px;
 
 					span {
 						font-size: 16px;
@@ -139,6 +139,7 @@ main#homepage {
 							padding: 0;
 							font-size: 16px;
 							line-height: 21px;
+							font-weight: 300;
 
 							color: $musare_color_primary_gray;
 
