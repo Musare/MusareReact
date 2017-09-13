@@ -10,6 +10,7 @@ main#homepage {
 
 	.stations {
 		display: flex;
+		flex-wrap: wrap;
 		justify-content: center;
 		margin: -12px -12px 12px -12px;
 

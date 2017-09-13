@@ -19,7 +19,7 @@ import config from "config";
 	loggedIn: state.user.get("loggedIn"),
 }))
 
-@translate(["homepage"], { wait: true })
+@translate(["home", "createCommunityStation"], { wait: true })
 export default class Homepage extends Component {
 	static propTypes = {
 		t: PropTypes.func,
@@ -114,13 +114,13 @@ export default class Homepage extends Component {
 			let icon = null;
 			if (station.type === "official") {
 				if (station.privacy !== "public") icon =
-					<i className="material-icons" title="This station is not visible to other users.">lock</i>;
+					<i className="material-icons" title={ this.props.t("home:thisStationIsNotVisible") }>lock</i>;
 			} else {
 				// TODO Add isOwner function globally
 				if (this.isOwner(station.ownerId)) icon =
-					<i className="material-icons" title="This is your station.">home</i>;
+					<i className="material-icons" title={ this.props.t("home:thisIsYourStation") }>home</i>;
 				if (station.privacy !== "public") icon =
-					<i className="material-icons" title="This station is not visible to other users.">lock</i>;
+					<i className="material-icons" title={ this.props.t("home:thisStationIsNotVisible") }>lock</i>;
 			}
 
 			stations.push(
@@ -134,7 +134,7 @@ export default class Homepage extends Component {
 							<p className="description">{station.description}</p>
 						</div>
 						<div className="station-footer">
-							<div className="user-count" title="How many users there are in the station.">
+							<div className="user-count" title={ this.props.t("home:howManyOtherUsers") }>
 								<i className="material-icons">people</i>
 								<span>{station.userCount}</span>
 							</div>
@@ -187,29 +187,29 @@ export default class Homepage extends Component {
 
 		return (
 			<main id="homepage">
-				<h1>{ t("homepage:title") }</h1>
+				<h1>{ t("home:title") }</h1>
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
-				<h2>Official Stations</h2>
+				<h2>{ t("home:officialStations") }</h2>
 				<div className="official-stations stations">
 					{ this.listStations("official") }
 				</div>
-				<h2>Community Stations</h2>
+				<h2>{ t("home:communityStations") }</h2>
 				<div className="community-stations stations">
 					{ (this.props.loggedIn) ? (
 						<div className="station-card">
 							<div className="station-media station-media-icon">
-								<i className="material-icons" title="Add community station" onClick={ this.createCommunity }>add</i>
+								<i className="material-icons" title={ this.props.t("createCommunityStation:addCommunityStation") } onClick={ this.createCommunity }>add</i>
 							</div>
 							<div className="station-body">
-								<CustomInput key="stationDisplayName" type="stationDisplayName" name="stationDisplayName" showLabel={ false } placeholder="DisplayNameHere" onRef={ ref => (this.input.stationDisplayName = ref) } />
-								<CustomInput key="stationDescription" type="stationDescription" name="stationDescription" showLabel={ false } placeholder="Description here." onRef={ ref => (this.input.stationDescription = ref) } />
+								<CustomInput key="stationDisplayName" type="stationDisplayName" name="stationDisplayName" showLabel={ false } placeholder={ this.props.t("createCommunityStation:displayNameHere") } onRef={ ref => (this.input.stationDisplayName = ref) } />
+								<CustomInput key="stationDescription" type="stationDescription" name="stationDescription" showLabel={ false } placeholder={ this.props.t("createCommunityStation:descriptionHere") } onRef={ ref => (this.input.stationDescription = ref) } />
 							</div>
 							<div className="station-footer">
 								<div className="nameContainer">
 									<span>musare.com/c/</span>
-									<CustomInput key="stationName" type="stationName" name="stationName" showLabel={ false } placeholder="name_here" onRef={ ref => (this.input.stationName = ref) } />
+									<CustomInput key="stationName" type="stationName" name="stationName" showLabel={ false } placeholder={ this.props.t("createCommunityStation:nameHere") } onRef={ ref => (this.input.stationName = ref) } />
 								</div>
-								{(this.state.createStation.private) ? <i className="material-icons" title="Make this station public" onClick={ this.togglePrivate }>lock</i> : <i className="material-icons active" title="Make this station private" onClick={ this.togglePrivate }>lock</i>}
+								{(this.state.createStation.private) ? <i className="material-icons" title={ this.props.t("createCommunityStation:makeThisStationPublic") } onClick={ this.togglePrivate }>lock</i> : <i className="material-icons active" title={ this.props.t("createCommunityStation:makeThisStationPrivate") } onClick={ this.togglePrivate }>lock</i>}
 							</div>
 						</div>
 					) : null }

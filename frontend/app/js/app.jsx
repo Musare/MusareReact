@@ -149,7 +149,6 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 							name: "Profile"
 						})}
 						auth="ignored"
-						title={ t("pages:profile") }
 					/>
 					<AuthRoute
 						exact

@@ -63,7 +63,7 @@ const dictionary = {
 		regex: regex.az09_,
 		errors: {
 			//format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
-			format: "Invalid name format",
+			format: t("general:invalidStationNameFormat", { characters: `a-z, 0-9${ t("general:and") } _` }),
 		},
 	},
 	stationDisplayName: {
@@ -73,7 +73,7 @@ const dictionary = {
 		regex: regex.azAZ09_,
 		errors: {
 			//format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
-			format: "Invalid display name format",
+			format: t("general:invalidStationDisplayNameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
 		},
 	},
 	stationDescription: {
@@ -81,10 +81,7 @@ const dictionary = {
 		minLength: 2,
 		maxLength: 200,
 		isTextarea: true,
-		errors: {
-			//format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
-			format: "Invalid description format",
-		},
+		errors: {},
 	},
 };
 
@@ -93,7 +90,7 @@ export default class CustomInput extends Component {
 		type: PropTypes.string,
 		name: PropTypes.string,
 		label: PropTypes.string,
-		showLabel: PropTypes.boolean,
+		//showLabel: PropTypes.boolean,
 		placeholder: PropTypes.string,
 		onRef: PropTypes.func,
 	};
@@ -102,7 +99,7 @@ export default class CustomInput extends Component {
 		type: "",
 		name: "",
 		label: "",
-		showLabel: true,
+		//showLabel: true,
 		placeholder: "",
 		valid: false,
 		onRef: () => {},
