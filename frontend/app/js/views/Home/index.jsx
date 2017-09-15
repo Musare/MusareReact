@@ -56,8 +56,8 @@ export default class Homepage extends Component {
 						else community.push(station);
 					});
 
-					official.push({
-						"_id": "59b522222634af57e8e2dbcf",
+					if (this.isOwner("fd")) official.push({
+						"_id": "59b522222634af57e8e2fffdbcf",
 						"name": "pr_o",
 						"displayName": "PrivateOfficial",
 						"description": "Test official station. Private.",
@@ -88,8 +88,8 @@ export default class Homepage extends Component {
 						"__v": 0
 					});
 
-					official.push({
-						"_id": "59b522222634af57e8e2dbcf",
+					if (this.isOwner("fd")) official.push({
+						"_id": "59b52sss2222634af57e8e2dbcf",
 						"name": "un_o",
 						"displayName": "UnlistedOfficial",
 						"description": "Test official station. Unlisted.",
@@ -121,7 +121,7 @@ export default class Homepage extends Component {
 					});
 
 					official.push({
-						"_id": "59b522222634afe7e8e2dbcf",
+						"_id": "59b5222ggfg22634afe7e8e2dbcf",
 						"name": "pu_o",
 						"displayName": "PublicOfficial",
 						"description": "Test official station. Public.",
@@ -153,7 +153,7 @@ export default class Homepage extends Component {
 					});
 
 					community.push({
-						"_id": "59b522222634afe7e8e2dbcf",
+						"_id": "59b5221222634afe7e8e2dbcf",
 						"name": "pu_c",
 						"displayName": "PublicCommunity",
 						"description": "Test community station. Public.",
@@ -184,8 +184,8 @@ export default class Homepage extends Component {
 						"__v": 0
 					});
 
-					community.push({
-						"_id": "59b522222634afe7e8e2dbcf",
+					if (this.isOwner("fd")) community.push({
+						"_id": "59b522222634af3e7e8e2dbcf",
 						"name": "un_c",
 						"displayName": "UnlistedCommunity",
 						"description": "Test community station. Unlisted.",
@@ -216,7 +216,7 @@ export default class Homepage extends Component {
 						"__v": 0
 					});
 
-					community.push({
+					if (this.isOwner("fd")) community.push({
 						"_id": "59b522222634afe7e8e2dbcf",
 						"name": "pr_c",
 						"displayName": "PrivateCommunity",
