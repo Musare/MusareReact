@@ -359,6 +359,9 @@ export default class Homepage extends Component {
 					{ (this.props.loggedIn) ? (
 						<div className="station-card">
 							<div className="station-media station-media-icon">
+								<div className="create-station-header">
+									<h3>Create community station</h3>
+								</div>
 								<i className="material-icons" title={ this.props.t("createCommunityStation:addCommunityStation") } onClick={ this.createCommunity }>add</i>
 							</div>
 							<div className="station-body">

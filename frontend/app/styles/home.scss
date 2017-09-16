@@ -36,7 +36,21 @@ main#homepage {
 				background-color: $musare_color_primary_blue;
 				color: #EFEFEF; //TODO Change this color and figure out proper sizes
 
-				> * {
+				.create-station-header {
+					height: 50px;
+					width: 100%;
+					background-color: hsla(0,0,100%,.25); //TODO Change this color and figure out proper sizes
+
+					h3 {
+						font-size: 22px;
+						line-height: 50px;
+						color: $musare_color_white;
+						text-align: center;
+					}
+				}
+
+				> i {
+					margin-top: -25px;
 					font-size: 296px;
 					cursor: pointer;
 					user-select: none;
