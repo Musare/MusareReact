@@ -17,7 +17,6 @@ main#homepage {
 		.station-card {
 			width: 296px;
 			background-color: $musare_color_white;
-			border: 1px solid hsla(204, 3, 60, .5); //TODO Change this later and/or add to colors
 			position: relative;
 			margin: 12px;
 
@@ -168,6 +167,16 @@ main#homepage {
 				left: 0;
 				right: 0;
 				bottom: 0;
+
+				border: 1px solid hsla(204, 3, 60, .5); //TODO Change this later and/or add to colors
+				box-shadow: 0 2px 3px hsla(0,0,0,.1); //TODO Change this later and/or add to colors
+				transition: .2s ease;
+
+				&:hover, &:focus {
+					border-color: $musare_color_primary_blue;
+					box-shadow: 0 2px 3px hsla(0,0,0,.3); //TODO Change this later and/or add to colors
+					outline: 0;
+				}
 			}
 		}
 	}
