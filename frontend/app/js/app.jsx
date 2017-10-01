@@ -151,6 +151,15 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						auth="ignored"
 					/>
 					<AuthRoute
+						path="/c/:station"
+						component={ asyncComponent({
+							resolve: () => System.import("views/Station"),
+							name: "Station"
+						})}
+						auth="ignored"
+						title="TODO"
+					/>
+					<AuthRoute
 						exact
 						path="/"
 						component={ asyncComponent({
