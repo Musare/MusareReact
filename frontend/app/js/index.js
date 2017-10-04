@@ -20,7 +20,7 @@ let store = null;
 const middleware = applyMiddleware(thunk);
 store = createStore(
 	rootReducer,
-	middleware
+	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() //middleware //TODO See what the middleware does
 );
 
 ReactDOM.render(

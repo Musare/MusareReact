@@ -2,8 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 const i18next = require("i18next");
 
-const t = i18next.t;
+import { connect } from "react-redux";
 
+const t = i18next.t;
+let getPlayerCallbacks = [];
+
+@connect(state => ({
+	volume: state.volume.get("volume"),
+}))
 export default class Player extends Component {
 	static propTypes = {
 		onRef: PropTypes.func,
@@ -24,20 +30,28 @@ export default class Player extends Component {
 				paused: true,
 				pausedAt: null, // Find better spot for this one
 			},
-			volume: 0,
 		};
 	}
 
 	componentDidMount() {
 		this.props.onRef(this);
+		this.setState({
+			seekerbar: this.seekerbar,
+		});
 		this.initializePlayer();
 	}
 	componentWillUnmount() {
 		this.props.onRef(null);
 	}
 
-	playSong(songId, skipDuration, timePaused, startedAt) {
-		if (this.state.player.ready) {
+	clearSong() {
+		this.getPlayer((player) => {
+			player.loadVideoById("");
+		});
+	}
+
+	playSong(songId, skipDuration, timePaused, startedAt, cb) {
+		this.getPlayer((player) => {
 			let pausedAt = (this.state.player.paused) ? Date.now() : null;
 			this.setState({
 				song: {
@@ -53,8 +67,9 @@ export default class Player extends Component {
 				},
 			});
 
-			this.player.loadVideoById(songId, this.getProperVideoTime());
-		} else return; // CALLBACK
+			player.loadVideoById(songId, this.getProperVideoTime());
+			cb();
+		});
 	}
 
 	getProperVideoTime = () => {
@@ -73,33 +88,30 @@ export default class Player extends Component {
 	};
 
 	pause() {
-		if (this.state.player.paused) return;
-		this.setState({
-			player: {
-				...this.state.player,
-				paused: true,
-				pausedAt: Date.now(),
-			},
+		this.getPlayer((player) => {
+			if (this.state.player.paused) return;
+			this.setState({
+				player: {
+					...this.state.player,
+					paused: true,
+					pausedAt: Date.now(),
+				},
+			});
+			player.pauseVideo();
 		});
-		this.player.pauseVideo();
 	}
 
 	resume() {
-		if (!this.state.player.paused) return;
-		this.setState({
-			player: {
-				...this.state.player,
-				paused: false,
-			},
+		this.getPlayer((player) => {
+			if (!this.state.player.paused) return;
+			this.setState({
+				player: {
+					...this.state.player,
+					paused: false,
+				},
+			});
+			player.playVideo();
 		});
-		this.player.playVideo();
-	}
-
-	initializePlayerVolume() {
-		let volume = parseInt(localStorage.getItem("volume"));
-		volume = (typeof volume === "number") ? volume : 20;
-		this.player.setVolume(this.state.volume);
-		if (this.state.volume > 0) this.player.unMute();
 	}
 
 	initializePlayer = () => {
@@ -127,33 +139,52 @@ export default class Player extends Component {
 						},
 					});
 
-					this.initializePlayerVolume();
+					getPlayerCallbacks.forEach((cb) => {
+						cb(this.player);
+					});
+
+					this.player.setVolume(this.props.volume);
 				},
 				"onError": function(err) {
 					console.log("iframe error", err);
 					// VOTE TO SKIP SONG
 				},
 				"onStateChange": (event) => {
-					if (event.data === YT.PlayerState.PLAYING) {
-						if (this.state.player.loading) this.setState({
-							player: {
-								...this.state.player,
-								loading: false,
-							},
-						});
-						if (this.state.player.paused) this.player.pauseVideo();
-						if (this.state.player.paused || this.state.player.loading) this.player.seekTo(this.getProperVideoTime(), true);
-					}
-
-					if (event.data === YT.PlayerState.PAUSED) {
-						if (!this.state.player.paused) {
-							this.player.seekTo(this.getProperVideoTime(), true);
-							this.player.playVideo();
+					this.getPlayer((player) => {
+						if (event.data === YT.PlayerState.PLAYING) {
+							if (this.state.player.loading) this.setState({
+								player: {
+									...this.state.player,
+									loading: false,
+								},
+							});
+							if (this.state.player.paused) player.pauseVideo();
+							if (this.state.player.paused || this.state.player.loading) player.seekTo(this.getProperVideoTime(), true);
 						}
-					}
+
+						if (event.data === YT.PlayerState.PAUSED) {
+							if (!this.state.player.paused) {
+								player.seekTo(this.getProperVideoTime(), true);
+								player.playVideo();
+							}
+						}
+					});
 				},
 			},
 		});
+	};
+
+	getPlayer(cb) {
+		if (!this.state.player.ready) getPlayerCallbacks.push(cb);
+		else cb(this.player);
+	};
+
+	componentWillUpdate(nextProps) {
+		if (nextProps.volume !== this.props.volume) {
+			this.getPlayer((player) => {
+				player.setVolume(nextProps.volume);
+			});
+		}
 	}
 
 	render() {

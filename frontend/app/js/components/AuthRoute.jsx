@@ -22,6 +22,10 @@ const PropsRoute = ({ component, ...rest }) => {
 };
 // Above two functions are from https://github.com/ReactTraining/react-router/issues/4105#issuecomment-289195202
 
+function clone(obj) {
+	return Object.assign({}, obj);
+}
+
 @connect(state => ({
 	loggedIn: state.user.get("loggedIn"),
 	role: state.user.get("role"),
@@ -65,14 +69,16 @@ export default class AuthRoute extends Component {
 			receivedStationData: false,
 		};
 		const { auth } = props;
+		let getStationData = false;
 
 		if (auth === "ignored") state.continue = true;
 		else if (auth === "station") {
 			state.waitingFor = "station";
-			this.getStationData();
+			getStationData = true;
 		} else state.waitingFor = "auth";
-
 		this.state = state;
+
+		if (getStationData) this.getStationData();
 	}
 
 	componentWillUpdate(nextProps) {
@@ -98,11 +104,12 @@ export default class AuthRoute extends Component {
 			return <PropsRoute props={ this.props } component={ this.props.component }/>
 		} else if (waitingFor === "station" && receivedStationData) {
 			if (stationData) {
-				const props = JSON.parse(JSON.stringify(this.props));
+				const props = clone(this.props);
 				// TODO Replace the above hack with a proper Object.clone
 				props.stationName = stationName;
 				props.stationData = stationData;
-				return <Route props={ props } component={ this.props.component } />;
+				window.props = props; //TODO Replace
+				return <Route component={ this.props.component } />;
 			}
 			return <Redirect to={ "/" } />;
 		} else if (waitingFor === "auth" && authProcessed) {

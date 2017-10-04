@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { translate } from "react-i18next";
 
 import { ban, authenticate } from "actions/auth";
+import { initialize as initializeVolume } from "actions/volume";
 import Navbar from "components/Global/Navbar";
 
 import config from "config";
@@ -46,6 +47,12 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 			// TODO
 			localStorage.removeItem("github_redirect");
 		}
+
+		let volume = parseFloat(localStorage.getItem("volume"));
+		volume = (typeof volume === "number" && !isNaN(volume)) ? volume : 20;
+		console.log("VOLUME", volume);
+		localStorage.setItem("volume", volume);
+		dispatch(initializeVolume(volume));
 	}
 
 	render() {
@@ -151,12 +158,12 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						auth="ignored"
 					/>
 					<AuthRoute
-						path="/c/:station"
+						path="/community/:name"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Station"),
-							name: "Station"
+							name: "Station",
 						})}
-						auth="ignored"
+						auth="station"
 						title="TODO"
 					/>
 					<AuthRoute
@@ -164,7 +171,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						path="/"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Home"),
-							name: "Home"
+							name: "Home",
 						})}
 						auth="ignored"
 						title={ t("pages:homepage") }
@@ -173,7 +180,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 						path="*"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Errors/Error404"),
-							name: "Error404"
+							name: "Error404",
 						})}
 						auth="ignored"
 						title={ t("pages:error404") }
