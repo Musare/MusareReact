@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Redirect, Route } from "react-router-dom";
 import { translate } from "react-i18next";
+import { initializeStation } from "actions/station";
 
 import io from "io";
 
@@ -30,6 +31,10 @@ function clone(obj) {
 	loggedIn: state.user.get("loggedIn"),
 	role: state.user.get("role"),
 	authProcessed: state.user.get("authProcessed"),
+	station: {
+		stationId: state.station.get("id"),
+		name: state.station.get("name"),
+	},
 }))
 
 @translate(["general"], { wait: true })
@@ -88,30 +93,44 @@ export default class AuthRoute extends Component {
 	getStationData = () => {
 		io.getSocket(socket => {
 			socket.emit("stations.findByName", this.state.stationName, res => {
-				this.setState({
-					receivedStationData: true,
-					stationData: res.data,
-				});
+				if (res.status === "success") {
+					this.props.dispatch(initializeStation({
+						//TODO Refactor this to be better optimized
+						stationId: res.data._id,
+						name: res.data.name,
+						displayName: res.data.displayName,
+						description: res.data.description,
+						privacy: res.data.privacy,
+						locked: res.data.locked,
+						partyMode: res.data.partyMode,
+						owner: res.data.owner,
+						privatePlaylist: res.data.privatePlaylist,
+						type: res.data.type,
+						paused: res.data.paused,
+						pausedAt: res.data.pausedAt,
+					}));
+				} else {
+					this.setState({
+						noStation: true,
+					});
+				}
 			});
 		});
 	};
 
 	render() {
 		const { auth, role, loggedIn, authProcessed, t } = this.props;
-		const { stationName, waitingFor, receivedStationData, stationData } = this.state;
+		const { waitingFor, receivedStationData } = this.state;
 
 		if (this.state.continue) {
 			return <PropsRoute props={ this.props } component={ this.props.component }/>
-		} else if (waitingFor === "station" && receivedStationData) {
-			if (stationData) {
-				const props = clone(this.props);
+		} else if (waitingFor === "station") {
+			if (this.props.station.stationId) {
 				// TODO Replace the above hack with a proper Object.clone
-				props.stationName = stationName;
-				props.stationData = stationData;
-				window.props = props; //TODO Replace
 				return <Route component={ this.props.component } />;
+			} else if (this.state.noStation) {
+				return <Redirect to={ "/" } />;
 			}
-			return <Redirect to={ "/" } />;
 		} else if (waitingFor === "auth" && authProcessed) {
 			if (auth === "required") {
 				if (loggedIn) return <Route props={ this.props } component={ this.props.component } />;

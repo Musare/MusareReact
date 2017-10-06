@@ -134,7 +134,9 @@ cache.sub('privatePlaylist.selected', data => {
 });
 
 cache.sub('station.pause', stationId => {
-	utils.emitToRoom(`station.${stationId}`, "event:stations.pause");
+	stations.getStation(stationId, (err, station) => {
+		utils.emitToRoom(`station.${stationId}`, "event:stations.pause", station.pausedAt);
+	});
 });
 
 cache.sub('station.resume', stationId => {

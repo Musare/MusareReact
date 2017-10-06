@@ -4,11 +4,21 @@ const i18next = require("i18next");
 
 import { connect } from "react-redux";
 
+import { pauseStation, unpauseStation } from "actions/station";
+
 const t = i18next.t;
 let getPlayerCallbacks = [];
 
 @connect(state => ({
 	volume: state.volume.get("volume"),
+	muted: state.volume.get("muted"),
+	songId: state.songPlayer.get("songId"),
+	startedAt: state.songPlayer.get("startedAt"),
+	timePaused: state.songPlayer.get("timePaused"),
+	skipDuration: state.songPlayer.get("skipDuration"),
+	pausedAt: state.songPlayer.get("pausedAt"),
+	exists: state.songPlayer.get("exists"),
+	paused: state.station.get("paused"),
 }))
 export default class Player extends Component {
 	static propTypes = {
@@ -27,10 +37,10 @@ export default class Player extends Component {
 				initializing: false,
 				ready: false,
 				loading: false,
-				paused: true,
-				pausedAt: null, // Find better spot for this one
 			},
 		};
+
+		if (props.paused) this.pause();
 	}
 
 	componentDidMount() {
@@ -50,67 +60,55 @@ export default class Player extends Component {
 		});
 	}
 
-	playSong(songId, skipDuration, timePaused, startedAt, cb) {
+	playSong() {
 		this.getPlayer((player) => {
-			let pausedAt = (this.state.player.paused) ? Date.now() : null;
 			this.setState({
-				song: {
-					songId,
-					skipDuration,
-					timePaused,
-					startedAt,
-				},
 				player: {
 					...this.state.player,
-					pausedAt,
 					loading: true,
 				},
 			});
 
-			player.loadVideoById(songId, this.getProperVideoTime());
-			cb();
+			player.loadVideoById(this.props.songId, this.getProperVideoTime());
 		});
 	}
 
 	getProperVideoTime = () => {
-		if (this.state.song) {
-			return this.getTimeElapsed() / 1000 + this.state.song.skipDuration;
+		if (this.props.exists) {
+			return this.getTimeElapsed() / 1000 + this.props.skipDuration;
 		} else return 0;
 	};
 
 	getTimeElapsed = () => {
-		if (this.state.song) {
+		if (this.props.exists) {
 			// TODO Replace with Date.currently
 			let timePausedNow = 0;
-			if (this.state.player.paused) timePausedNow = Date.now() - this.state.player.pausedAt;
-			return Date.now() - this.state.song.startedAt - this.state.song.timePaused - timePausedNow;
+			if (this.props.paused) timePausedNow = Date.now() - this.props.pausedAt;
+			return Date.now() - this.props.startedAt - this.props.timePaused - timePausedNow;
 		} else return 0;
 	};
 
 	pause() {
 		this.getPlayer((player) => {
-			if (this.state.player.paused) return;
-			this.setState({
-				player: {
-					...this.state.player,
-					paused: true,
-					pausedAt: Date.now(),
-				},
-			});
 			player.pauseVideo();
 		});
 	}
 
 	resume() {
 		this.getPlayer((player) => {
-			if (!this.state.player.paused) return;
-			this.setState({
-				player: {
-					...this.state.player,
-					paused: false,
-				},
-			});
 			player.playVideo();
+		});
+	}
+
+	mute() {
+		this.getPlayer((player) => {
+			player.mute();
+		});
+	}
+
+	unmute() {
+		this.getPlayer((player) => {
+			player.unMute();
 		});
 	}
 
@@ -135,7 +133,6 @@ export default class Player extends Component {
 							...this.state.player,
 							initializing: false,
 							ready: true,
-							test: 1,
 						},
 					});
 
@@ -144,6 +141,8 @@ export default class Player extends Component {
 					});
 
 					this.player.setVolume(this.props.volume);
+					if (this.props.muted) this.mute();
+					else this.unmute();
 				},
 				"onError": function(err) {
 					console.log("iframe error", err);
@@ -158,12 +157,12 @@ export default class Player extends Component {
 									loading: false,
 								},
 							});
-							if (this.state.player.paused) player.pauseVideo();
-							if (this.state.player.paused || this.state.player.loading) player.seekTo(this.getProperVideoTime(), true);
+							if (this.props.paused) player.pauseVideo();
+							if (this.props.paused || this.state.player.loading) player.seekTo(this.getProperVideoTime(), true);
 						}
 
 						if (event.data === YT.PlayerState.PAUSED) {
-							if (!this.state.player.paused) {
+							if (!this.props.paused) {
 								player.seekTo(this.getProperVideoTime(), true);
 								player.playVideo();
 							}
@@ -184,6 +183,24 @@ export default class Player extends Component {
 			this.getPlayer((player) => {
 				player.setVolume(nextProps.volume);
 			});
+		}
+	}
+
+	componentDidUpdate(prevProps, prevState) {
+		if (this.props.songId !== prevProps.songId && this.props.startedAt !== prevProps.startedAt) { //Add unique token instead of comparing startedAt
+			if (this.props.exists) {
+				this.playSong();
+			} else this.clearSong();
+		}
+
+		if (this.props.paused !== prevProps.paused) { //Add unique token instead of comparing startedAt
+			if (this.props.paused) this.pause();
+			else this.resume();
+		}
+
+		if (this.props.muted !== prevProps.muted) {
+			if (this.props.muted) this.mute();
+			else this.unmute();
 		}
 	}
 

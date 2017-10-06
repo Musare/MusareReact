@@ -50,7 +50,6 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 
 		let volume = parseFloat(localStorage.getItem("volume"));
 		volume = (typeof volume === "number" && !isNaN(volume)) ? volume : 20;
-		console.log("VOLUME", volume);
 		localStorage.setItem("volume", volume);
 		dispatch(initializeVolume(volume));
 	}

@@ -14,8 +14,9 @@ export default class VolumeSlider extends Component {
 		super(props);
 	}
 
-	changeVolumeHandler = (e) => {
-		let volume = e.target.value / 100;
+	changeVolumeHandler = (volume) => {
+		volume = volume / 100;
+		localStorage.setItem("volume", volume);
 		this.props.dispatch(changeVolume(volume));
 	};
 
@@ -33,11 +34,11 @@ export default class VolumeSlider extends Component {
 				<h2>{ this.props.volume }. Muted: { (this.props.muted) ? "true" : "false" }</h2>
 				{
 					(this.props.muted) ? ([
-						<span key="unmuteButton" onClick={ this.unmuteVolume }>UNMUTE</span>,
+						<i className="material-icons" key="unmuteButton" onClick={ this.unmuteVolume }>volume_off</i>,
 						<input key="disabledVolumeInput" type="range" min="0" max="10000" value="0" disabled/>,
 					]) : ([
-						<span key="muteButton" onClick={ this.muteVolume }>MUTE</span>,
-						<input key="volumeInput" type="range" min="0" max="10000" onChange={ this.changeVolumeHandler }/>, //Add default value
+						<i className="material-icons" key="muteButton" onClick={ this.muteVolume }>volume_up</i>,
+						<input key="volumeInput" type="range" min="0" max="10000" value={ this.props.volume * 100 } onChange={ (e) => { this.changeVolumeHandler(e.target.value) } }/>, //Add default value
 					])
 				}
 			</div>
