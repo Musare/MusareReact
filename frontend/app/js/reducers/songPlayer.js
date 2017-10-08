@@ -4,6 +4,8 @@ import {
 	CHANGE_SONG,
 	SET_TIME_ELAPSED,
 	UPDATE_TIME_PAUSED,
+	RECEIVED_RATINGS,
+	RECEIVED_OWN_RATINGS,
 } from "actions/songPlayer";
 
 const initialState = Map({
@@ -15,7 +17,9 @@ const initialState = Map({
 	skipDuration: 0,
 	songId: "",
 	dislikes: 0,
+	disliked: false,
 	likes: 0,
+	liked: false,
 	startedAt: 0,
 	timePaused: 0,
 	timeElapsed: 0,
@@ -34,7 +38,9 @@ const actionsMap = {
 			obj.skipDuration = action.song.skipDuration;
 			obj.songId = action.song.songId;
 			obj.dislikes = action.song.dislikes;
+			obj.disliked = false;
 			obj.likes = action.song.likes;
+			obj.liked = false;
 			obj.startedAt = action.song.startedAt;
 			obj.timePaused = action.song.timePaused;
 			obj.timeElapsed = 0;
@@ -54,6 +60,18 @@ const actionsMap = {
 	[UPDATE_TIME_PAUSED]: (state, action) => {
 		return state.merge({
 			timePaused: action.timePaused,
+		});
+	},
+	[RECEIVED_RATINGS]: (state, action) => {
+		return state.merge({
+			likes: action.likes,
+			dislikes: action.dislikes,
+		});
+	},
+	[RECEIVED_OWN_RATINGS]: (state, action) => {
+		return state.merge({
+			liked: action.liked,
+			disliked: action.disliked,
 		});
 	},
 };
