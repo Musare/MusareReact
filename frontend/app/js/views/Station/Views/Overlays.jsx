@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import Settings from "./Settings";
+import Playlists from "./Playlists";
+import EditPlaylist from "./EditPlaylist";
 
 @connect(state => ({
 	overlay1: state.stationOverlay.get("overlay1"),
@@ -20,16 +22,22 @@ export default class Overlays extends Component {
 	}
 
 	getComponent = (type, key) => {
-		if (type === "settings") {
-			return <Settings t={ this.props.t } key={ key }/>;
-		} else return null;
+		let input = null;
+		if (type === "settings") input = <Settings t={ this.props.t } key={ key }/>;
+		else if (type === "playlists") input = <Playlists t={ this.props.t } key={ key }/>;
+		else if (type === "editPlaylist") input = <EditPlaylist t={ this.props.t } key={ key }/>;
+		return input;
 	};
 
 	componentDidUpdate(prevProps, prevState) {
-		console.log(111, prevProps.overlay1, this.props.overlay1);
 		if (this.props.overlay1 !== prevProps.overlay1) {
 			this.setState({
 				overlay1: this.getComponent(this.props.overlay1),
+			});
+		}
+		if (this.props.overlay2 !== prevProps.overlay2) {
+			this.setState({
+				overlay2: this.getComponent(this.props.overlay2),
 			});
 		}
 	}

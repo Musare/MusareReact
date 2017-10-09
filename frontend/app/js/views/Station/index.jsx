@@ -249,6 +249,7 @@ export default class Station extends Component {
 				<Overlays t={ this.props.t } />
 
 				<button onClick={ () => { this.props.dispatch(openOverlay1("settings")) } }>Open settings</button>
+				<button onClick={ () => { this.props.dispatch(openOverlay1("playlists")) } }>Open playlists</button>
 
 				<h1>{ this.props.station.displayName }</h1>
 
