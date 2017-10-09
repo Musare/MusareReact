@@ -48,6 +48,7 @@ h1 {
 	display: none;
 }
 
+// Temp Start
 .liked {
 	color: green;
 }
@@ -56,6 +57,19 @@ h1 {
 	color: red;
 }
 
+.overlay {
+	display: block;
+	position: absolute;
+	top: 64px;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-color: #03a9f4;
+	z-index: 2;
+}
+// Temp End
 main {
 	margin-left: auto;
 	margin-right: auto;

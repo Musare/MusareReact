@@ -21,7 +21,7 @@ export default class Overlays extends Component {
 
 	getComponent = (type, key) => {
 		if (type === "settings") {
-			return <Settings key={ key }/>;
+			return <Settings t={ this.props.t } key={ key }/>;
 		} else return null;
 	};
 
