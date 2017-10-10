@@ -9,10 +9,11 @@ export function openOverlay1(overlay) {
 		overlay,
 	};
 }
-export function openOverlay2(overlay) {
+export function openOverlay2(overlay, extraProps) {
 	return {
 		type: OPEN_OVERLAY2,
 		overlay,
+		extraProps,
 	};
 }
 export function closeOverlay1() {
@@ -23,5 +24,6 @@ export function closeOverlay1() {
 export function closeOverlay2() {
 	return {
 		type: CLOSE_OVERLAY2,
+		extraValue: null,
 	};
 }

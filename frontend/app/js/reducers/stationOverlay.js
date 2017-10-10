@@ -10,6 +10,7 @@ import {
 const initialState = Map({
 	overlay1: null,
 	overlay2: null,
+	extraProps2: null,
 });
 
 const actionsMap = {
@@ -21,6 +22,7 @@ const actionsMap = {
 	[OPEN_OVERLAY2]: (state, action) => {
 		return state.merge({
 			overlay2: action.overlay,
+			extraProps2: action.extraProps,
 		});
 	},
 	[CLOSE_OVERLAY1]: (state, action) => {

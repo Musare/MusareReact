@@ -10,6 +10,7 @@ import EditPlaylist from "./EditPlaylist";
 @connect(state => ({
 	overlay1: state.stationOverlay.get("overlay1"),
 	overlay2: state.stationOverlay.get("overlay2"),
+	extraProps2: state.stationOverlay.get("extraProps2"),
 }))
 export default class Overlays extends Component {
 	constructor(props) {
@@ -25,7 +26,7 @@ export default class Overlays extends Component {
 		let input = null;
 		if (type === "settings") input = <Settings t={ this.props.t } key={ key }/>;
 		else if (type === "playlists") input = <Playlists t={ this.props.t } key={ key }/>;
-		else if (type === "editPlaylist") input = <EditPlaylist t={ this.props.t } key={ key }/>;
+		else if (type === "editPlaylist") input = <EditPlaylist t={ this.props.t } key={ key } playlistId={ this.props.extraProps2.get("playlistId") }/>;
 		return input;
 	};
 

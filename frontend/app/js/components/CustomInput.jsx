@@ -89,6 +89,17 @@ const dictionary = {
 		isTextarea: true,
 		errors: {},
 	},
+	playlistDescription: {
+		inputType: "text",
+		minLength: 1,
+		maxLength: 16,
+		isInput: true,
+		regex: regex.ascii,
+		errors: {
+			//format: t("general:invalidUsernameFormat", { characters: `a-z, A-Z, 0-9${ t("general:and") } _` }),
+			format: "Only ascii is allowed",
+		},
+	},
 	stationPrivacy: {
 		isRadio: true,
 		options: [

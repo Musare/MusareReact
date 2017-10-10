@@ -41,6 +41,23 @@ export default class Playlists extends Component {
 		this.props.dispatch(closeOverlay1());
 	};
 
+	createPlaylist = () => {
+		this.messages.clearErrorSuccess();
+		if (CustomInput.hasInvalidInput(this.input, ["description"])) {
+			this.messages.clearAddError(this.props.t("general:someFieldsAreIncorrectError"));
+		} else {
+			io.getSocket(socket => {
+				socket.emit('playlists.create', { displayName: this.input.description.getValue(), songs: [] }, res => {
+					if (res.status === "success") {
+						this.props.dispatch(openOverlay2("editPlaylist", { playlistId: res.playlistId }));
+					} else {
+						this.messages.addError(res.message);
+					}
+				});
+			});
+		}
+	};
+
 	render() {
 		return (
 			<div className="overlay">
@@ -48,11 +65,14 @@ export default class Playlists extends Component {
 				<h1>Playlists</h1>
 				<CustomErrors onRef={ ref => (this.messages = ref) } />
 
+				<CustomInput key="description" type="playlistDescription" name="description" label="Description" placeholder="Description" original={ this.props.description } onRef={ ref => (this.input.description = ref) } />
+				<button onClick={ this.createPlaylist }>Create playlist</button>
+
 				<h2>Playlists</h2>
 				<ul>
 					{
 						this.state.playlists.map((playlist) => {
-							return <li key={ playlist._id }>{ playlist.displayName } - <span onClick={ () => { this.props.dispatch(openOverlay2("editPlaylist")) } }>Edit</span></li>;
+							return <li key={ playlist._id }>{ playlist.displayName } - <span onClick={ () => { this.props.dispatch(openOverlay2("editPlaylist", { playlistId: playlist._id })) } }>Edit</span></li>;
 						})
 					}
 				</ul>

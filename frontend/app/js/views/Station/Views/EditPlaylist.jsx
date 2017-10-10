@@ -26,6 +26,8 @@ export default class EditPlaylist extends Component {
 		io.getSocket((socket) => {
 
 		});
+
+		console.log("EditPlaylist.jsx props", props);
 	}
 
 	close = () => {
