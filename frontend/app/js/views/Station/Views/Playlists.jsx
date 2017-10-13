@@ -25,11 +25,6 @@ export default class Playlists extends Component {
 
 		io.getSocket((socket) => {
 			socket.emit('playlists.indexForUser', res => {
-				res.data.push({
-					displayName: "Playlist",
-					_id: "RandomId",
-				});
-				console.log("Remove above dummy data.");
 				if (res.status === 'success') this.setState({
 					playlists: res.data,
 				});
