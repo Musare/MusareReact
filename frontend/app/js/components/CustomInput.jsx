@@ -117,6 +117,10 @@ const dictionary = {
 			},
 		],
 	},
+	youTubeSearchQuery: {
+		inputType: "text",
+		isInput: true,
+	},
 };
 
 export default class CustomInput extends Component {

@@ -6,7 +6,7 @@ import CustomErrors from "components/CustomMessages.jsx";
 
 import { connect } from "react-redux";
 
-import { closeOverlay2 } from "actions/stationOverlay";
+import { closeOverlay2, openOverlay3 } from "actions/stationOverlay";
 
 import io from "io";
 
@@ -26,9 +26,18 @@ export default class EditPlaylist extends Component {
 		io.getSocket((socket) => {
 
 		});
-
-		console.log("EditPlaylist.jsx props", props);
 	}
+
+	addSongToQueueCallback = (songId) => {
+		io.getSocket((socket) => {
+			// Add song to queue
+			console.log("Add song to queue", songId);
+		});
+	};
+
+	addSongToQueue = () => {
+		this.props.dispatch(openOverlay3("searchYouTube", this.addSongToQueueCallback));
+	};
 
 	close = () => {
 		this.props.dispatch(closeOverlay2());
@@ -39,6 +48,10 @@ export default class EditPlaylist extends Component {
 			<div className="overlay">
 				<button onClick={ this.close }>Back</button>
 				<h1>Edit Playlist</h1>
+				Song list
+
+
+				<button onClick={ this.addSongToQueue }>Add song to queue</button>
 				<CustomErrors onRef={ ref => (this.messages = ref) } />
 			</div>
 		);
