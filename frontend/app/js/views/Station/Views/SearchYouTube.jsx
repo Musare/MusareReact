@@ -83,7 +83,7 @@ export default class SearchYouTube extends Component {
 											<img src={ result.thumbnail }/>
 											<a href={ result.url }>{ result.title }</a>
 											<span>12:12</span>
-											<span onClick={ () => { this.props.dispatch(closeOverlay3()); this.props.callback(result.songId) } }>ADD</span>
+											<span onClick={ () => { this.props.callback(result.songId); } }>ADD</span>
 										</li>
 									);
 								})

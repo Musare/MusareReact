@@ -27,6 +27,7 @@ const actionsMap = {
 		return state.merge({
 			overlay2: action.overlay,
 			extraProps2: action.extraProps,
+			callback: action.callback,
 		});
 	},
 	[OPEN_OVERLAY3]: (state, action) => {

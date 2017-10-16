@@ -11,11 +11,12 @@ export function openOverlay1(overlay) {
 		overlay,
 	};
 }
-export function openOverlay2(overlay, extraProps) {
+export function openOverlay2(overlay, extraProps, callback) {
 	return {
 		type: OPEN_OVERLAY2,
 		overlay,
 		extraProps,
+		callback,
 	};
 }
 export function openOverlay3(overlay, callback) {

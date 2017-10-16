@@ -19,6 +19,7 @@ const initialState = Map({
 	locked: false,
 	partyMode: false,
 	privatePlaylist: "",
+	ownerId: "",
 });
 
 const actionsMap = {
@@ -35,6 +36,7 @@ const actionsMap = {
 			locked: action.station.locked,
 			partyMode: action.station.partyMode,
 			privatePlaylist: action.station.privatePlaylist,
+			ownerId: action.station.owner,
 		});
 	},
 	[PAUSE_STATION]: (state, action) => {

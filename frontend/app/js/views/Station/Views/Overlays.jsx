@@ -7,6 +7,7 @@ import Settings from "./Settings";
 import Playlists from "./Playlists";
 import EditPlaylist from "./EditPlaylist";
 import SearchYouTube from "./SearchYouTube";
+import QueueList from "./QueueList";
 
 @connect(state => ({
 	overlay1: state.stationOverlay.get("overlay1"),
@@ -31,6 +32,7 @@ export default class Overlays extends Component {
 		else if (type === "playlists") input = <Playlists t={ this.props.t } key={ key }/>;
 		else if (type === "editPlaylist") input = <EditPlaylist t={ this.props.t } key={ key } playlistId={ this.props.extraProps2.get("playlistId") }/>;
 		else if (type === "searchYouTube") input = <SearchYouTube t={ this.props.t } key={ key }/>;
+		else if (type === "queueList") input = <QueueList t={ this.props.t } key={ key }/>;
 		return input;
 	};
 

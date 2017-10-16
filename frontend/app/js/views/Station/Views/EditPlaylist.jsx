@@ -6,7 +6,7 @@ import CustomErrors from "components/CustomMessages.jsx";
 
 import { connect } from "react-redux";
 
-import { closeOverlay2, openOverlay3 } from "actions/stationOverlay";
+import { closeOverlay2, openOverlay3, closeOverlay3 } from "actions/stationOverlay";
 
 import io from "io";
 
@@ -127,6 +127,7 @@ export default class EditPlaylist extends Component {
 				} else {
 					this.messages.addError(res.message);
 				}
+				this.props.dispatch(closeOverlay3());
 			});
 		});
 	};
