@@ -112,65 +112,72 @@ export default class Player extends Component {
 		});
 	}
 
-	initializePlayer = () => {
-		// TODO Ensure YT.Player exists
-		if (this.state.player.ready || this.state.player.initializing) return;
-		this.setState({
-			player: {
-				...this.state.player,
-				initializing: true,
-			},
-		});
-		this.player = new YT.Player("player", {
-			height: 270,
-			width: 480,
-			videoId: "",
-			playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
-			events: {
-				"onReady": () => {
-					this.setState({
-						player: {
-							...this.state.player,
-							initializing: false,
-							ready: true,
-						},
-					});
-
-					getPlayerCallbacks.forEach((cb) => {
-						cb(this.player);
-					});
-
-					this.player.setVolume(this.props.volume);
-					if (this.props.muted) this.mute();
-					else this.unmute();
+	initializePlayer = (force) => {
+		if ((this.state.player.ready || this.state.player.initializing) && !force) return;
+		if (!force) {
+			this.setState({
+				player: {
+					...this.state.player,
+					initializing: true,
 				},
-				"onError": function(err) {
-					console.log("iframe error", err);
-					// VOTE TO SKIP SONG
-				},
-				"onStateChange": (event) => {
-					this.getPlayer((player) => {
-						if (event.data === YT.PlayerState.PLAYING) {
-							if (this.state.player.loading) this.setState({
-								player: {
-									...this.state.player,
-									loading: false,
-								},
-							});
-							if (this.props.paused) player.pauseVideo();
-							if (this.props.paused || this.state.player.loading) player.seekTo(this.getProperVideoTime(), true);
-						}
+			});
+		}
+		if (!YT.Player) {
+			setTimeout(() => {
+				this.initializePlayer(true);
+			}, 100);
+		} else {
+			this.player = new YT.Player("player", {
+				height: 270,
+				width: 480,
+				videoId: "",
+				playerVars: {controls: 0, iv_load_policy: 3, rel: 0, showinfo: 0},
+				events: {
+					"onReady": () => {
+						this.setState({
+							player: {
+								...this.state.player,
+								initializing: false,
+								ready: true,
+							},
+						});
 
-						if (event.data === YT.PlayerState.PAUSED) {
-							if (!this.props.paused) {
-								player.seekTo(this.getProperVideoTime(), true);
-								player.playVideo();
+						getPlayerCallbacks.forEach((cb) => {
+							cb(this.player);
+						});
+
+						this.player.setVolume(this.props.volume);
+						if (this.props.muted) this.mute();
+						else this.unmute();
+					},
+					"onError": function (err) {
+						console.log("iframe error", err);
+						// VOTE TO SKIP SONG
+					},
+					"onStateChange": (event) => {
+						this.getPlayer((player) => {
+							if (event.data === YT.PlayerState.PLAYING) {
+								if (this.state.player.loading) this.setState({
+									player: {
+										...this.state.player,
+										loading: false,
+									},
+								});
+								if (this.props.paused) player.pauseVideo();
+								if (this.props.paused || this.state.player.loading) player.seekTo(this.getProperVideoTime(), true);
 							}
-						}
-					});
+
+							if (event.data === YT.PlayerState.PAUSED) {
+								if (!this.props.paused) {
+									player.seekTo(this.getProperVideoTime(), true);
+									player.playVideo();
+								}
+							}
+						});
+					},
 				},
-			},
-		});
+			});
+		}
 	};
 
 	getPlayer(cb) {

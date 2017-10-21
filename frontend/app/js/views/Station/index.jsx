@@ -49,6 +49,7 @@ const formatTime = (duration) => {
 		displayName: state.station.get("displayName"),
 		paused: state.station.get("paused"),
 		pausedAt: state.station.get("pausedAt"),
+		ownerId: state.station.get("ownerId"),
 	},
 }))
 
@@ -154,10 +155,10 @@ export default class Station extends Component {
 		});
 	};
 
-	isOwner = (ownerId) => {
+	isOwner = () => {
 		if (this.props.loggedIn) {
 			if (this.props.user.role === "admin") return true;
-			if (this.props.user.userId === ownerId) return true;
+			if (this.props.user.userId === this.props.station.ownerId) return true;
 		}
 
 		return false;
@@ -233,7 +234,7 @@ export default class Station extends Component {
 		});
 	};
 
-	skip = () => {
+	skipStation = () => {
 		io.getSocket(socket => {
 			socket.emit('stations.forceSkip', this.props.station.stationId, data => {});
 		});
@@ -248,16 +249,32 @@ export default class Station extends Component {
 			<main id="station">
 				<Overlays t={ this.props.t } />
 
-				<button onClick={ () => { this.props.dispatch(openOverlay1("settings")) } }>Open settings</button>
-				<button onClick={ () => { this.props.dispatch(openOverlay1("playlists")) } }>Open playlists</button>
-				<button onClick={ () => { this.props.dispatch(openOverlay1("queueList")) } }>Open queue list</button>
+				<aside>
+					<h2>Sidebar</h2>
+					<button onClick={ () => { this.props.dispatch(openOverlay1("users")) } }>Users</button>
+					<button onClick={ () => { this.props.dispatch(openOverlay1("queueList")) } }>Queue</button>
+					<button onClick={ () => { this.props.dispatch(openOverlay1("playlists")) } }>Playlists</button>
+					{
+						(this.isOwner())
+						? (this.props.station.paused)
+							? <button onClick={ this.resumeStation }>Resume</button>
+							: <button onClick={ this.pauseStation }>Pause</button>
+						: null
+					}
+					{
+						(this.isOwner())
+						? <button onClick={ this.skipStation }>Skip</button>
+						: null
+					}
+					{
+						(this.isOwner())
+						? <button onClick={ () => { this.props.dispatch(openOverlay1("settings")) } }>Settings</button>
+						: null
+					}
+					<hr/>
+				</aside>
 
 				<h1>{ this.props.station.displayName }</h1>
-
-				{ (this.props.station.paused) ? <button onClick={ this.resumeStation }>Resume</button> : <button onClick={ this.pauseStation }>Pause</button>}
-
-				<button onClick={ this.addSongTemp }>Add song to queue TEMP</button>
-				<button onClick={ this.skip }>Skip</button>
 
 				<hr/>
 				<div className={(!this.props.songExists) ? "hidden" : ""}>
