@@ -117,6 +117,23 @@ const dictionary = {
 			},
 		],
 	},
+	stationMode: {
+		isRadio: true,
+		options: [
+			{
+				text: "Normal - Lorem ipsum lorem ipsum lorem ipsum",
+				value: "normal",
+			},
+			{
+				text: "Party - Lorem ipsum lorem ipsum lorem ipsum",
+				value: "party",
+			},
+			{
+				text: "DJ - Lorem ipsum lorem ipsum lorem ipsum",
+				value: "dj",
+			},
+		],
+	},
 	youTubeSearchQuery: {
 		inputType: "text",
 		isInput: true,
