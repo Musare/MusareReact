@@ -4,6 +4,7 @@ import volume from "reducers/volume";
 import songPlayer from "reducers/songPlayer";
 import station from "reducers/station";
 import stationOverlay from "reducers/stationOverlay";
+import playlistQueue from "reducers/playlistQueue";
 
 export default combineReducers({
 	user,
@@ -11,4 +12,5 @@ export default combineReducers({
 	songPlayer,
 	station,
 	stationOverlay,
+	playlistQueue,
 });

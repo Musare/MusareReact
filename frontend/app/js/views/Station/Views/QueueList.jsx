@@ -6,10 +6,10 @@ import CustomErrors from "components/CustomMessages.jsx";
 
 import { connect } from "react-redux";
 
-import { closeOverlay1, openOverlay2 } from "actions/stationOverlay";
+import { closeOverlay1, openOverlay2, closeOverlay2 } from "actions/stationOverlay";
+import { selectPlaylist, deselectPlaylists } from "actions/playlistQueue";
 
 import io from "io";
-import {closeOverlay2} from "../../../actions/stationOverlay";
 
 @connect(state => ({
 	user: {
@@ -24,6 +24,7 @@ import {closeOverlay2} from "../../../actions/stationOverlay";
 	songDuration: state.songPlayer.get("duration"),
 	simpleSong: state.songPlayer.get("simple"),
 	songExists: state.songPlayer.get("exists"),
+	playlistSelectedId: state.playlistQueue.get("playlistSelected"),
 }))
 export default class Settings extends Component {
 	constructor(props) {
@@ -33,6 +34,7 @@ export default class Settings extends Component {
 			queue: [],
 			userIdMap: {},
 			userIdMapLoading: [],
+			playlists: [],
 		};
 
 		io.getSocket((socket) => {
@@ -53,6 +55,27 @@ export default class Settings extends Component {
 				});
 				queue.forEach((song) => {
 					this.checkUserId(song.requestedBy);
+				});
+			});
+
+			socket.emit('playlists.indexForUser', res => {
+				if (res.status === 'success') this.setState({
+					playlists: res.data,
+				});
+			});
+
+			socket.on('event:playlist.create', () => {
+				socket.emit('playlists.indexForUser', res => {
+					if (res.status === 'success') this.setState({
+						playlists: res.data,
+					});
+				});
+			});
+			socket.on('event:playlist.delete', () => {
+				socket.emit('playlists.indexForUser', res => {
+					if (res.status === 'success') this.setState({
+						playlists: res.data,
+					});
 				});
 			});
 		});
@@ -113,6 +136,20 @@ export default class Settings extends Component {
 		this.props.dispatch(openOverlay2("searchYouTube", null, this.addSongToQueueCallback));
 	};
 
+	getPlaylistAction = (playlistId) => {
+		if (playlistId === this.props.playlistSelectedId) {
+			return <span>SELECTED</span>;
+		} else return <span onClick={ () => { this.selectPlaylist(playlistId); } }>SELECT</span>;
+	}
+
+	selectPlaylist = (playlistId) => {
+		this.props.dispatch(selectPlaylist(playlistId));
+	}
+
+	deselectAll = () => {
+		this.props.dispatch(deselectPlaylists());
+	}
+
 	close = () => {
 		this.props.dispatch(closeOverlay1());
 	};
@@ -160,8 +197,25 @@ export default class Settings extends Component {
 
 				<button onClick={ this.addSongToQueue }>Add song to queue</button>
 
-				<button onClick={ () => {io.getSocket((socket) => {socket.emit("stations.addToQueue", this.props.stationId, "A1PAO3jgmXY", (data) => {console.log(data);});});} }>Add temp</button>
-				<button onClick={ () => {io.getSocket((socket) => {socket.emit('stations.updatePartyMode', this.props.stationId, true, res => {console.log(res);});})}}>Enable party</button>
+				<hr/>
+
+				<ul>
+					{
+						this.state.playlists.map((playlist) => {
+							return (
+								<li key={ playlist._id }>
+									{ playlist.displayName } - { this.getPlaylistAction(playlist._id) }
+								</li>
+							)
+						})
+					}
+				</ul>
+
+				{
+					(this.props.playlistSelectedId)
+						? <button onClick={ this.deselectAll }>Deselect all playlists</button>
+					: null
+				}
 			</div>
 		);
 	}

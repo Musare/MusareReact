@@ -13,6 +13,7 @@ import { changeVolume } from "actions/volume";
 import { changeSong, setTimeElapsed, timePaused, receivedRatings, receivedOwnRatings } from "actions/songPlayer";
 import { pauseStation, resumeStation } from "actions/station";
 import { openOverlay1 } from "actions/stationOverlay";
+import { addSong } from "actions/playlistQueue";
 
 import { connect } from "react-redux";
 
@@ -43,6 +44,8 @@ const formatTime = (duration) => {
 	songDisliked: state.songPlayer.get("disliked"),
 	simpleSong: state.songPlayer.get("simple"),
 	songExists: state.songPlayer.get("exists"),
+	queueLocked: state.station.get("locked"),
+	partyEnabled: state.station.get("partyMode"),
 	station: {
 		stationId: state.station.get("id"),
 		name: state.station.get("name"),
@@ -50,6 +53,10 @@ const formatTime = (duration) => {
 		paused: state.station.get("paused"),
 		pausedAt: state.station.get("pausedAt"),
 		ownerId: state.station.get("ownerId"),
+	},
+	selectedPlaylistObject: {
+		addedSongId: state.playlistQueue.get("addedSongId"),
+		selectedPlaylistId: state.playlistQueue.get("playlistSelected"),
 	},
 }))
 
@@ -66,6 +73,10 @@ export default class Station extends Component {
 	constructor(props) {
 		super();
 
+		this.state = {
+			mode: this.getModeTemp(props.partyEnabled, props.queueLocked),
+		};
+
 		io.getSocket(socket => {
 			socket.emit("stations.join", props.station.name, res => {
 				if (res.status === 'success') {
@@ -79,6 +90,7 @@ export default class Station extends Component {
 				}
 
 				socket.on('event:songs.next', data => {
+					this.addTopToQueue();
 					if (data.currentSong) {
 						data.currentSong.startedAt = data.startedAt;
 						data.currentSong.timePaused = data.timePaused;
@@ -95,7 +107,6 @@ export default class Station extends Component {
 					this.props.dispatch(updateTimePaused(data.timePaused));
 					this.props.dispatch(resumeStation());
 				});
-
 
 				socket.on('event:song.like', data => {
 					console.log("LIKE");
@@ -144,6 +155,100 @@ export default class Station extends Component {
 				this.props.dispatch(setTimeElapsed(this.props.station.paused, this.props.station.pausedAt)); // TODO Fix
 			}
 		}, 1000);
+	}
+
+	isInQueue = (songId, cb) => {
+		io.getSocket((socket) => {
+			socket.emit('stations.getQueue', this.props.stationId, data => {
+				if (data.status === 'success') {
+					data.queue.forEach((song) => {
+						if (song._id === songId) {
+							return cb(true);
+						}
+					});
+				}
+
+				return cb(false);
+			});
+		});
+	};
+
+	checkIfCanAdd = (cb) => {
+		if (this.state.mode === "normal") return cb(false);
+		let playlistId = this.props.selectedPlaylistObject.selectedPlaylistId;
+		let songId = this.props.selectedPlaylistObject.addedSongId;
+		console.log(playlistId, songId, this.props.songId);
+		if (playlistId) {
+			if (songId === this.props.songId) return cb(true);
+			else if (songId === null) return cb(true);
+			else {
+				this.isInQueue(songId, (res) => {
+					return cb(res);
+				});
+			}
+		}
+	}
+
+	addTopToQueue = () => {
+		console.log("ADD TOP TO QUEUE!!!");
+		this.checkIfCanAdd((can) => {
+			if (!can) return;
+			let playlistId = this.props.selectedPlaylistObject.selectedPlaylistId;
+			console.log(can);
+			io.getSocket((socket) => {
+				socket.emit('playlists.getFirstSong', this.props.selectedPlaylistObject.selectedPlaylistId, data => {
+					if (data.status === 'success') {
+						let songId = data.song.songId;
+						if (data.song.duration < 15 * 60) {
+							this.props.dispatch(addSong(songId));
+
+							socket.emit('stations.addToQueue', this.props.station.stationId, songId, data2 => {
+								if (data2.status === 'success') {
+									this.moveToBottom(playlistId, songId, (data3) => {
+										if (data3.status === 'success') {
+										}
+									});
+								} else {
+									this.messages.clearAddError("Could not automatically add top song of playlist to queue.", data2.message);
+								}
+							});
+						} else {
+							this.messages.clearAddError("Top song in playlist was too long to be added. Moving to the next song.");
+							this.moveToBottom(playlistId, songId, (data3) => {
+								if (data3.status === 'success') {
+									setTimeout(() => {
+										this.addTopToQueue();
+									}, 2000);
+								}
+							});
+						}
+					}
+				});
+			});
+		});
+	};
+
+	moveToBottom = (playlistId, songId, cb) => {
+		io.getSocket((socket) => {
+			socket.emit('playlists.moveSongToBottom', playlistId, songId, data => {
+				cb(data);
+			});
+		});
+	}
+
+	getModeTemp = (partyEnabled, queueLocked) => {
+		// If party enabled
+		// If queue locked
+		// Mode is DJ
+		// If queue not locked
+		// Mode party
+		// If party not enabled
+		// Mode is normal
+
+		if (partyEnabled) {
+			if (queueLocked) return "dj";
+			else return "party";
+		} else return "normal";
 	}
 
 	getOwnRatings = () => {
