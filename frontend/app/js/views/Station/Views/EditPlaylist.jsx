@@ -118,9 +118,9 @@ export default class EditPlaylist extends Component {
 		console.log("edit Playlist", props);
 	}
 
-	addSongToQueueCallback = (songId) => {
+	addSongToPlaylistCallback = (songId) => {
 		io.getSocket((socket) => {
-			// Add song to queue
+			// Add song to the playlist
 			socket.emit("playlists.addSongToPlaylist", songId, this.props.playlistId, res => {
 				if (res.status === "success") {
 					this.messages.clearAddSuccess("Successfully added song.");
@@ -132,8 +132,8 @@ export default class EditPlaylist extends Component {
 		});
 	};
 
-	addSongToQueue = () => {
-		this.props.dispatch(openOverlay3("searchYouTube", this.addSongToQueueCallback));
+	addSongToPlaylist = () => {
+		this.props.dispatch(openOverlay3("searchYouTube", this.addSongToPlaylistCallback));
 	};
 
 	changeDisplayName = () => {
@@ -241,7 +241,7 @@ export default class EditPlaylist extends Component {
 				}
 
 
-				<button onClick={ this.addSongToQueue }>Add song to queue</button>
+				<button onClick={ this.addSongToPlaylist }>Add song to playlist</button>
 				<CustomErrors onRef={ ref => (this.messages = ref) } />
 				<button onClick={ this.deletePlaylist }>Delete this playlist</button>
 			</div>

@@ -11,7 +11,16 @@ import { closeOverlay1, openOverlay2 } from "actions/stationOverlay";
 import io from "io";
 
 @connect(state => ({
+	user: {
+		userId: state.user.get("userId"),
+		role: state.user.get("role"),
+	},
+	loggedIn: state.user.get("loggedIn"),
 	stationId: state.station.get("id"),
+	stationOwner: state.station.get("ownerId"),
+	partyEnabled: state.station.get("partyMode"),
+	queueLocked: state.station.get("locked"),
+	privatePlaylist: state.station.get("privatePlaylist"),
 }))
 export default class Playlists extends Component {
 	constructor(props) {
@@ -21,6 +30,7 @@ export default class Playlists extends Component {
 
 		this.state = {
 			playlists: [],
+			mode: this.getModeTemp(props.partyEnabled, props.queueLocked),
 		};
 
 		io.getSocket((socket) => {
@@ -53,6 +63,70 @@ export default class Playlists extends Component {
 		}
 	};
 
+	getModeTemp = (partyEnabled, queueLocked) => {
+		// If party enabled
+		// If queue locked
+		// Mode is DJ
+		// If queue not locked
+		// Mode party
+		// If party not enabled
+		// Mode is normal
+
+		if (partyEnabled) {
+			if (queueLocked) return "dj";
+			else return "party";
+		} else return "normal";
+	};
+
+	getPlaylistAction = (playlistId) => {
+		if (this.state.mode === "normal") {
+			if (this.isOwner()) {
+				const play = <span onClick={ () => { this.playPlaylist(playlistId) } }>PLAY!</span>;
+				//const stop = <span onClick={ () => { this.stopPlaylist(playlistId) } }>STOP!</span>;
+				const stop = null; // There's currently no backend functionality to stop a playlist from playing
+
+				if (this.props.privatePlaylist === playlistId) return stop;
+				else return play;
+			}
+		}
+
+		return null;
+	};
+
+	isOwner = () => {
+		if (this.props.loggedIn) {
+			if (this.props.user.userId === this.props.stationOwner) return true;
+		}
+
+		return false;
+	};
+
+	playPlaylist = (playlistId) => {
+		this.messages.clearErrorSuccess();
+		io.getSocket((socket) => {
+			socket.emit("stations.selectPrivatePlaylist", this.props.stationId, playlistId, (res) => {
+				if (res.status === "success") {
+					this.message.addSuccess("Successfully selected private playlist.");
+				} else {
+					this.messages.addError(res.message);
+				}
+			});
+		});
+	};
+
+	/*stopPlaylist = (playlistId) => {
+		this.messages.clearErrorSuccess();
+		io.getSocket((socket) => {
+			socket.emit("stations.selectPrivatePlaylist", this.props.stationId, playlistId, (res) => {
+				if (res.status === "success") {
+					this.message.addSuccess("Successfully selected private playlist.");
+				} else {
+					this.messages.addError(res.message);
+				}
+			});
+		});
+	};*/
+
 	render() {
 		return (
 			<div className="overlay">
@@ -67,7 +141,12 @@ export default class Playlists extends Component {
 				<ul>
 					{
 						this.state.playlists.map((playlist) => {
-							return <li key={ playlist._id }>{ playlist.displayName } - <span onClick={ () => { this.props.dispatch(openOverlay2("editPlaylist", { playlistId: playlist._id })) } }>Edit</span></li>;
+							return (
+								<li key={ playlist._id }>
+									{ playlist.displayName } - <span onClick={ () => { this.props.dispatch(openOverlay2("editPlaylist", { playlistId: playlist._id })) } }>Edit</span>
+									{ this.getPlaylistAction(playlist._id) }
+								</li>
+							)
 						})
 					}
 				</ul>
