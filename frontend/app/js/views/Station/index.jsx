@@ -307,11 +307,15 @@ export default class Station extends Component {
 			else dislikeButton = <i className="material-icons" onClick={ this.dislike }>thumb_down</i>;
 		}
 
-		return <div>
-			{ likeButton }
-			{ likes }
-			{ dislikeButton }
-			{ dislikes }
+		return <div className="ratings-container">
+			<div>
+				{ likeButton }
+				{ likes }
+			</div>
+			<div>
+				{ dislikeButton }
+				{ dislikes }
+			</div>
 		</div>;
 	};
 
@@ -354,56 +358,52 @@ export default class Station extends Component {
 			<main id="station">
 				<Overlays t={ this.props.t } />
 
-				<aside>
-					<h2>Sidebar</h2>
-					<button onClick={ () => { this.props.dispatch(openOverlay1("users")) } }>Users</button>
-					<button onClick={ () => { this.props.dispatch(openOverlay1("queueList")) } }>Queue</button>
-					<button onClick={ () => { this.props.dispatch(openOverlay1("playlists")) } }>Playlists</button>
+				<div id="sidebar">
+					<button onClick={ () => { this.props.dispatch(openOverlay1("users")) } }><i className="material-icons">people</i></button>
+					<button onClick={ () => { this.props.dispatch(openOverlay1("queueList")) } }><i className="material-icons">queue_music</i></button>
+					<button onClick={ () => { this.props.dispatch(openOverlay1("playlists")) } }><i className="material-icons">library_music</i></button>
+					<hr/>
 					{
 						(this.isOwner())
 						? (this.props.station.paused)
-							? <button onClick={ this.resumeStation }>Resume</button>
-							: <button onClick={ this.pauseStation }>Pause</button>
+							? <button onClick={ this.resumeStation }><i className="material-icons">play_arrow</i></button>
+							: <button onClick={ this.pauseStation }><i className="material-icons">pause</i></button>
 						: null
 					}
 					{
 						(this.isOwner())
-						? <button onClick={ this.skipStation }>Skip</button>
+						? <button onClick={ this.skipStation }><i className="material-icons">skip_next</i></button>
 						: null
 					}
 					{
 						(this.isOwner())
-						? <button onClick={ () => { this.props.dispatch(openOverlay1("settings")) } }>Settings</button>
+						? <button onClick={ () => { this.props.dispatch(openOverlay1("settings")) } }><i className="material-icons">settings</i></button>
 						: null
 					}
-					<hr/>
-				</aside>
+				</div>
 
 				<h1>{ this.props.station.displayName }</h1>
 
-				<hr/>
-				<div className={(!this.props.songExists) ? "hidden" : ""}>
-					<Player onRef={ ref => (this.player = ref) }/>
-					{ (this.props.station.paused) ? <div><span>Paused</span><i className="material-icons">pause</i></div> : null }
+				<div className={(!this.props.songExists) ? "player-container hidden" : "player-container"}>
+					<div className="iframe-container">
+						<Player onRef={ ref => (this.player = ref) }/>
+						{ (this.props.station.paused) ? <div className="paused-overlay"><span>Paused</span><i className="material-icons">pause</i></div> : null }
+					</div>
+					<Seekerbar/>
 				</div>
 
 				{ (this.props.songExists) ? (
 				[
-					<div key="content">
-						<h1>Title: { this.props.songTitle }</h1>
-						<br/>
-						<span>Artists: { this.props.songArtists.join(", ") }</span>
-						<br/>
-						<span key="time">
-							{ formatTime(this.props.songTimeElapsed) } - { formatTime(this.props.songDuration) }
+					<div key="content" className="content">
+						<span className="title">{ this.props.songTitle }</span>
+						<span className="artists">{ this.props.songArtists.join(", ") }</span>
+						<span className="time">
+							{ formatTime(this.props.songTimeElapsed) } / { formatTime(this.props.songDuration) }
 						</span>
-						<div key="seekerbar" className="seekerbar-container" style={{"width": "100%", "background-color": "yellow", "height": "20px", "display": "block"}}>
-							<Seekerbar/>
-						</div>
+						<VolumeSlider/>
 						{
 							(!this.props.simpleSong) ? this.getRatings() : null
 						}
-						<VolumeSlider key="volumeSlider"/>
 					</div>,
 				]) : (
 					<h1>No song playing</h1>

@@ -48,7 +48,9 @@ export default class Seekerbar extends Component {
 
 	render() {
 		return (
-			<span style={{"width": this.state.percentage + "%", "background-color": "blue", "height": "100%", "display": "inline-block"}}/>
+			<div className="seekerbar-container">
+				<span style={{"width": this.state.percentage + "%"}}/>
+			</div>
 		);
 	}
 }

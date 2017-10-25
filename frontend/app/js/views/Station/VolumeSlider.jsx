@@ -31,7 +31,6 @@ export default class VolumeSlider extends Component {
 	render() {
 		return (
 			<div className="volume-container">
-				<h2>{ this.props.volume }. Muted: { (this.props.muted) ? "true" : "false" }</h2>
 				{
 					(this.props.muted) ? ([
 						<i className="material-icons" key="unmuteButton" onClick={ this.unmuteVolume }>volume_off</i>,
