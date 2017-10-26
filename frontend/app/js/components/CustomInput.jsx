@@ -313,7 +313,7 @@ export default class CustomInput extends Component {
 			const ElementType = (this.state.isInput) ? "input" : "textarea";
 
 			return (
-				<label htmlFor={this.props.name}>
+				<label htmlFor={this.props.name} className="customInput">
 					{(this.props.showLabel) ? <span>{this.props.label}</span> : null}
 					<ElementType
 						placeholder={this.props.placeholder}
@@ -341,9 +341,9 @@ export default class CustomInput extends Component {
 			});
 
 			return (
-				<label htmlFor={this.props.name}>
+				<label htmlFor={this.props.name} className="customInput">
 					{(this.props.showLabel) ? <span>{this.props.label}</span> : null}
-					<div>
+					<div className="radio-options">
 						{ optionsArr }
 						{/*<ElementType
 							placeholder={this.props.placeholder}

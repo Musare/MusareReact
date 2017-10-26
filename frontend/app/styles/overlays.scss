@@ -1,0 +1,77 @@
+@import "colors";
+
+#overlays {
+	color: $musare_color_white;
+
+	.overlay {
+		background-color: $musare_color_primary_blue;
+		display: block;
+		position: absolute;
+		top: 64px;
+		right: 0;
+		left: 0;
+		min-height: 100%;
+		z-index: 2;
+
+		.back {
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+			padding: 0px;
+			margin: 0 0 0 13px;
+			float: left;
+
+			i {
+				font-size: 32px;
+			}
+		}
+
+		.content {
+			margin-top: 16px;
+			width: 296px;
+
+			.custom-messages {
+				&.custom-messages-error {
+					border-color: $musare_color_primary_red;
+					color: $musare_color_primary_red;
+				}
+
+				&.custom-messages-info {
+					border-color: $musare_color_dark_blue;
+					color: $musare_color_dark_blue;
+				}
+
+				&.custom-messages-success {
+					border-color: $musare_color_green;
+					color: $musare_color_green;
+				}
+			}
+
+			label {
+				color: $musare_color_white;
+			}
+
+			button {
+				background-color: $musare_color_white;
+				color: $musare_color_primary_blue;
+				border-radius: 50px;
+
+				&:hover, &:focus {
+					background-color: $musare_color_light_gray;
+					color: $musare_color_primary_blue;
+				}
+			}
+
+			.red-button {
+				background-color: $musare_color_primary_red;
+				color: $musare_color_white;
+
+				&:hover, &:focus {
+					background-color: $musare_color_secondary_red; //TODO Fix these colors
+					color: $musare_color_white;
+					cursor: pointer;
+				}
+			}
+		}
+	}
+}

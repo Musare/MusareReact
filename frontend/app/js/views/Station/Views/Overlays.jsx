@@ -55,7 +55,7 @@ export default class Overlays extends Component {
 	}
 
 	render() {
-		return <div>
+		return <div id="overlays">
 			{ this.state.overlay1 }
 			{ this.state.overlay2 }
 			{ this.state.overlay3 }

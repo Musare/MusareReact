@@ -276,26 +276,28 @@ export default class Settings extends Component {
 	render() {
 		return (
 			<div className="overlay">
-				<button onClick={ this.close }>Back</button>
-				<h1>Settings</h1>
-				<CustomErrors onRef={ ref => (this.messages = ref) } />
+				<button onClick={ this.close } className="back"><i className="material-icons">arrow_back</i></button>
+				<div className="content">
+					<h1>Settings</h1>
+					<CustomErrors onRef={ ref => (this.messages = ref) } />
 
-				<CustomInput key="name" type="stationName" name="name" label="Station name" placeholder="Station name" original={ this.props.name } onRef={ ref => (this.input.name = ref) } />
-				<button onClick={ this.changeName }>Change name</button>
+					<CustomInput key="name" showLabel={true} type="stationName" name="name" label="Station name" placeholder="Station name" original={ this.props.name } onRef={ ref => (this.input.name = ref) } />
+					<button onClick={ this.changeName }>Change name</button>
 
-				<CustomInput key="displayName" type="stationDisplayName" name="displayName" label="Station display name" placeholder="Station display name" original={ this.props.displayName } onRef={ ref => (this.input.displayName = ref) } />
-				<button onClick={ this.changeDisplayName }>Change display name</button>
+					<CustomInput key="displayName" showLabel={true} type="stationDisplayName" name="displayName" label="Station display name" placeholder="Station display name" original={ this.props.displayName } onRef={ ref => (this.input.displayName = ref) } />
+					<button onClick={ this.changeDisplayName }>Change display name</button>
 
-				<CustomInput key="description" type="stationDescription" name="description" label="Station description" placeholder="Station description" original={ this.props.description } onRef={ ref => (this.input.description = ref) } />
-				<button onClick={ this.changeDescription }>Change description</button>
+					<CustomInput key="description" showLabel={true} type="stationDescription" name="description" label="Station description" placeholder="Station description" original={ this.props.description } onRef={ ref => (this.input.description = ref) } />
+					<button onClick={ this.changeDescription }>Change description</button>
 
-				<CustomInput key="privacy" type="stationPrivacy" name="privacy" label="Station privacy" placeholder="Station privacy" original={ this.state.privacy } onRef={ ref => (this.input.privacy = ref) } />
-				<button onClick={ this.savePrivacy }>Save privacy</button>
+					<CustomInput key="privacy" showLabel={true} type="stationPrivacy" name="privacy" label="Station privacy" placeholder="Station privacy" original={ this.state.privacy } onRef={ ref => (this.input.privacy = ref) } />
+					<button onClick={ this.savePrivacy }>Save privacy</button>
 
-				<CustomInput key="mode" type="stationMode" name="mode" label="Station mode" placeholder="Station mode" original={ this.state.mode } onRef={ ref => (this.input.mode = ref) } />
-				<button onClick={ this.saveMode }>Save mode</button>
+					<CustomInput key="mode" showLabel={true} type="stationMode" name="mode" label="Station mode" placeholder="Station mode" original={ this.state.mode } onRef={ ref => (this.input.mode = ref) } />
+					<button onClick={ this.saveMode }>Save mode</button>
 
-				<button onClick={ this.deleteStation }>{ this.state.deleteButtonText }</button>
+					<button onClick={ this.deleteStation } className="red-button">{ this.state.deleteButtonText }</button>
+				</div>
 			</div>
 		);
 	}

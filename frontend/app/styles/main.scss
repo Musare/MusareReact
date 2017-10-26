@@ -11,6 +11,7 @@
 @import "team";
 @import "home";
 @import "station";
+@import "overlays";
 @import "specific/button";
 @import "specific/form";
 @import url("https://fonts.googleapis.com/css?family=Roboto:100,400,500,700");
@@ -57,21 +58,8 @@ h1 {
 .disliked {
 	color: red;
 }
-
-.overlay {
-	display: block;
-	position: absolute;
-	top: 64px;
-	bottom: 0;
-	right: 0;
-	left: 0;
-	height: 100%;
-	width: 100%;
-	background-color: #03a9f4;
-	z-index: 2;
-}
 // Temp End
-main {
+main, #overlays .content {
 	margin-left: auto;
 	margin-right: auto;
 
@@ -82,6 +70,7 @@ main {
 		border: solid 1px;
 		padding: 8px;
 		margin-bottom: 16px;
+		background-color: $musare_color_white;
 
 		&.custom-messages-error {
 			border-color: $musare_color_primary_red;

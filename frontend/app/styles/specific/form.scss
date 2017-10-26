@@ -1,7 +1,7 @@
 @import "../colors";
 @import "../breakpoints";
 
-label {
+.customInput {
 	color: $musare_color_primary_gray;
 	display: block;
 	margin-bottom: 16px;
@@ -14,7 +14,7 @@ label {
 		margin-bottom: 5px;
 	}
 
-	input, textarea {
+	> input, textarea {
 		display: block;
 		box-sizing: border-box;
 		width: 100%;
@@ -27,6 +27,47 @@ label {
 
 		&.has-validation-errors {
 			border-color: $musare_color_primary_red;
+		}
+	}
+
+	.radio-options {
+		label {
+			input[type="radio"] {
+				border: 0;
+				clip: rect(0 0 0 0);
+				height: 1px;
+				margin: -1px;
+				overflow: hidden;
+				padding: 0;
+				position: absolute;
+				width: 1px;
+			}
+
+			input[type="radio"] + span::before {
+				content: '';
+				display: inline-block;
+				width: 16px;
+				height: 16px;
+				vertical-align: -4px;
+				border-radius: 50px;
+				border: 4px solid $musare_color_white;
+				background-color: white;
+				//box-shadow: 0 0 0 0.15em #000;
+				margin-right: 16px;
+				//transition: 0.5s ease all;
+			}
+
+			input[type="radio"]:checked + span::before {
+				background: $musare_color_primary_blue;
+			}
+
+			/*input {
+				float: left;
+			}*/
+
+			span {
+				font-size: 15px;
+			}
 		}
 	}
 
