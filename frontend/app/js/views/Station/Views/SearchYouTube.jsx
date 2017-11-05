@@ -6,7 +6,7 @@ import CustomErrors from "components/CustomMessages.jsx";
 
 import { connect } from "react-redux";
 
-import { closeOverlay3 } from "actions/stationOverlay";
+import { closeOverlay3, closeOverlay2 } from "actions/stationOverlay";
 
 import io from "io";
 
@@ -59,44 +59,54 @@ export default class SearchYouTube extends Component {
 	};
 
 	close = () => {
-		this.props.dispatch(closeOverlay3());
+		if (this.props.order === 3) {
+			this.props.dispatch(closeOverlay3());
+		} else {
+			this.props.dispatch(closeOverlay2());
+		}
 	};
 
 	render() {
 		return (
 			<div className="overlay">
-				<button onClick={ this.close }>Back</button>
-				<h1>Search</h1>
+				<button onClick={ this.close } className="back"><i className="material-icons">arrow_back</i></button>
+				<div className="content">
+					<h1>Search</h1>
 
-				<CustomInput type="youTubeSearchQuery" name="query" label="YouTube search query" placeholder="YouTube search query" onRef={ ref => (this.input.query = ref) } />
-				<button onClick={ this.search }>Search</button>
+					<CustomInput type="youTubeSearchQuery" showLabel={true} name="query" label="YouTube search query" placeholder="YouTube search query" onRef={ ref => (this.input.query = ref) } />
+					<button onClick={ this.search }>Search</button>
 
-				{
-					(this.state.gotResults)
-					? (
-						<div>
-							<h2>Results</h2>
-							{
-								this.state.results.map((result) => {
-									return (
-										<li key={ this.input.query.getValue() + result.songId }>
-											<img src={ result.thumbnail }/>
-											<a href={ result.url }>{ result.title }</a>
-											<span>12:12</span>
-											<span onClick={ () => { this.props.callback(result.songId); } }>ADD</span>
-										</li>
-									);
-								})
-							}
-						</div>
-					)
-					: null
-				}
-				<ul>
-					{}
-				</ul>
+					{
+						(this.state.gotResults)
+						? (
+							<div className="search-youtube-results">
+								<h2>Results</h2>
+								<ul>
+								{
+									this.state.results.map((result) => {
+										return (
+											<li key={ this.input.query.getValue() + result.songId }>
+												<img src={ result.thumbnail }/>
+												<a href={ result.url } target="_blank">{ result.title }</a>
+												<div>
+													<span className="duration">12:12</span>
+													<span onClick={ () => { this.props.callback(result.songId); } } className="add" tabIndex="0"><i className="material-icons">add</i></span>
+												</div>
+											</li>
+										);
+									})
+								}
+								</ul>
+							</div>
+						)
+						: null
+					}
+					<ul>
+						{}
+					</ul>
 
-				<CustomErrors onRef={ ref => (this.messages = ref) } />
+					<CustomErrors onRef={ ref => (this.messages = ref) } />
+				</div>
 			</div>
 		);
 	}
