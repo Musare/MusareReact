@@ -22,6 +22,7 @@ import io from "io";
 	songTitle: state.songPlayer.get("title"),
 	songArtists: state.songPlayer.get("artists"),
 	songDuration: state.songPlayer.get("duration"),
+	songThumbnail: state.songPlayer.get("thumbnail"),
 	simpleSong: state.songPlayer.get("simple"),
 	songExists: state.songPlayer.get("exists"),
 	playlistSelectedId: state.playlistQueue.get("playlistSelected"),
@@ -159,63 +160,80 @@ export default class Settings extends Component {
 
 		return (
 			<div className="overlay">
-				<button onClick={ this.close }>Back</button>
-				<h1>Queue</h1>
-				<CustomErrors onRef={ ref => (this.messages = ref) } />
+				<button onClick={ this.close } className="back"><i className="material-icons">arrow_back</i></button>
+				<div className="content">
+					<h1>Queue</h1>
+					<CustomErrors onRef={ ref => (this.messages = ref) } />
 
-				{
-					(this.state.queue)
-					? (
-						<ul>
-							{
-								(this.props.songExists)
-								? (
-									<li>
-										<p>{ this.props.songTitle }</p>
-										<p>{ this.props.songDuration }</p>
-										<hr/>
-									</li>
-								) : null
-							}
-							{
-								this.state.queue.map((song) => {
-									return (
-										<li key={ song.songId }>
-											<p>{ song.title }</p>
-											<p>{ song.duration }</p>
-											<a href={ `/u/${ this.state.userIdMap[`Z${ song.requestedBy }`] }` }>{ this.state.userIdMap[`Z${ song.requestedBy }`] }</a>
-											<p onClick={ () => { this.deleteSong(song.songId) } }>Delete</p>
-											<hr/>
-										</li>
-									);
-								})
-							}
-						</ul>
-					)
-					: null
-				}
-
-				<button onClick={ this.addSongToQueue }>Add song to queue</button>
-
-				<hr/>
-
-				<ul>
 					{
-						this.state.playlists.map((playlist) => {
-							return (
-								<li key={ playlist._id }>
-									{ playlist.displayName } - { this.getPlaylistAction(playlist._id) }
-								</li>
-							)
-						})
+						(this.state.queue)
+						? (
+							<ul>
+								{
+									(this.props.songExists)
+									? (
+										<li>
+											<div className="left">
+												<img src={ this.props.songThumbnail } onError={function(e) {e.target.src="/assets/images/notes.png"}}/>
+											</div>
+											<div className="right">
+												<span className="duration">{ this.props.songDuration }</span>
+												<p className="title">{ this.props.songTitle }</p>
+												<span className="title-artists-spacing"/>
+												<p className="artists">{ this.props.songTitle }</p>
+											</div>
+										</li>
+									) : null
+								}
+								{
+									this.state.queue.map((song) => {
+										return (
+											<li key={ song.songId }>
+												<div className="left">
+													<img src={ song.thumbnail }/>
+												</div>
+												<div className="right">
+													<span className="duration">{ song.duration }</span>
+													<p className="title">{ song.title }</p>
+													<span className="title-artists-spacing"/>
+													<p className="artists">{ song.title }</p>
+													<span>
+														<span>Requested by: </span>
+														<a href={ `/u/${ this.state.userIdMap[`Z${ song.requestedBy }`] }` }>{ this.state.userIdMap[`Z${ song.requestedBy }`] }</a>
+													</span>
+													<i onClick={ () => { this.deleteSong(song.songId) } }>Delete</i>
+												</div>
+											</li>
+										);
+									})
+								}
+							</ul>
+						)
+						: null
 					}
-				</ul>
 
-				{
-					(this.props.playlistSelectedId)
-						? <button onClick={ this.deselectAll }>Deselect all playlists</button>
-					: null
-				}
+					<button onClick={ this.addSongToQueue }>Add song to queue</button>
+
+					<hr/>
+
+					<ul>
+						{
+							this.state.playlists.map((playlist) => {
+								return (
+									<li key={ playlist._id }>
+										{ playlist.displayName } - { this.getPlaylistAction(playlist._id) }
+									</li>
+								)
+							})
+						}
+					</ul>
+
+					{
+						(this.props.playlistSelectedId)
+							? <button onClick={ this.deselectAll }>Deselect all playlists</button>
+						: null
+					}
+				</div>
 			</div>
 		);
 	}

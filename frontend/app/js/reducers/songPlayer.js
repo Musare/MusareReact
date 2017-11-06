@@ -16,6 +16,7 @@ const initialState = Map({
 	duration: 0,
 	skipDuration: 0,
 	songId: "",
+	thumbnail: "",
 	dislikes: 0,
 	disliked: false,
 	likes: 0,
@@ -31,12 +32,14 @@ const actionsMap = {
 		let exists = !!action.song;
 		obj.simple = (exists) ? (action.song.likes === -1 && action.song.dislikes === -1) : true;
 		obj.exists = exists;
+		console.log(action.song);
 		if (exists) {
 			obj.title = action.song.title;
 			obj.artists = action.song.artists;
 			obj.duration = action.song.duration;
 			obj.skipDuration = action.song.skipDuration;
 			obj.songId = action.song.songId;
+			obj.thumbnail = action.song.thumbnail;
 			obj.dislikes = action.song.dislikes;
 			obj.disliked = false;
 			obj.likes = action.song.likes;

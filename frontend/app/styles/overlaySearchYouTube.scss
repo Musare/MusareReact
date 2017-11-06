@@ -12,16 +12,16 @@
 					background-color: $musare_color_white;
 					border-top: solid rgba(148, 151, 153, 0.5) .5px;
 					border-bottom: solid rgba(148, 151, 153, 0.5) .5px;
-					border-left: solid rgba(148, 151, 153, 0.5) .5px;
 					border-right: solid rgba(148, 151, 153, 0.5) .5px;
 					margin-bottom: 8px;
-					min-height: 56px;
+					min-height: 55.5px;
+					box-sizing: border-box;
 
 					img {
 						display: inline-block;
 						width: 74px;
 						float: left;
-						margin-left: .5px;
+						margin-top: -.5px;
 					}
 
 					a {
