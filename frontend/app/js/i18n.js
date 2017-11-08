@@ -10,8 +10,8 @@ const i18n = i18next
 		fallbackLng: "en",
 		referenceLng: "en",
 		backend: {
-			loadPath: "/locales/{{lng}}/{{ns}}.json",
-			addPath: "locales/add/{{lng}}/{{ns}}",
+			loadPath: "https://translation.musare.com/{{lng}}/{{ns}}.json",
+			//addPath: "https://translation.musare.com/add/{{lng}}/{{ns}}",
 			allowMultiLoading: false,
 			crossDomain: false,
 			withCredentials: false,
