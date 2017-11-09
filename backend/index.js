@@ -70,6 +70,7 @@ const logToDiscord = (message, color, type, critical, extraFields, cb = ()=>{}) 
 	extraFields.forEach((extraField) => {
 		richEmbed.addField(extraField.name, extraField.value, extraField.inline);
 	});
+	console.log(config.get('apis.discord.loggingChannel'));
 	client.channels.get(config.get('apis.discord.loggingChannel')).send("", { embed: richEmbed }).then(() => {
 		cb();
 	}).then((reason) => {
