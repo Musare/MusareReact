@@ -1,31 +1,37 @@
 import React, { Component } from "react";
+import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 
 import { connect } from "react-redux";
 
-import { changeVolume, changeVolumeMuted } from "actions/volume";
+import { actionCreators as volumeActionCreators } from "ducks/volume";
 
 @connect(state => ({
-	volume: state.volume.get("volume"),
+	volume: state.volume.get("loudness"),
 	muted: state.volume.get("muted"),
+}),
+(dispatch) => ({
+	onVolumeLoudnessChange: bindActionCreators(volumeActionCreators.changeVolumeLoudness, dispatch),
+	onVolumeMute: bindActionCreators(volumeActionCreators.muteVolume, dispatch),
+	onVolumeUnmute: bindActionCreators(volumeActionCreators.unmuteVolume, dispatch),
 }))
 export default class VolumeSlider extends Component {
 	constructor(props) {
 		super(props);
 	}
 
-	changeVolumeHandler = (volume) => {
-		volume = volume / 100;
-		localStorage.setItem("volume", volume);
-		this.props.dispatch(changeVolume(volume));
+	changeVolumeHandler = (loudness) => {
+		loudness = loudness / 100;
+		localStorage.setItem("volume", loudness);
+		this.props.onVolumeLoudnessChange(loudness);
 	};
 
 	muteVolume = () => {
-		this.props.dispatch(changeVolumeMuted(true));
+		this.props.onVolumeMute();
 	};
 
 	unmuteVolume = () => {
-		this.props.dispatch(changeVolumeMuted(false));
+		this.props.onVolumeUnmute();
 	};
 
 	render() {

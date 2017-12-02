@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Route, Switch, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { actionCreators as volumeActionCreators } from "ducks/volume";
 import { translate } from "react-i18next";
 
 import { ban, authenticate } from "actions/auth";
@@ -12,9 +14,13 @@ import config from "config";
 import AuthRoute from "components/AuthRoute";
 import io from "./io";
 
-import { asyncComponent } from 'react-async-component';
+import { asyncComponent } from "react-async-component";
 
-@connect()
+@connect(null, (dispatch) => ({
+	onVolumeLoudnessChange: bindActionCreators(volumeActionCreators.changeVolumeLoudness, dispatch),
+	onVolumeMute: bindActionCreators(volumeActionCreators.muteVolume, dispatch),
+	onVolumeUnmute: bindActionCreators(volumeActionCreators.unmuteVolume, dispatch),
+}))
 @translate(["pages"], { wait: false })
 class App extends Component { // eslint-disable-line react/no-multi-comp
 	static propTypes = {
@@ -49,9 +55,12 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 		}
 
 		let volume = parseFloat(localStorage.getItem("volume"));
+		let muted = (localStorage.getItem("muted"));
 		volume = (typeof volume === "number" && !isNaN(volume)) ? volume : 20;
 		localStorage.setItem("volume", volume);
-		dispatch(initializeVolume(volume));
+
+		this.props.onVolumeLoudnessChange(volume);
+		muted ? this.props.onVolumeMute() : this.props.onVolumeUnmute();
 	}
 
 	render() {
