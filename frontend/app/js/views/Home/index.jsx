@@ -7,6 +7,10 @@ import PropTypes from "prop-types";
 import { translate, Trans } from "react-i18next";
 
 import { connect } from "react-redux";
+import { actionCreators as homepageActionCreators } from "ducks/homepage";
+import { bindActionCreators } from "redux";
+
+import StationCard from "./StationCard";
 
 import io from "io";
 import config from "config";
@@ -17,8 +21,16 @@ import config from "config";
 		role: state.user.get("role"),
 	},
 	loggedIn: state.user.get("loggedIn"),
+	officialStations: state.homepage.getIn(["stations", "official"]),
+	communityStations: state.homepage.getIn(["stations", "community"]),
+}),
+(dispatch) => ({
+	onStationIndex: bindActionCreators(homepageActionCreators.stationIndex, dispatch),
+	onStationCreate: bindActionCreators(homepageActionCreators.stationCreate, dispatch),
+	onStationRemove: bindActionCreators(homepageActionCreators.stationRemove, dispatch),
+	onStationSongUpdate: bindActionCreators(homepageActionCreators.stationSongUpdate, dispatch),
+	onStationUserCountUpdate: bindActionCreators(homepageActionCreators.stationUserCountUpdate, dispatch),
 }))
-
 @translate(["home", "createCommunityStation"], { wait: true })
 export default class Homepage extends Component {
 	static propTypes = {
@@ -35,33 +47,15 @@ export default class Homepage extends Component {
 		CustomInput.initialize(this);
 
 		this.state = {
-			stations: {
-				official: [],
-				community: [],
-			},
 			createStation: {
 				private: false,
-			}
+			},
 		};
 
 		io.getSocket(socket => {
 			socket.emit("stations.index", data => {
 				if (data.status === "success") {
-					let community = [];
-					let official = [];
-					data.stations.forEach(station => {
-						if (!station.currentSong) station.currentSong = { thumbnail: '/assets/images/notes-transparent.png' };
-						if (station.currentSong && !station.currentSong.thumbnail) station.currentSong.thumbnail = "/assets/images/notes-transparent.png";
-						if (station.type === 'official') official.push(station);
-						else community.push(station);
-					});
-
-					this.setState({
-						stations: {
-							official,
-							community,
-						}
-					});
+					this.props.onStationIndex(data.stations);
 				}
 			});
 		});
@@ -76,47 +70,15 @@ export default class Homepage extends Component {
 		return false;
 	};
 
-	listStations = (type) => {
+	/*listStations = (type) => {
 		let stations = [];
 
 		this.state.stations[type].forEach((station) => {
-			let icon = null;
-			if (station.type === "official") {
-				if (station.privacy !== "public") icon =
-					<i className="material-icons" title={ this.props.t("home:thisStationIsNotVisible") }>lock</i>;
-			} else {
-				// TODO Add isOwner function globally
-				if (this.isOwner(station.ownerId)) icon =
-					<i className="material-icons" title={ this.props.t("home:thisIsYourStation") }>home</i>;
-				if (station.privacy !== "public") icon =
-					<i className="material-icons" title={ this.props.t("home:thisStationIsNotVisible") }>lock</i>;
-			}
-
-			stations.push(
-				(
-					<div key={station._id} className="station-card">
-						<div className="station-media">
-							<img src={station.currentSong.thumbnail}/>
-						</div>
-						<div className="station-body">
-							<h3 className="displayName">{station.displayName}</h3>
-							<p className="description">{station.description}</p>
-						</div>
-						<div className="station-footer">
-							<div className="user-count" title={ this.props.t("home:howManyOtherUsers") }>
-								<i className="material-icons">people</i>
-								<span>{station.userCount}</span>
-							</div>
-							{ icon }
-						</div>
-						<a href={station.type + "/" + station.name}/>
-					</div>
-				)
-			);
+			stations.push(<StationCard station={ station }/>);
 		});
 
 		return stations;
-	};
+	};*/
 
 	togglePrivate = () => {
 		this.setState({
@@ -160,7 +122,9 @@ export default class Homepage extends Component {
 				<CustomMessages onRef={ ref => (this.messages = ref) } />
 				<h2>{ t("home:officialStations") }</h2>
 				<div className="official-stations stations">
-					{ this.listStations("official") }
+					{ this.props.officialStations.map((station) => {
+						return <StationCard station={ station } />;
+					}) }
 				</div>
 				<h2>{ t("home:communityStations") }</h2>
 				<div className="community-stations stations">
@@ -185,7 +149,9 @@ export default class Homepage extends Component {
 							</div>
 						</div>
 					) : null }
-					{ this.listStations("community") }
+					{ this.props.communityStations.map((station) => {
+						return <StationCard station={ station } isOwner={ this.isOwner(station.ownerId) } key={ station.stationId }/>;
+					}) }
 				</div>
 			</main>
 		);

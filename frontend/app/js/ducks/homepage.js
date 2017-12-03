@@ -1,8 +1,24 @@
 import { Map, List } from "immutable";
 
+const STATION_INDEX = "HOMEPAGE::STATION_INDEX";
+const STATION_CREATE = "HOMEPAGE::STATION_CREATE";
 const STATION_REMOVE = "HOMEPAGE::STATION_REMOVE";
 const STATION_SONG_UPDATE = "HOMEPAGE::STATION_SONG_UPDATE";
 const STATION_USER_COUNT_UPDATE = "HOMEPAGE::STATION_USER_COUNT_UPDATE";
+
+function stationIndex(stations) {
+	return {
+		type: STATION_INDEX,
+		stations,
+	}
+}
+
+function stationCreate(station) {
+	return {
+		type: STATION_CREATE,
+		station,
+	}
+}
 
 function stationRemove(stationId) {
 	return {
@@ -37,49 +53,74 @@ const initialState = Map({
 });
 
 function reducer(state = initialState, action) {
-	switch (action.type) {
-	case STATION_REMOVE:
-		const { stationId } = action;
-		const indexOfficial = state.getIn(["stations", "official"]).findIndex(function (station) {
-			return station.get("stationId") === stationId;
-		});
-		if (indexOfficial > -1) {
-			state.updateIn(["stations", "official"], (list) => {
-				list.delete(indexOfficial);
+	function updateStationById(stationId, cb) {
+		function byType(type) {
+			const index = state.getIn(["stations", type]).findIndex(function (station) {
+				return station.get("stationId") === stationId;
+			});
+			if (index === -1) return null;
+			state = state.updateIn(["stations", type], (list) => {
+				cb(list, index);
 			});
 		}
-		const indexCommunity = state.getIn(["stations", "community"]).findIndex(function (station) {
-			return station.get("stationId") === stationId;
-		});
-		if (indexCommunity > -1) {
-			state.updateIn(["stations", "community"], (list) => {
-				list.delete(indexCommunity);
-			});
-		}
+		byType("official");
+		byType("community");
+	}
 
+	const { stationId, stations, station } = action;
+
+	switch (action.type) {
+	case STATION_INDEX:
+		state.setIn(["stations", "official"], List([]));
+		state.setIn(["stations", "community"], List([]));
+		stations.forEach((station) => {
+			state = state.updateIn(["stations", station.type], function(list) {
+				return list.push(station);
+			});
+		});
+		return state;
+	case STATION_CREATE:
+		state = state.updateIn(["stations", station.type], (list) => {
+			return list.push(station);
+		});
+		return state;
+	case STATION_REMOVE:
+		updateStationById(stationId, (list, index) => {
+			list.delete(index);
+		});
 		return state;
 	case STATION_SONG_UPDATE:
-		/*return state.merge({
-			muted: true,
-		});*/
+		const { thumbnail } = action;
+		updateStationById(stationId, (list, index) => {
+			list.update(index, station => {
+				return station.set("thumbnail", thumbnail);
+			});
+		});
+		return state;
 	case STATION_USER_COUNT_UPDATE:
-		/*return state.merge({
-			muted: false,
-		});*/
+		const { userCount } = action;
+		updateStationById(stationId, (list, index) => {
+			list.update(index, station => {
+				return station.set("userCount", userCount);
+			});
+		});
+		return state;
 	}
 	return state;
 }
 
 const actionCreators = {
-	changeVolumeLoudness,
-	muteVolume,
-	unmuteVolume,
+	stationIndex,
+	stationCreate,
+	stationRemove,
+	stationSongUpdate,
+	stationUserCountUpdate,
 };
 
 const actionTypes = {
-	CHANGE_VOLUME_LOUDNESS,
-	MUTE_VOLUME,
-	UNMUTE_VOLUME,
+	STATION_REMOVE,
+	STATION_SONG_UPDATE,
+	STATION_USER_COUNT_UPDATE,
 };
 
 export {
