@@ -5,6 +5,9 @@ import { Redirect, Route } from "react-router-dom";
 import { translate } from "react-i18next";
 import { initializeStation } from "actions/station";
 
+import { actionCreators as stationInfoActionCreators } from "ducks/stationInfo";
+import { bindActionCreators } from "redux";
+
 import io from "io";
 
 const renderMergedProps = (component, ...rest) => {
@@ -28,23 +31,30 @@ function clone(obj) {
 }
 
 @connect(state => ({
-	loggedIn: state.user.get("loggedIn"),
-	role: state.user.get("role"),
-	authProcessed: state.user.get("authProcessed"),
-	station: {
-		stationId: state.station.get("id"),
-		name: state.station.get("name"),
+	user: {
+		role: state.session.get("role"),
+		loggedIn: state.session.get("loggedIn"),
+		authProcessed: state.session.get("authProcessed"),
 	},
+	station: {
+		stationId: state.station.info.get("stationId"),
+		name: state.station.info.get("name"),
+	},
+}),
+(dispatch) => ({
+	onJoinStation: bindActionCreators(stationInfoActionCreators.joinStation, dispatch),
 }))
 
 @translate(["general"], { wait: true })
 export default class AuthRoute extends Component {
 	static propTypes = {
-		loggedIn: PropTypes.bool,
+		user: PropTypes.shape({
+			role: PropTypes.string,
+			loggedIn: PropTypes.bool,
+			authProcessed: PropTypes.bool,
+		}),
 		title: PropTypes.string,
-		role: PropTypes.string,
 		auth: PropTypes.string,
-		authProcessed: PropTypes.bool,
 		component: PropTypes.oneOfType([
 			PropTypes.element,
 			PropTypes.func,
@@ -54,11 +64,13 @@ export default class AuthRoute extends Component {
 	};
 
 	static defaultProps = {
-		loggedIn: false,
+		user: {
+			role: "default",
+			loggedIn: false,
+			authProcessed: false,
+		},
 		title: "Musare",
-		role: "default",
 		auth: "ignored",
-		authProcessed: false,
 		component: () => {},
 		computedMatch: {},
 		t: () => {},
@@ -92,23 +104,31 @@ export default class AuthRoute extends Component {
 
 	getStationData = () => {
 		io.getSocket(socket => {
-			socket.emit("stations.findByName", this.state.stationName, res => {
+			socket.emit("stations.findByName", this.state.stationName, res => { //TODO Add simple endpoint
 				if (res.status === "success") {
-					this.props.dispatch(initializeStation({
+					this.props.onJoinStation({
 						//TODO Refactor this to be better optimized
 						stationId: res.data._id,
 						name: res.data.name,
 						displayName: res.data.displayName,
 						description: res.data.description,
 						privacy: res.data.privacy,
-						locked: res.data.locked,
-						partyMode: res.data.partyMode,
-						owner: res.data.owner,
-						privatePlaylist: res.data.privatePlaylist,
 						type: res.data.type,
+						ownerId: res.data.owner,
 						paused: res.data.paused,
 						pausedAt: res.data.pausedAt,
-					}));
+						// Mode
+						// Userlist
+							userList: [],
+							userCount: 0,
+							locked: res.data.locked,
+							partyMode: res.data.partyMode,
+						// Usercount
+						songList: res.data.queue,
+						// locked: res.data.locked,
+						// partyMode: res.data.partyMode,
+						// privatePlaylist: res.data.privatePlaylist,
+					});
 				} else {
 					this.setState({
 						noStation: true,
@@ -119,7 +139,8 @@ export default class AuthRoute extends Component {
 	};
 
 	render() {
-		const { auth, role, loggedIn, authProcessed, t } = this.props;
+		const { user, auth, t } = this.props;
+		const { loggedIn, role, authProcessed } = user;
 		const { waitingFor, receivedStationData } = this.state;
 
 		if (this.state.continue) {

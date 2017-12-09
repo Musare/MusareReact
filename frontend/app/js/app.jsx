@@ -4,10 +4,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { actionCreators as volumeActionCreators } from "ducks/volume";
+import { actionCreators as sessionActionCreators } from "ducks/session";
 import { translate } from "react-i18next";
 
-import { ban, authenticate } from "actions/auth";
-import { initialize as initializeVolume } from "actions/volume";
 import Navbar from "components/Global/Navbar";
 
 import config from "config";
@@ -20,6 +19,8 @@ import { asyncComponent } from "react-async-component";
 	onVolumeLoudnessChange: bindActionCreators(volumeActionCreators.changeVolumeLoudness, dispatch),
 	onVolumeMute: bindActionCreators(volumeActionCreators.muteVolume, dispatch),
 	onVolumeUnmute: bindActionCreators(volumeActionCreators.unmuteVolume, dispatch),
+	onLogin: bindActionCreators(sessionActionCreators.login, dispatch),
+	onBanned: bindActionCreators(sessionActionCreators.banned, dispatch),
 }))
 @translate(["pages"], { wait: false })
 class App extends Component { // eslint-disable-line react/no-multi-comp
@@ -39,9 +40,9 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 		io.init(config.serverDomain);
 		io.getSocket(socket => {
 			socket.on("ready", (loggedIn, role, username, userId) => {
-				dispatch(authenticate({ loggedIn, role, username, userId }));
+				this.props.onLogin(userId, username, role);
 			});
-			socket.on("keep.event:banned", reason => dispatch(ban(reason)));
+			socket.on("keep.event:banned", reason => this.props.banned(reason));
 
 			socket.on("keep.event:user.session.removed", () => {
 				location.reload();

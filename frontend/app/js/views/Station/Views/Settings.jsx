@@ -11,13 +11,14 @@ import { closeOverlay1 } from "actions/stationOverlay";
 import io from "io";
 
 @connect(state => ({
-	stationId: state.station.get("id"),
-	name: state.station.get("name"),
-	displayName: state.station.get("displayName"),
-	description: state.station.get("description"),
-	privacy: state.station.get("privacy"),
-	partyEnabled: state.station.get("partyMode"),
-	queueLocked: state.station.get("locked"),
+	stationId: state.station.info.get("stationId"),
+	name: state.station.info.get("name"),
+	displayName: state.station.info.get("displayName"),
+	description: state.station.info.get("description"),
+	privacy: state.station.info.get("privacy"),
+	mode: state.station.info.get("mode"),
+	//partyEnabled: state.station.get("partyMode"),
+	//queueLocked: state.station.get("locked"),
 }))
 export default class Settings extends Component {
 	constructor(props) {
@@ -26,8 +27,8 @@ export default class Settings extends Component {
 		CustomInput.initialize(this);
 
 		this.state = {
-			privacy: props.privacy,
-			mode: this.getModeTemp(props.partyEnabled, props.queueLocked),
+			//privacy: props.privacy,
+			//mode: this.getModeTemp(props.partyEnabled, props.queueLocked),
 			deleteButtonText: "Delete this station", //TODO Improve this
 		};
 	}
@@ -105,7 +106,7 @@ export default class Settings extends Component {
 		}
 	};
 
-	getModeTemp = (partyEnabled, queueLocked) => {
+	/*getModeTemp = (partyEnabled, queueLocked) => {
 		// If party enabled
 			// If queue locked
 				// Mode is DJ
@@ -118,11 +119,38 @@ export default class Settings extends Component {
 			if (queueLocked) return "dj";
 			else return "party";
 		} else return "normal";
+	}*/
+
+	translateModeTemp = (mode) => {
+		// If party enabled
+			// If queue locked
+				// Mode is DJ
+			// If queue not locked
+				// Mode party
+		// If party not enabled
+			// Mode is normal
+
+		if (mode === "normal") {
+			return {
+				partyMode: false,
+				queueLocked: true,
+			};
+		} else if (mode === "dj") {
+			return {
+				partyMode: true,
+				queueLocked: true,
+			};
+		} else if (mode === "party") {
+			return {
+				partyMode: true,
+				queueLocked: false,
+			};
+		}
 	}
 
 	// This is temporary since the backend cannot be changed in this update.
 	changeModeHandlerTemp = (newMode, cb) => {
-		const previousMode = this.state.mode;
+		const previousMode = this.props.mode;
 
 		const disablePartyMode = (cb) => {
 			io.getSocket((socket) => {
@@ -290,10 +318,10 @@ export default class Settings extends Component {
 					<CustomInput key="description" showLabel={true} type="stationDescription" name="description" label="Station description" placeholder="Station description" original={ this.props.description } onRef={ ref => (this.input.description = ref) } />
 					<button onClick={ this.changeDescription }>Change description</button>
 
-					<CustomInput key="privacy" showLabel={true} type="stationPrivacy" name="privacy" label="Station privacy" placeholder="Station privacy" original={ this.state.privacy } onRef={ ref => (this.input.privacy = ref) } />
+					<CustomInput key="privacy" showLabel={true} type="stationPrivacy" name="privacy" label="Station privacy" placeholder="Station privacy" original={ this.props.privacy } onRef={ ref => (this.input.privacy = ref) } />
 					<button onClick={ this.savePrivacy }>Save privacy</button>
 
-					<CustomInput key="mode" showLabel={true} type="stationMode" name="mode" label="Station mode" placeholder="Station mode" original={ this.state.mode } onRef={ ref => (this.input.mode = ref) } />
+					<CustomInput key="mode" showLabel={true} type="stationMode" name="mode" label="Station mode" placeholder="Station mode" original={ this.props.mode } onRef={ ref => (this.input.mode = ref) } />
 					<button onClick={ this.saveMode }>Save mode</button>
 
 					<button onClick={ this.deleteStation } className="red-button">{ this.state.deleteButtonText }</button>

@@ -10,15 +10,15 @@ const t = i18next.t;
 let getPlayerCallbacks = [];
 
 @connect(state => ({
-	volume: state.volume.get("volume"),
+	volume: state.volume.get("loudness"),
 	muted: state.volume.get("muted"),
-	songId: state.songPlayer.get("songId"),
-	startedAt: state.songPlayer.get("startedAt"),
-	timePaused: state.songPlayer.get("timePaused"),
-	skipDuration: state.songPlayer.get("skipDuration"),
-	pausedAt: state.songPlayer.get("pausedAt"),
-	exists: state.songPlayer.get("exists"),
-	paused: state.station.get("paused"),
+	songId: state.station.currentSong.get("songId"),
+	startedAt: state.station.currentSong.getIn(["timings", "startedAt"]),
+	timePaused: state.station.currentSong.getIn(["timings", "timePaused"]),
+	skipDuration: state.station.currentSong.getIn(["timings", "skipDuration"]),
+	pausedAt: state.station.currentSong.getIn(["timings", "pausedAt"]),
+	exists: state.station.currentSong.get("songId") !== "",
+	paused: state.station.info.get("paused"),
 }))
 export default class Player extends Component {
 	static propTypes = {

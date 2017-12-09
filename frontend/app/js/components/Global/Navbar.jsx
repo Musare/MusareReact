@@ -5,7 +5,9 @@ import { NavLink } from "react-router-dom";
 import { translate } from "react-i18next";
 
 @connect(state => ({
-	loggedIn: state.user.get("loggedIn"),
+	user: {
+		loggedIn: state.session.get("loggedIn")
+	},
 }))
 @translate(["navbar"], { wait: true })
 export default class Menu extends Component {
@@ -56,10 +58,10 @@ export default class Menu extends Component {
 				</button>
 				<navbar className={ (this.state.showNavbar) ? "show" : "" }>
 					{this.getLink("/", t("navbar:home"))}
-					{this.getLink("/login", t("navbar:login"), !this.props.loggedIn)}
-					{this.getLink("/register", t("navbar:register"), !this.props.loggedIn)}
-					{this.getLink("/settings", t("navbar:settings"), this.props.loggedIn)}
-					{this.getLink("/logout", t("navbar:logout"), this.props.loggedIn)}
+					{this.getLink("/login", t("navbar:login"), !this.props.user.loggedIn)}
+					{this.getLink("/register", t("navbar:register"), !this.props.user.loggedIn)}
+					{this.getLink("/settings", t("navbar:settings"), this.props.user.loggedIn)}
+					{this.getLink("/logout", t("navbar:logout"), this.props.user.loggedIn)}
 				</navbar>
 			</header>
 		);

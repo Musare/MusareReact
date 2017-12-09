@@ -38,6 +38,7 @@ const initialState = Map({
 	userId: "",
 	username: "",
 	role: "default",
+	authProcessed: false,
 	banned: {
 		status: false,
 		reason: "",
@@ -52,13 +53,16 @@ function reducer(state = initialState, action) {
 			userId: initialState.get("userId"),
 			username: initialState.get("username"),
 			role: initialState.get("role"),
+			authProcessed: false,
 		});
 	case LOGIN:
 		const { userId, username, role } = action;
 		return state.merge({
+			loggedIn: true,
 			userId,
 			username,
 			role,
+			authProcessed: true,
 		});
 	case BANNED:
 		const { reason } = action;

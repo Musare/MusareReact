@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 @connect(state => ({
-	timeElapsed: state.songPlayer.get("timeElapsed") * 1000,
-	timeTotal: state.songPlayer.get("duration") * 1000,
-	paused: state.station.get("paused"),
+	timeElapsed: state.station.currentSong.getIn(["timings", "timeElapsed"]) * 1000,
+	timeTotal: state.station.currentSong.getIn(["timings", "duration"]) * 1000,
+	paused: state.station.info.get("paused"),
 }))
 export default class Seekerbar extends Component {
 	static propTypes = {
@@ -25,7 +25,7 @@ export default class Seekerbar extends Component {
 			percentage: 0,
 		};
 
-		setInterval(() => {
+		/*setInterval(() => {
 			if (!this.props.paused) {
 				let timeElapsedGuess = this.state.timeElapsedGuess;
 				timeElapsedGuess += 15;
@@ -43,7 +43,7 @@ export default class Seekerbar extends Component {
 					percentage: (this.props.timeElapsed / this.props.timeTotal) * 100,
 				});
 			}
-		}, 50);
+		}, 50);*/
 	}
 
 	render() {

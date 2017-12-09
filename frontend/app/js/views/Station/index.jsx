@@ -7,57 +7,62 @@ import { translate, Trans } from "react-i18next";
 import Player from "./Player";
 import Seekerbar from "./Seekerbar";
 import VolumeSlider from "./VolumeSlider";
+import Ratings from "./Ratings";
+import Time from "./Time";
 import Overlays from "./Views/Overlays";
 
-import { changeVolume } from "actions/volume";
-import { changeSong, setTimeElapsed, timePaused, receivedRatings, receivedOwnRatings } from "actions/songPlayer";
-import { pauseStation, resumeStation } from "actions/station";
+import { actionCreators as stationCurrentSongActionCreators } from "ducks/stationCurrentSong";
+import { bindActionCreators } from "redux";
+
+//import { changeVolume } from "actions/volume";
+//import { changeSong, setTimeElapsed, timePaused, receivedRatings, receivedOwnRatings } from "actions/songPlayer";
+//import { pauseStation, resumeStation } from "actions/station";
 import { openOverlay1 } from "actions/stationOverlay";
-import { addSong } from "actions/playlistQueue";
+//import { addSong } from "actions/playlistQueue";
+//import { updateTimePaused } from "../../actions/songPlayer";
 
 import { connect } from "react-redux";
 
 import io from "io";
 import config from "config";
-import {updateTimePaused} from "../../actions/songPlayer";
-
-const formatTime = (duration) => {
-	let d = moment.duration(duration, "seconds");
-	if (duration < 0) return "0:00";
-	return ((d.hours() > 0) ? (d.hours() < 10 ? ("0" + d.hours() + ":") : (d.hours() + ":")) : "") + (d.minutes() + ":") + (d.seconds() < 10 ? ("0" + d.seconds()) : d.seconds());
-};
 
 @connect(state => ({
 	user: {
-		userId: state.user.get("userId"),
-		role: state.user.get("role"),
+		userId: state.session.get("userId"),
+		role: state.session.get("role"),
+		loggedIn: state.session.get("loggedIn"),
 	},
-	loggedIn: state.user.get("loggedIn"),
-	songId: state.songPlayer.get("songId"),
-	songTitle: state.songPlayer.get("title"),
-	songDuration: state.songPlayer.get("duration"),
-	songTimeElapsed: state.songPlayer.get("timeElapsed"),
-	songArtists: state.songPlayer.get("artists"),
-	songLikes: state.songPlayer.get("likes"),
-	songLiked: state.songPlayer.get("liked"),
-	songDislikes: state.songPlayer.get("dislikes"),
-	songDisliked: state.songPlayer.get("disliked"),
-	simpleSong: state.songPlayer.get("simple"),
-	songExists: state.songPlayer.get("exists"),
-	queueLocked: state.station.get("locked"),
-	partyEnabled: state.station.get("partyMode"),
+	/*
+	//queueLocked: state.station.get("locked"),
+	//partyEnabled: state.station.get("partyMode"),*/
+	song: {
+		exists: state.station.currentSong.get("songId") !== "",
+		songId: state.station.currentSong.get("songId"),
+		title: state.station.currentSong.get("title"),
+		artists: state.station.currentSong.get("artists"),
+	},
 	station: {
-		stationId: state.station.get("id"),
-		name: state.station.get("name"),
-		displayName: state.station.get("displayName"),
-		paused: state.station.get("paused"),
-		pausedAt: state.station.get("pausedAt"),
-		ownerId: state.station.get("ownerId"),
-	},
+		stationId: state.station.info.get("stationId"),
+		name: state.station.info.get("name"),
+		displayName: state.station.info.get("displayName"),
+		paused: state.station.info.get("paused"),
+		pausedAt: state.station.info.get("pausedAt"),
+		ownerId: state.station.info.get("ownerId"),
+	},/*
 	selectedPlaylistObject: {
 		addedSongId: state.playlistQueue.get("addedSongId"),
 		selectedPlaylistId: state.playlistQueue.get("playlistSelected"),
-	},
+	},*/
+}),
+(dispatch) => ({
+	onNextSong: bindActionCreators(stationCurrentSongActionCreators.nextSong, dispatch),
+	onLikeUpdate: bindActionCreators(stationCurrentSongActionCreators.likeUpdate, dispatch),
+	onDislikeUpdate: bindActionCreators(stationCurrentSongActionCreators.dislikeUpdate, dispatch),
+	onLikedUpdate: bindActionCreators(stationCurrentSongActionCreators.likedUpdate, dispatch),
+	onDislikedUpdate: bindActionCreators(stationCurrentSongActionCreators.dislikedUpdate, dispatch),
+	onPauseTime: bindActionCreators(stationCurrentSongActionCreators.pauseTime, dispatch),
+	onResumeTime: bindActionCreators(stationCurrentSongActionCreators.resumeTime, dispatch),
+	openOverlay1: bindActionCreators(openOverlay1, dispatch),
 }))
 
 @translate(["station"], { wait: true })
@@ -73,91 +78,117 @@ export default class Station extends Component {
 	constructor(props) {
 		super();
 
-		this.state = {
+		/*this.state = {
 			mode: this.getModeTemp(props.partyEnabled, props.queueLocked),
-		};
+		};*/
 
 		io.getSocket(socket => {
 			socket.emit("stations.join", props.station.name, res => {
-				if (res.status === 'success') {
+				if (res.status === "success") {
 					if (res.data.currentSong) {
-						res.data.currentSong.startedAt = res.data.startedAt;
-						res.data.currentSong.timePaused = res.data.timePaused;
+						let song = {
+							songId: res.data.currentSong.songId,
+							timings: {
+								duration: res.data.currentSong.duration,
+								skipDuration: res.data.currentSong.skipDuration,
+								// timeElapsed?
+								timePaused: res.data.timePaused,
+								// pausedAt?
+								startedAt: res.data.startedAt,
+							},
+							title: res.data.currentSong.title,
+							artists: res.data.currentSong.artists,
+							ratings: {
+								enabled: !(res.data.currentSong.likes === -1 && res.data.currentSong.dislikes === -1),
+								likes: res.data.currentSong.likes,
+								dislikes: res.data.currentSong.dislikes,
+							},
+						};
+						this.props.onNextSong(song);
+						this.fetchOwnRatings();
+					} else {
+						// TODO This will probably need to be handled
+						this.props.onNextSong(null);
 					}
-
-					this.props.dispatch(changeSong(res.data.currentSong));
-					this.getOwnRatings();
 				}
 
-				socket.on('event:songs.next', data => {
-					this.addTopToQueue();
+				socket.on("event:songs.next", data => {
+					//this.addTopToQueue();
 					if (data.currentSong) {
-						data.currentSong.startedAt = data.startedAt;
-						data.currentSong.timePaused = data.timePaused;
+						let song = {
+							songId: data.currentSong.songId,
+							timings: {
+								duration: data.currentSong.duration,
+								skipDuration: data.currentSong.skipDuration,
+								// timeElapsed?
+								timePaused: data.timePaused,
+								// pausedAt?
+								startedAt: data.startedAt,
+							},
+							title: data.currentSong.title,
+							artists: data.currentSong.artists,
+							ratings: {
+								enabled: !(data.currentSong.likes === -1 && data.currentSong.dislikes === -1),
+								likes: data.currentSong.likes,
+								dislikes: data.currentSong.dislikes,
+							},
+						};
+						this.props.onNextSong(song);
+						this.fetchOwnRatings();
+					} else {
+						this.props.onNextSong(null);
 					}
-					this.props.dispatch(changeSong(data.currentSong));
-					this.getOwnRatings();
 				});
 
-				socket.on('event:stations.pause', pausedAt => {
-					this.props.dispatch(pauseStation(pausedAt));
+				socket.on("event:stations.pause", pausedAt => {
+					// TODO Dispatch to station info
+					this.props.onPauseTime(pausedAt);
 				});
-
-				socket.on('event:stations.resume', data => {
-					this.props.dispatch(updateTimePaused(data.timePaused));
-					this.props.dispatch(resumeStation());
+				socket.on("event:stations.resume", data => {
+					// TODO Dispatch to station info
+					this.props.onResumeTime(data.timePaused);
 				});
-
-				socket.on('event:song.like', data => {
-					console.log("LIKE");
-					if (this.props.songExists) {
-						if (data.songId === this.props.songId) {
-							this.props.dispatch(receivedRatings(data.likes, data.dislikes));
-						}
+				socket.on("event:song.like", data => {
+					if (data.songId === this.props.song.songId) {
+						this.props.onLikeUpdate(data.likes);
+						this.props.onDislikeUpdate(data.dislikes);
 					}
 				});
-				socket.on('event:song.dislike', data => {
-					console.log("DISLIKE");
-					if (this.props.songExists) {
-						if (data.songId === this.props.songId) {
-							this.props.dispatch(receivedRatings(data.likes, data.dislikes));
-						}
+				socket.on("event:song.dislike", data => {
+					if (data.songId === this.props.song.songId) {
+						this.props.onLikeUpdate(data.likes);
+						this.props.onDislikeUpdate(data.dislikes);
 					}
 				});
-				socket.on('event:song.unlike', data => {
-					console.log("UNLIKE");
-					if (this.props.songExists) {
-						if (data.songId === this.props.songId) {
-							this.props.dispatch(receivedRatings(data.likes, data.dislikes));
-						}
+				socket.on("event:song.unlike", data => {
+					if (data.songId === this.props.song.songId) {
+						this.props.onLikeUpdate(data.likes);
+						this.props.onDislikeUpdate(data.dislikes);
 					}
 				});
-				socket.on('event:song.undislike', data => {
-					console.log("UNDISLIKE");
-					if (this.props.songExists) {
-						if (data.songId === this.props.songId) {
-							this.props.dispatch(receivedRatings(data.likes, data.dislikes));
-						}
+				socket.on("event:song.undislike", data => {
+					if (data.songId === this.props.song.songId) {
+						this.props.onLikeUpdate(data.likes);
+						this.props.onDislikeUpdate(data.dislikes);
 					}
 				});
-				socket.on('event:song.newRatings', data => {
-					if (this.props.songExists) {
-						if (data.songId === this.props.songId) {
-							this.props.dispatch(receivedOwnRatings(data.liked, data.disliked));
-						}
+				socket.on("event:song.newRatings", data => {
+					if (data.songId === this.props.song.songId) {
+						this.props.onLikedUpdate(data.liked);
+						this.props.onDislikedUpdate(data.disliked);
 					}
 				});
 			});
 		});
 
-		setInterval(() => {
-			if (this.props.songExists) {
+		/*setInterval(() => {
+			if (this.props.song.exists) {
 				this.props.dispatch(setTimeElapsed(this.props.station.paused, this.props.station.pausedAt)); // TODO Fix
 			}
-		}, 1000);
+		}, 1000);*/
 	}
 
-	isInQueue = (songId, cb) => {
+	/*isInQueue = (songId, cb) => {
 		io.getSocket((socket) => {
 			socket.emit('stations.getQueue', this.props.stationId, data => {
 				if (data.status === 'success') {
@@ -171,15 +202,15 @@ export default class Station extends Component {
 				return cb(false);
 			});
 		});
-	};
+	};*/
 
-	checkIfCanAdd = (cb) => {
+	/*checkIfCanAdd = (cb) => {
 		if (this.state.mode === "normal") return cb(false);
 		let playlistId = this.props.selectedPlaylistObject.selectedPlaylistId;
 		let songId = this.props.selectedPlaylistObject.addedSongId;
-		console.log(playlistId, songId, this.props.songId);
+		console.log(playlistId, songId, this.props.song.songId);
 		if (playlistId) {
-			if (songId === this.props.songId) return cb(true);
+			if (songId === this.props.song.songId) return cb(true);
 			else if (songId === null) return cb(true);
 			else {
 				this.isInQueue(songId, (res) => {
@@ -187,9 +218,9 @@ export default class Station extends Component {
 				});
 			}
 		}
-	}
+	}*/
 
-	addTopToQueue = () => {
+	/*addTopToQueue = () => {
 		console.log("ADD TOP TO QUEUE!!!");
 		this.checkIfCanAdd((can) => {
 			if (!can) return;
@@ -226,17 +257,17 @@ export default class Station extends Component {
 				});
 			});
 		});
-	};
+	};*/
 
-	moveToBottom = (playlistId, songId, cb) => {
+	/*moveToBottom = (playlistId, songId, cb) => {
 		io.getSocket((socket) => {
 			socket.emit('playlists.moveSongToBottom', playlistId, songId, data => {
 				cb(data);
 			});
 		});
-	}
+	}*/
 
-	getModeTemp = (partyEnabled, queueLocked) => {
+	/*getModeTemp = (partyEnabled, queueLocked) => {
 		// If party enabled
 		// If queue locked
 		// Mode is DJ
@@ -249,19 +280,22 @@ export default class Station extends Component {
 			if (queueLocked) return "dj";
 			else return "party";
 		} else return "normal";
-	}
+	}*/
 
-	getOwnRatings = () => {
+	fetchOwnRatings = () => {
 		io.getSocket((socket) => {
-			if (!this.props.songExists) return;
-			socket.emit('songs.getOwnSongRatings', this.props.songId, (data) => {
-				if (this.props.songId === data.songId) this.props.dispatch(receivedOwnRatings(data.liked, data.disliked));
+			if (!this.props.song.exists) return;
+			socket.emit("songs.getOwnSongRatings", this.props.song.songId, (data) => {
+				if (this.props.song.songId === data.songId) {
+					this.props.onLikedUpdate(data.liked);
+					this.props.onDislikedUpdate(data.disliked);
+				}
 			});
 		});
 	};
 
 	isOwner = () => {
-		if (this.props.loggedIn) {
+		if (this.props.user.loggedIn) {
 			if (this.props.user.role === "admin") return true;
 			if (this.props.user.userId === this.props.station.ownerId) return true;
 		}
@@ -279,73 +313,23 @@ export default class Station extends Component {
 
 	resumeStation = () => {
 		io.getSocket(socket => {
-			socket.emit('stations.resume', this.props.station.stationId, data => {
-
+			socket.emit("stations.resume", this.props.station.stationId, data => {
+				// TODO Handle error/success
 			});
 		});
 	};
 
 	pauseStation = () => {
 		io.getSocket(socket => {
-			socket.emit('stations.pause', this.props.station.stationId, data => {
-
+			socket.emit("stations.pause", this.props.station.stationId, data => {
+				// TODO Handle error/success
 			});
-		});
-	};
-
-	getRatings = () => {
-		const likes = <span>{ this.props.songLikes }</span>;
-		const dislikes = <span>{ this.props.songDislikes }</span>;
-		let likeButton = <i className="material-icons disabled">thumb_up</i>;
-		let dislikeButton = <i className="material-icons disabled">thumb_down</i>;
-
-		if (this.props.loggedIn) {
-			if (this.props.songLiked) likeButton = <i className="material-icons liked" onClick={ this.unlike }>thumb_up</i>;
-			else likeButton = <i className="material-icons" onClick={ this.like }>thumb_up</i>;
-
-			if (this.props.songDisliked) dislikeButton = <i className="material-icons disliked" onClick={ this.undislike }>thumb_down</i>;
-			else dislikeButton = <i className="material-icons" onClick={ this.dislike }>thumb_down</i>;
-		}
-
-		return <div className="ratings-container">
-			<div>
-				{ likeButton }
-				{ likes }
-			</div>
-			<div>
-				{ dislikeButton }
-				{ dislikes }
-			</div>
-		</div>;
-	};
-
-	like = () => {
-		io.getSocket(socket => {
-			socket.emit('songs.like', this.props.songId, data => {});
-		});
-	};
-
-	dislike = () => {
-		io.getSocket(socket => {
-			socket.emit('songs.dislike', this.props.songId, data => {});
-		});
-	};
-
-	unlike = () => {
-		io.getSocket(socket => {
-			socket.emit('songs.unlike', this.props.songId, data => {});
-		});
-	};
-
-	undislike = () => {
-		io.getSocket(socket => {
-			socket.emit('songs.undislike', this.props.songId, data => {});
 		});
 	};
 
 	skipStation = () => {
 		io.getSocket(socket => {
-			socket.emit('stations.forceSkip', this.props.station.stationId, data => {});
+			socket.emit("stations.forceSkip", this.props.station.stationId, data => {});
 		});
 	}
 
@@ -359,9 +343,9 @@ export default class Station extends Component {
 				<Overlays t={ this.props.t } />
 
 				<div id="sidebar">
-					<button onClick={ () => { this.props.dispatch(openOverlay1("users")) } }><i className="material-icons">people</i></button>
-					<button onClick={ () => { this.props.dispatch(openOverlay1("queueList")) } }><i className="material-icons">queue_music</i></button>
-					<button onClick={ () => { this.props.dispatch(openOverlay1("playlists")) } }><i className="material-icons">library_music</i></button>
+					<button onClick={ () => { this.props.openOverlay1("users") } }><i className="material-icons">people</i></button>
+					<button onClick={ () => { this.props.openOverlay1("queueList") } }><i className="material-icons">queue_music</i></button>
+					<button onClick={ () => { this.props.openOverlay1("playlists") } }><i className="material-icons">library_music</i></button>
 					<hr/>
 					{
 						(this.isOwner())
@@ -377,14 +361,14 @@ export default class Station extends Component {
 					}
 					{
 						(this.isOwner())
-						? <button onClick={ () => { this.props.dispatch(openOverlay1("settings")) } }><i className="material-icons">settings</i></button>
+						? <button onClick={ () => { this.props.openOverlay1("settings") } }><i className="material-icons">settings</i></button>
 						: null
 					}
 				</div>
 
-				<h1>{ this.props.station.displayName }</h1>
+				<h1 onClick={ this.addSongTemp }>{ this.props.station.displayName }</h1>
 
-				<div className={(!this.props.songExists) ? "player-container hidden" : "player-container"}>
+				<div className={(!this.props.song.exists) ? "player-container hidden" : "player-container"}>
 					<div className="iframe-container">
 						<Player onRef={ ref => (this.player = ref) }/>
 						{ (this.props.station.paused) ? <div className="paused-overlay"><span>Paused</span><i className="material-icons">pause</i></div> : null }
@@ -392,18 +376,14 @@ export default class Station extends Component {
 					<Seekerbar/>
 				</div>
 
-				{ (this.props.songExists) ? (
+				{ (this.props.song.exists) ? (
 				[
 					<div key="content" className="content">
-						<span className="title">{ this.props.songTitle }</span>
-						<span className="artists">{ this.props.songArtists.join(", ") }</span>
-						<span className="time">
-							{ formatTime(this.props.songTimeElapsed) } / { formatTime(this.props.songDuration) }
-						</span>
+						<span className="title">{ this.props.song.title }</span>
+						<span className="artists">{ this.props.song.artists.join(", ") }</span>
+						<Time/>
 						<VolumeSlider/>
-						{
-							(!this.props.simpleSong) ? this.getRatings() : null
-						}
+						<Ratings/>
 					</div>,
 				]) : (
 					<h1>No song playing</h1>

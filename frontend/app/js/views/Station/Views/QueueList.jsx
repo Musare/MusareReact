@@ -13,10 +13,10 @@ import io from "io";
 
 @connect(state => ({
 	user: {
+		loggedIn: state.user.get("loggedIn"),
 		userId: state.user.get("userId"),
 		role: state.user.get("role"),
 	},
-	loggedIn: state.user.get("loggedIn"),
 	stationId: state.station.get("id"),
 	stationOwner: state.station.get("ownerId"),
 	songTitle: state.songPlayer.get("title"),

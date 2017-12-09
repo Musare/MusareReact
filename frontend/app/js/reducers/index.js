@@ -1,19 +1,27 @@
 import { combineReducers } from "redux";
-import user from "reducers/user";
+//import user from "reducers/user";
 //import volume from "reducers/volume";
-import songPlayer from "reducers/songPlayer";
-import station from "reducers/station";
+//import songPlayer from "reducers/songPlayer";
+//import station from "reducers/station";
 import stationOverlay from "reducers/stationOverlay";
-import playlistQueue from "reducers/playlistQueue";
+//import playlistQueue from "reducers/playlistQueue";
 import homepage from "../ducks/homepage";
+import session from "../ducks/session";
 import volume from "../ducks/volume";
+import stationCurrentSong from "../ducks/stationCurrentSong";
+import stationInfo from "../ducks/stationInfo";
 
 export default combineReducers({
 	volume,
 	homepage,
-	user,
-	songPlayer,
-	station,
+	session,
+	//user,
+	//songPlayer,
+	//station,
 	stationOverlay,
-	playlistQueue,
+	//playlistQueue,
+	station: combineReducers({
+		info: stationInfo,
+		currentSong: stationCurrentSong,
+	}),
 });

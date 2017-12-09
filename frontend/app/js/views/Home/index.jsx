@@ -17,10 +17,10 @@ import config from "config";
 
 @connect(state => ({
 	user: {
-		userId: state.user.get("userId"),
-		role: state.user.get("role"),
+		loggedIn: state.session.get("loggedIn"),
+		userId: state.session.get("userId"),
+		role: state.session.get("role"),
 	},
-	loggedIn: state.user.get("loggedIn"),
 	officialStations: state.homepage.getIn(["stations", "official"]),
 	communityStations: state.homepage.getIn(["stations", "community"]),
 }),
