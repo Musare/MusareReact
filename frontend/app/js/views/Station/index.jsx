@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
+import { Map, List } from "immutable";
 
 import PropTypes from "prop-types";
 import { translate, Trans } from "react-i18next";
 
 import Player from "./Player";
+import PlayerDebug from "./PlayerDebug";
 import Seekerbar from "./Seekerbar";
 import VolumeSlider from "./VolumeSlider";
 import Ratings from "./Ratings";
@@ -12,6 +14,7 @@ import Time from "./Time";
 import Overlays from "./Views/Overlays";
 
 import { actionCreators as stationCurrentSongActionCreators } from "ducks/stationCurrentSong";
+import { actionCreators as stationInfoActionCreators } from "ducks/stationInfo";
 import { bindActionCreators } from "redux";
 
 //import { changeVolume } from "actions/volume";
@@ -45,8 +48,8 @@ import config from "config";
 		stationId: state.station.info.get("stationId"),
 		name: state.station.info.get("name"),
 		displayName: state.station.info.get("displayName"),
+		type: state.station.info.get("type"),
 		paused: state.station.info.get("paused"),
-		pausedAt: state.station.info.get("pausedAt"),
 		ownerId: state.station.info.get("ownerId"),
 	},/*
 	selectedPlaylistObject: {
@@ -62,6 +65,11 @@ import config from "config";
 	onDislikedUpdate: bindActionCreators(stationCurrentSongActionCreators.dislikedUpdate, dispatch),
 	onPauseTime: bindActionCreators(stationCurrentSongActionCreators.pauseTime, dispatch),
 	onResumeTime: bindActionCreators(stationCurrentSongActionCreators.resumeTime, dispatch),
+	onPause: bindActionCreators(stationInfoActionCreators.pause, dispatch),
+	onResume: bindActionCreators(stationInfoActionCreators.resume, dispatch),
+	onQueueIndex: bindActionCreators(stationInfoActionCreators.queueIndex, dispatch),
+	onQueueUpdate: bindActionCreators(stationInfoActionCreators.queueUpdate, dispatch),
+	onTimeElapsedUpdate: bindActionCreators(stationCurrentSongActionCreators.timeElapsedUpdate, dispatch),
 	openOverlay1: bindActionCreators(openOverlay1, dispatch),
 }))
 
@@ -78,6 +86,11 @@ export default class Station extends Component {
 	constructor(props) {
 		super();
 
+		this.state = {
+			timeElapsedInterval: setInterval(() => {
+				props.onTimeElapsedUpdate();
+			}, 500),
+		};
 		/*this.state = {
 			mode: this.getModeTemp(props.partyEnabled, props.queueLocked),
 		};*/
@@ -93,11 +106,11 @@ export default class Station extends Component {
 								skipDuration: res.data.currentSong.skipDuration,
 								// timeElapsed?
 								timePaused: res.data.timePaused,
-								// pausedAt?
 								startedAt: res.data.startedAt,
 							},
 							title: res.data.currentSong.title,
 							artists: res.data.currentSong.artists,
+							thumbnail: res.data.currentSong.thumbnail,
 							ratings: {
 								enabled: !(res.data.currentSong.likes === -1 && res.data.currentSong.dislikes === -1),
 								likes: res.data.currentSong.likes,
@@ -110,74 +123,89 @@ export default class Station extends Component {
 						// TODO This will probably need to be handled
 						this.props.onNextSong(null);
 					}
+
+					socket.on("event:songs.next", data => {
+						//this.addTopToQueue();
+						if (data.currentSong) {
+							let song = {
+								songId: data.currentSong.songId,
+								timings: {
+									duration: data.currentSong.duration,
+									skipDuration: data.currentSong.skipDuration,
+									// timeElapsed?
+									timePaused: data.timePaused,
+									// pausedAt?
+									startedAt: data.startedAt,
+								},
+								title: data.currentSong.title,
+								artists: data.currentSong.artists,
+								thumbnail: data.currentSong.thumbnail,
+								ratings: {
+									enabled: !(data.currentSong.likes === -1 && data.currentSong.dislikes === -1),
+									likes: data.currentSong.likes,
+									dislikes: data.currentSong.dislikes,
+								},
+							};
+							this.props.onNextSong(song);
+							this.fetchOwnRatings();
+						} else {
+							this.props.onNextSong(null);
+						}
+					});
+					socket.on("event:stations.pause", pausedAt => {
+						// TODO Dispatch to station info
+						this.props.onPause();
+						this.props.onPauseTime(pausedAt);
+					});
+					socket.on("event:stations.resume", data => {
+						// TODO Dispatch to station info
+						this.props.onResume();
+						this.props.onResumeTime(data.timePaused);
+					});
+					socket.on("event:song.like", data => {
+						if (data.songId === this.props.song.songId) {
+							this.props.onLikeUpdate(data.likes);
+							this.props.onDislikeUpdate(data.dislikes);
+						}
+					});
+					socket.on("event:song.dislike", data => {
+						if (data.songId === this.props.song.songId) {
+							this.props.onLikeUpdate(data.likes);
+							this.props.onDislikeUpdate(data.dislikes);
+						}
+					});
+					socket.on("event:song.unlike", data => {
+						if (data.songId === this.props.song.songId) {
+							this.props.onLikeUpdate(data.likes);
+							this.props.onDislikeUpdate(data.dislikes);
+						}
+					});
+					socket.on("event:song.undislike", data => {
+						if (data.songId === this.props.song.songId) {
+							this.props.onLikeUpdate(data.likes);
+							this.props.onDislikeUpdate(data.dislikes);
+						}
+					});
+					socket.on("event:song.newRatings", data => {
+						if (data.songId === this.props.song.songId) {
+							this.props.onLikedUpdate(data.liked);
+							this.props.onDislikedUpdate(data.disliked);
+						}
+					});
+
+					if (this.props.station.type === "community") {
+						socket.emit("stations.getQueue", this.props.station.stationId, data => {
+							if (data.status === "success") {
+								this.props.onQueueIndex(data.queue);
+							}
+							//TODO Handle error
+						});
+
+						socket.on("event:queue.update", queue => {
+							this.props.onQueueUpdate(queue);
+						});
+					}
 				}
-
-				socket.on("event:songs.next", data => {
-					//this.addTopToQueue();
-					if (data.currentSong) {
-						let song = {
-							songId: data.currentSong.songId,
-							timings: {
-								duration: data.currentSong.duration,
-								skipDuration: data.currentSong.skipDuration,
-								// timeElapsed?
-								timePaused: data.timePaused,
-								// pausedAt?
-								startedAt: data.startedAt,
-							},
-							title: data.currentSong.title,
-							artists: data.currentSong.artists,
-							ratings: {
-								enabled: !(data.currentSong.likes === -1 && data.currentSong.dislikes === -1),
-								likes: data.currentSong.likes,
-								dislikes: data.currentSong.dislikes,
-							},
-						};
-						this.props.onNextSong(song);
-						this.fetchOwnRatings();
-					} else {
-						this.props.onNextSong(null);
-					}
-				});
-
-				socket.on("event:stations.pause", pausedAt => {
-					// TODO Dispatch to station info
-					this.props.onPauseTime(pausedAt);
-				});
-				socket.on("event:stations.resume", data => {
-					// TODO Dispatch to station info
-					this.props.onResumeTime(data.timePaused);
-				});
-				socket.on("event:song.like", data => {
-					if (data.songId === this.props.song.songId) {
-						this.props.onLikeUpdate(data.likes);
-						this.props.onDislikeUpdate(data.dislikes);
-					}
-				});
-				socket.on("event:song.dislike", data => {
-					if (data.songId === this.props.song.songId) {
-						this.props.onLikeUpdate(data.likes);
-						this.props.onDislikeUpdate(data.dislikes);
-					}
-				});
-				socket.on("event:song.unlike", data => {
-					if (data.songId === this.props.song.songId) {
-						this.props.onLikeUpdate(data.likes);
-						this.props.onDislikeUpdate(data.dislikes);
-					}
-				});
-				socket.on("event:song.undislike", data => {
-					if (data.songId === this.props.song.songId) {
-						this.props.onLikeUpdate(data.likes);
-						this.props.onDislikeUpdate(data.dislikes);
-					}
-				});
-				socket.on("event:song.newRatings", data => {
-					if (data.songId === this.props.song.songId) {
-						this.props.onLikedUpdate(data.liked);
-						this.props.onDislikedUpdate(data.disliked);
-					}
-				});
 			});
 		});
 
@@ -186,6 +214,10 @@ export default class Station extends Component {
 				this.props.dispatch(setTimeElapsed(this.props.station.paused, this.props.station.pausedAt)); // TODO Fix
 			}
 		}, 1000);*/
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.state.timeElapsedInterval);
 	}
 
 	/*isInQueue = (songId, cb) => {
@@ -367,6 +399,8 @@ export default class Station extends Component {
 				</div>
 
 				<h1 onClick={ this.addSongTemp }>{ this.props.station.displayName }</h1>
+
+				<PlayerDebug />
 
 				<div className={(!this.props.song.exists) ? "player-container hidden" : "player-container"}>
 					<div className="iframe-container">

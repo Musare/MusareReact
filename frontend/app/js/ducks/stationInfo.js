@@ -1,7 +1,7 @@
 import { Map, List } from "immutable";
 
-const JOIN_STATION = "STATION_INFO::JOIN_STATION";
-const LEAVE_STATION = "STATION_INFO::LEAVE_STATION";
+const JOIN = "STATION_INFO::JOIN";
+const LEAVE = "STATION_INFO::LEAVE";
 const USER_LIST_UPDATE = "STATION_INFO::USER_LIST_UPDATE";
 const USER_COUNT_UPDATE = "STATION_INFO::USER_COUNT_UPDATE";
 const NAME_UPDATE = "STATION_INFO::NAME_UPDATE";
@@ -10,17 +10,19 @@ const DESCRIPTION_UPDATE = "STATION_INFO::DESCRIPTION_UPDATE";
 const MODE_UPDATE = "STATION_INFO::MODE_UPDATE";
 const QUEUE_INDEX = "STATION_INFO::QUEUE_INDEX";
 const QUEUE_UPDATE = "STATION_INFO::QUEUE_UPDATE";
+const PAUSE = "STATION_INFO::PAUSE";
+const RESUME = "STATION_INFO::RESUME";
 
 function joinStation(station) {
 	return {
-		type: JOIN_STATION,
+		type: JOIN,
 		station,
 	}
 }
 
 function leaveStation() {
 	return {
-		type: LEAVE_STATION,
+		type: LEAVE,
 	}
 }
 
@@ -80,6 +82,18 @@ function queueUpdate(songList) {
 	}
 }
 
+function pause() {
+	return {
+		type: PAUSE,
+	}
+}
+
+function resume() {
+	return {
+		type: RESUME,
+	}
+}
+
 
 
 const initialState = Map({
@@ -95,6 +109,7 @@ const initialState = Map({
 	"userList": List([]),
 	"userCount": 0,
 	"songList": List([]),
+	"privatePlaylist": "",
 });
 
 function reducer(state = initialState, action) {
@@ -116,23 +131,12 @@ function reducer(state = initialState, action) {
 	}
 
 	switch (action.type) {
-	case JOIN_STATION:
+	case JOIN:
 		const { stationId, privacy, type, ownerId, paused } = action.station;
 		name = action.station.name;
 		displayName = action.station.displayName;
 		description = action.station.description;
 		userCount = action.station.userCount;
-		mode = (getModeTemp(action.station.partyMode, action.station.locked));
-
-		userList = List([]);
-		action.station.userList.forEach((user) => {
-			userList.push(user);
-		});
-
-		songList = List([]);
-		action.station.songList.forEach((song) => {
-			songList.push(song);
-		});
 
 		return state.merge({
 			stationId,
@@ -143,60 +147,54 @@ function reducer(state = initialState, action) {
 			type,
 			ownerId,
 			paused,
-			mode,
-			userList,
+			mode: (getModeTemp(action.station.partyMode, action.station.locked)),
+			userList: List(action.station.userList),
 			userCount,
-			songList,
+			songList: List(action.station.songList),
+			privatePlaylist: action.station.privatePlaylist,
 		});
-	case LEAVE_STATION:
+	case LEAVE:
 		return initialState;
 	case USER_LIST_UPDATE:
-		userList = List([]);
-		action.userList.forEach((user) => {
-			userList.push(user);
+		return state.merge({
+			userList: List(action.userList),
 		});
-
-		state.set("userList", userList);
-		return state;
 	case USER_COUNT_UPDATE:
-		userCount = action.userCount;
-
-		state.set("userCount", userCount);
-		return state;
+		return state.merge({
+			userCount: action.userCount,
+		});
 	case NAME_UPDATE:
-		name = action.name;
-
-		state.set("name", name);
-		return state;
+		return state.merge({
+			name: action.name,
+		});
 	case DISPLAY_NAME_UPDATE:
-		displayName = action.displayName;
-
-		state.set("displayName", displayName);
-		return state;
+		return state.merge({
+			displayName: action.displayName,
+		});
 	case DESCRIPTION_UPDATE:
-		description = action.description;
-
-		state.set("description", description);
-		return state;
+		return state.merge({
+			description: action.description,
+		});
 	case MODE_UPDATE:
-		mode = action.mode;
-
-		state.set("mode", mode);
-		return state;
+		return state.merge({
+			mode: action.mode,
+		});
 	case QUEUE_INDEX:
-		songList = List([]);
-		action.songList.forEach((song) => {
-			songList.push(song);
+		return state.merge({
+			songList: List(action.songList),
 		});
-
-		return state;
 	case QUEUE_UPDATE:
-		songList = List([]);
-		action.songList.forEach((song) => {
-			songList.push(song);
+		return state.merge({
+			songList: List(action.songList),
 		});
-
-		return state;
+	case PAUSE:
+		return state.merge({
+			paused: true,
+		});
+	case RESUME:
+		return state.merge({
+			paused: false,
+		});
 	}
 	return state;
 }
@@ -212,11 +210,13 @@ const actionCreators = {
 	modeUpdate,
 	queueIndex,
 	queueUpdate,
+	pause,
+	resume,
 };
 
 const actionTypes = {
-	JOIN_STATION,
-	LEAVE_STATION,
+	JOIN_STATION: JOIN,
+	LEAVE_STATION: LEAVE,
 	USER_LIST_UPDATE,
 	USER_COUNT_UPDATE,
 	NAME_UPDATE,
@@ -225,6 +225,8 @@ const actionTypes = {
 	MODE_UPDATE,
 	QUEUE_INDEX,
 	QUEUE_UPDATE,
+	PAUSE,
+	RESUME,
 };
 
 export {

@@ -478,5 +478,19 @@ module.exports = {
 			if (err === true) return cb(true);
 			return cb(false);
 		});
+	},
+	getUsernameFromUserId: (userId) => {
+		async.waterfall([
+			(next) => {
+				if (!userId) return next(false);
+				db.models.user.findOne({_id: userId}, next);
+			}
+		], (err, user) => {
+			if (err === false) return null;
+			else if (err) {
+				return null;
+			}
+			return user.username;
+		});
 	}
 };

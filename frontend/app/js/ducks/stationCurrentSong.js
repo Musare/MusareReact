@@ -1,4 +1,21 @@
 import { Map, List } from "immutable";
+import store from "../index.js";
+
+function calculateTimeElapsed() {
+	const state = store.getState();
+	const
+		paused		=	state.station.info.get("paused"),
+		songId		=	state.station.currentSong.get("songId"),
+		pausedAt	=	state.station.currentSong.getIn(["timings", "pausedAt"]),
+		startedAt	=	state.station.currentSong.getIn(["timings", "startedAt"]),
+		timePaused	=	state.station.currentSong.getIn(["timings", "timePaused"]);
+
+	if (songId !== "") {
+		let timePausedNow = (paused) ? Date.now() - pausedAt : 0;
+		//TODO Fix this function. It's accurate, but sometimes if paused at the wrong moment (e.g. 10 seconds to the milisecond) the display can flicker between 9 and 10 seconds every .5s.
+		return (Date.now() - startedAt - timePaused - timePausedNow) / 1000;
+	} else return 0;
+}
 
 const NEXT_SONG = "STATION_CURRENT_SONG::NEXT_SONG";
 const LIKE_UPDATE = "STATION_CURRENT_SONG::LIKE_UPDATE";
@@ -7,6 +24,7 @@ const LIKED_UPDATE = "STATION_CURRENT_SONG::LIKED_UPDATE";
 const DISLIKED_UPDATE = "STATION_CURRENT_SONG::DISLIKED_UPDATE";
 const PAUSE_TIME = "STATION_CURRENT_SONG::PAUSE_TIME";
 const RESUME_TIME = "STATION_CURRENT_SONG::RESUME_TIME";
+const TIME_ELAPSED_UPDATE = "STATION_CURRENT_SONG::TIME_ELAPSED_UPDATE";
 
 function nextSong(song) {
 	return {
@@ -52,8 +70,15 @@ function pauseTime(pausedAt) {
 
 function resumeTime(timePaused) {
 	return {
-		type: PAUSE_TIME,
+		type: RESUME_TIME,
 		timePaused,
+	}
+}
+
+function timeElapsedUpdate() {
+	return {
+		type: TIME_ELAPSED_UPDATE,
+		timeElapsed: calculateTimeElapsed(),
 	}
 }
 
@@ -71,6 +96,8 @@ const initialState = Map({
 	}),
 	"title": "",
 	"artists": [],
+	"thumbnail": "",
+	"playlists": List([]),
 	"ratings": Map({
 		"enabled": false,
 		"likes": 0,
@@ -86,6 +113,7 @@ function reducer(state = initialState, action) {
 		const { song } = action;
 		if (song === null) return initialState;
 		//TODO Handle no song event / Song being null event (so no song)
+		const previousState = state;
 		state = initialState;
 
 		return state.merge({
@@ -94,11 +122,13 @@ function reducer(state = initialState, action) {
 				duration: song.timings.duration,
 				skipDuration: song.timings.skipDuration,
 				timeElapsed: 0,
+				pausedAt: previousState.getIn(["timings", "pausedAt"]),
 				timePaused: song.timings.timePaused,
 				startedAt: song.timings.startedAt,
 			}),
 			title: song.title,
 			artists: List(song.artists),
+			thumbnail: song.thumbnail,
 			ratings: Map({
 				enabled: !(song.ratings.likes === -1 && song.ratings.dislikes === -1),
 				likes: song.ratings.likes,
@@ -131,6 +161,9 @@ function reducer(state = initialState, action) {
 		const { timePaused } = action;
 		state = state.setIn(["timings", "timePaused"], timePaused);
 		return state;
+	case TIME_ELAPSED_UPDATE:
+		const { timeElapsed } = action;
+		return state.setIn(["timings", "timeElapsed"], timeElapsed);
 	}
 	return state;
 }
@@ -143,6 +176,7 @@ const actionCreators = {
 	dislikedUpdate,
 	pauseTime,
 	resumeTime,
+	timeElapsedUpdate,
 };
 
 const actionTypes = {
@@ -153,6 +187,7 @@ const actionTypes = {
 	DISLIKED_UPDATE,
 	PAUSE_TIME,
 	RESUME_TIME,
+	TIME_ELAPSED_UPDATE,
 };
 
 export {

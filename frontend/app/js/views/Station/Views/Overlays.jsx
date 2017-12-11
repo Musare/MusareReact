@@ -7,7 +7,7 @@ import Settings from "./Settings";
 import Playlists from "./Playlists";
 import EditPlaylist from "./EditPlaylist";
 import SearchYouTube from "./SearchYouTube";
-import QueueList from "./QueueList";
+import QueueList from "./QueueList/index.jsx";
 
 @connect(state => ({
 	overlay1: state.stationOverlay.get("overlay1"),

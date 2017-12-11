@@ -6,6 +6,7 @@ import { translate } from "react-i18next";
 import { initializeStation } from "actions/station";
 
 import { actionCreators as stationInfoActionCreators } from "ducks/stationInfo";
+import { actionCreators as stationCurrentSongActionCreators } from "ducks/stationCurrentSong";
 import { bindActionCreators } from "redux";
 
 import io from "io";
@@ -43,6 +44,7 @@ function clone(obj) {
 }),
 (dispatch) => ({
 	onJoinStation: bindActionCreators(stationInfoActionCreators.joinStation, dispatch),
+	onPauseTime: bindActionCreators(stationCurrentSongActionCreators.pauseTime, dispatch),
 }))
 
 @translate(["general"], { wait: true })
@@ -116,7 +118,6 @@ export default class AuthRoute extends Component {
 						type: res.data.type,
 						ownerId: res.data.owner,
 						paused: res.data.paused,
-						pausedAt: res.data.pausedAt,
 						// Mode
 						// Userlist
 							userList: [],
@@ -127,8 +128,9 @@ export default class AuthRoute extends Component {
 						songList: res.data.queue,
 						// locked: res.data.locked,
 						// partyMode: res.data.partyMode,
-						// privatePlaylist: res.data.privatePlaylist,
+						privatePlaylist: res.data.privatePlaylist,
 					});
+					this.props.onPauseTime(res.data.pausedAt);
 				} else {
 					this.setState({
 						noStation: true,

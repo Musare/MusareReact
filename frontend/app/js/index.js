@@ -33,3 +33,5 @@ ReactDOM.render(
 	</I18nextProvider>,
 	document.getElementById("root")
 );
+
+export default store;

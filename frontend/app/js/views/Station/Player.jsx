@@ -16,7 +16,7 @@ let getPlayerCallbacks = [];
 	startedAt: state.station.currentSong.getIn(["timings", "startedAt"]),
 	timePaused: state.station.currentSong.getIn(["timings", "timePaused"]),
 	skipDuration: state.station.currentSong.getIn(["timings", "skipDuration"]),
-	pausedAt: state.station.currentSong.getIn(["timings", "pausedAt"]),
+	pausedAt: state.station.info.get("pausedAt"),
 	exists: state.station.currentSong.get("songId") !== "",
 	paused: state.station.info.get("paused"),
 }))

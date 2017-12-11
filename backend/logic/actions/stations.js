@@ -147,6 +147,12 @@ cache.sub('station.resume', stationId => {
 
 cache.sub('station.queueUpdate', stationId => {
 	stations.getStation(stationId, (err, station) => {
+		station.queue = station.queue.map((song) => {
+			let username = utils.getUsernameFromUserId(song.requestedBy);
+			if (username === null) username = "Unknown";
+			song.requestedByUsername = username;
+			return song;
+		});
 		if (!err) utils.emitToRoom(`station.${stationId}`, "event:queue.update", station.queue);
 	});
 });
@@ -1063,6 +1069,16 @@ module.exports = {
 					if (canBe) return next(null, station);
 					return next('Insufficient permissions.');
 				});
+			},
+
+			(station, next) => {
+				station.queue = station.queue.map((song) => {
+					let username = utils.getUsernameFromUserId(song.requestedBy);
+					if (username === null) username = "Unknown";
+					song.requestedByUsername = username;
+					return song;
+				});
+				next(null, station);
 			}
 		], (err, station) => {
 			if (err) {
