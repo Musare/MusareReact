@@ -22,8 +22,13 @@ export default class SongList extends Component {
 			<ul>
 				{
 					songList.map((song) => {
-						return <SongItem song={ song }/>;
+						return <SongItem key={ song.songId } song={ song }/>;
 					})
+				}
+				{
+					(songList.length === 0)
+					? <li>No songs in queue.</li>
+					: null
 				}
 			</ul>
 		);

@@ -70,6 +70,7 @@ import config from "config";
 	onQueueIndex: bindActionCreators(stationInfoActionCreators.queueIndex, dispatch),
 	onQueueUpdate: bindActionCreators(stationInfoActionCreators.queueUpdate, dispatch),
 	onTimeElapsedUpdate: bindActionCreators(stationCurrentSongActionCreators.timeElapsedUpdate, dispatch),
+	onPlaylistsUpdate: bindActionCreators(stationInfoActionCreators.playlistsUpdate, dispatch),
 	openOverlay1: bindActionCreators(openOverlay1, dispatch),
 }))
 
@@ -123,6 +124,10 @@ export default class Station extends Component {
 						// TODO This will probably need to be handled
 						this.props.onNextSong(null);
 					}
+
+					socket.emit("playlists.indexForUser", res => {
+						if (res.status === "success") this.props.onPlaylistsUpdate(res.data);
+					});
 
 					socket.on("event:songs.next", data => {
 						//this.addTopToQueue();
@@ -191,6 +196,16 @@ export default class Station extends Component {
 							this.props.onLikedUpdate(data.liked);
 							this.props.onDislikedUpdate(data.disliked);
 						}
+					});
+					socket.on("event:playlist.create", () => {
+						socket.emit("playlists.indexForUser", res => {
+							if (res.status === "success") this.props.onPlaylistsUpdate(res.data);
+						});
+					});
+					socket.on("event:playlist.delete", () => {
+						socket.emit("playlists.indexForUser", res => {
+							if (res.status === "success") this.props.onPlaylistsUpdate(res.data);
+						});
 					});
 
 					if (this.props.station.type === "community") {

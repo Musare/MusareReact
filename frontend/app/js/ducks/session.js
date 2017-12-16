@@ -11,9 +11,10 @@ function logout() {
 	}
 }
 
-function login(userId, username, role) {
+function login(loggedIn, userId, username, role) {
 	return {
 		type: LOGIN,
+		loggedIn,
 		userId,
 		username,
 		role,
@@ -56,14 +57,20 @@ function reducer(state = initialState, action) {
 			authProcessed: false,
 		});
 	case LOGIN:
-		const { userId, username, role } = action;
-		return state.merge({
-			loggedIn: true,
-			userId,
-			username,
-			role,
-			authProcessed: true,
-		});
+		const { loggedIn, userId, username, role } = action;
+		if (loggedIn) {
+			return state.merge({
+				loggedIn: true,
+				userId,
+				username,
+				role,
+				authProcessed: true,
+			});
+		} else {
+			return state.merge({
+				authProcessed: true,
+			});
+		}
 	case BANNED:
 		const { reason } = action;
 		return state.merge({

@@ -40,7 +40,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 		io.init(config.serverDomain);
 		io.getSocket(socket => {
 			socket.on("ready", (loggedIn, role, username, userId) => {
-				this.props.onLogin(userId, username, role);
+				this.props.onLogin(loggedIn, userId, username, role);
 			});
 			socket.on("keep.event:banned", reason => this.props.banned(reason));
 

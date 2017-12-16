@@ -21,7 +21,7 @@ import io from "io";
 		role: state.session.get("role"),
 	},
 	station: {
-		stationId: state.station.info.get("id"),
+		stationId: state.station.info.get("stationId"),
 		owner: state.station.info.get("ownerId"),
 		playlistSelectedId: state.station.info.get("playlistSelected"),
 		songList: state.station.info.get("songList"),
@@ -69,7 +69,8 @@ export default class QueueList extends Component {
 	addSongToQueueCallback = (songId) => {
 		io.getSocket((socket) => {
 			// Add song to queue
-			socket.emit("stations.addToQueue", this.props.stationId, songId, res => {
+			console.log(this.props.station.stationId);
+			socket.emit("stations.addToQueue", this.props.station.stationId, songId, res => {
 				if (res.status === "success") {
 					this.messages.clearAddSuccess("Successfully added song.");
 				} else {

@@ -47,7 +47,7 @@ export default class SongItem extends Component {
 					<span className="duration">{ song.duration }</span>
 					<p className="title">{ song.title }</p>
 					<span className="title-artists-spacing"/>
-					<p className="artists">{ song.artists.toJS().join(", ") }</p>
+					<p className="artists">{ song.artists.join(", ") }</p>
 					{
 						(showRequestedBy) ?
 						<span>

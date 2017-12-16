@@ -16,13 +16,13 @@ export default class PlaylistList extends Component {
 	}
 
 	render() {
-		const { playlists } = this.props;
+		const { playlists } = this.props.station;
 
 		return (
 			<ul>
 				{
 					playlists.map((playlist) => {
-						return <PlaylistItem playlist={ playlist }/>;
+						return <PlaylistItem key={ playlist.get("displayName") } playlist={ playlist }/>;
 					})
 				}
 			</ul>

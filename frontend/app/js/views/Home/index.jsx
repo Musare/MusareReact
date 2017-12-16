@@ -55,6 +55,7 @@ export default class Homepage extends Component {
 		io.getSocket(socket => {
 			socket.emit("stations.index", data => {
 				if (data.status === "success") {
+					console.log(data.stations)
 					this.props.onStationIndex(data.stations);
 				}
 			});

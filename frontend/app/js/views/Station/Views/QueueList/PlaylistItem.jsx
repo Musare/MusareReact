@@ -27,8 +27,8 @@ export default class PlaylistItem extends Component {
 		const { playlist } = this.props;
 
 		return (
-			<li key={ playlist._id }>
-				{ playlist.displayName } - { this.getPlaylistAction(playlist._id) }
+			<li style={{color: "black"}}>
+				{ playlist.get("displayName") } - { this.getPlaylistAction(playlist.get("_id")) }
 			</li>
 		);
 	}
