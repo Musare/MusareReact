@@ -12,7 +12,6 @@ const QUEUE_INDEX = "STATION_INFO::QUEUE_INDEX";
 const QUEUE_UPDATE = "STATION_INFO::QUEUE_UPDATE";
 const PAUSE = "STATION_INFO::PAUSE";
 const RESUME = "STATION_INFO::RESUME";
-const PLAYLISTS_UPDATE = "STATION_INFO::PLAYLISTS_UPDATE";
 
 function joinStation(station) {
 	return {
@@ -95,13 +94,6 @@ function resume() {
 	}
 }
 
-function playlistsUpdate(playlists) {
-	return {
-		type: PLAYLISTS_UPDATE,
-		playlists,
-	}
-}
-
 
 
 const initialState = Map({
@@ -118,7 +110,6 @@ const initialState = Map({
 	"userCount": 0,
 	"songList": List([]),
 	"privatePlaylist": "",
-	"playlists": List([]),
 });
 
 function reducer(state = initialState, action) {
@@ -204,10 +195,6 @@ function reducer(state = initialState, action) {
 		return state.merge({
 			paused: false,
 		});
-	case PLAYLISTS_UPDATE:
-		return state.merge({
-			playlists: action.playlists,
-		});
 	}
 	return state;
 }
@@ -225,7 +212,6 @@ const actionCreators = {
 	queueUpdate,
 	pause,
 	resume,
-	playlistsUpdate,
 };
 
 const actionTypes = {
@@ -241,7 +227,6 @@ const actionTypes = {
 	QUEUE_UPDATE,
 	PAUSE,
 	RESUME,
-	PLAYLISTS_UPDATE,
 };
 
 export {

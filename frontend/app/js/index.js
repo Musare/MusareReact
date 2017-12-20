@@ -20,7 +20,9 @@ let store = null;
 const middleware = applyMiddleware(thunk);
 store = createStore(
 	rootReducer,
-	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() //middleware //TODO See what the middleware does
+	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({
+		actionsBlacklist: ["STATION_CURRENT_SONG::TIME_ELAPSED_UPDATE"],
+	}) //middleware
 );
 
 ReactDOM.render(

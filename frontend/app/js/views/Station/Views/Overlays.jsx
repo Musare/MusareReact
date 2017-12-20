@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import Settings from "./Settings";
-import Playlists from "./Playlists";
-import EditPlaylist from "./EditPlaylist";
+import Playlists from "./Playlists/index.jsx";
+import EditPlaylist from "./Playlists/EditPlaylist";
 import SearchYouTube from "./SearchYouTube";
-import QueueList from "./QueueList/index.jsx";
+import QueueList from "./Queue/index.jsx";
 
 @connect(state => ({
 	overlay1: state.stationOverlay.get("overlay1"),

@@ -7,7 +7,7 @@ import PlaylistItem from "./PlaylistItem.jsx";
 
 @connect(state => ({
 	station: {
-		playlists: state.station.info.get("playlists"),
+		playlists: state.station.playlists,
 	},
 }))
 export default class PlaylistList extends Component {
@@ -16,7 +16,7 @@ export default class PlaylistList extends Component {
 	}
 
 	render() {
-		const { playlists } = this.props.station;
+		const { playlists } = this.props;
 
 		return (
 			<ul>

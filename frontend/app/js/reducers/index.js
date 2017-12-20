@@ -10,6 +10,7 @@ import session from "../ducks/session";
 import volume from "../ducks/volume";
 import stationCurrentSong from "../ducks/stationCurrentSong";
 import stationInfo from "../ducks/stationInfo";
+import stationPlaylists from "../ducks/stationPlaylists";
 
 export default combineReducers({
 	volume,
@@ -23,5 +24,6 @@ export default combineReducers({
 	station: combineReducers({
 		info: stationInfo,
 		currentSong: stationCurrentSong,
+		playlists: stationPlaylists,
 	}),
 });

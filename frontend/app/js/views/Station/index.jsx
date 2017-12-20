@@ -15,6 +15,7 @@ import Overlays from "./Views/Overlays";
 
 import { actionCreators as stationCurrentSongActionCreators } from "ducks/stationCurrentSong";
 import { actionCreators as stationInfoActionCreators } from "ducks/stationInfo";
+import { actionCreators as stationPlaylistsActionCreators } from "ducks/stationPlaylists";
 import { bindActionCreators } from "redux";
 
 //import { changeVolume } from "actions/volume";
@@ -70,7 +71,12 @@ import config from "config";
 	onQueueIndex: bindActionCreators(stationInfoActionCreators.queueIndex, dispatch),
 	onQueueUpdate: bindActionCreators(stationInfoActionCreators.queueUpdate, dispatch),
 	onTimeElapsedUpdate: bindActionCreators(stationCurrentSongActionCreators.timeElapsedUpdate, dispatch),
-	onPlaylistsUpdate: bindActionCreators(stationInfoActionCreators.playlistsUpdate, dispatch),
+	onPlaylistsUpdate: bindActionCreators(stationPlaylistsActionCreators.update, dispatch),
+	onPlaylistsAddSong: bindActionCreators(stationPlaylistsActionCreators.addSong, dispatch),
+	onPlaylistsUpdateDisplayName: bindActionCreators(stationPlaylistsActionCreators.updateDisplayName, dispatch),
+	onPlaylistsMoveSongToBottom: bindActionCreators(stationPlaylistsActionCreators.moveSongToBottom, dispatch),
+	onPlaylistsMoveSongToTop: bindActionCreators(stationPlaylistsActionCreators.moveSongToTop, dispatch),
+	onPlaylistsRemoveSong: bindActionCreators(stationPlaylistsActionCreators.removeSong, dispatch),
 	openOverlay1: bindActionCreators(openOverlay1, dispatch),
 }))
 
@@ -206,6 +212,21 @@ export default class Station extends Component {
 						socket.emit("playlists.indexForUser", res => {
 							if (res.status === "success") this.props.onPlaylistsUpdate(res.data);
 						});
+					});
+					socket.on("event:playlist.addSong", data => {
+						this.props.onPlaylistsAddSong(data.playlistId, data.song);
+					});
+					socket.on("event:playlist.updateDisplayName", data => {
+						this.props.onPlaylistsUpdateDisplayName(data.playlistId, data.displayName);
+					});
+					socket.on("event:playlist.moveSongToBottom", data => {
+						this.props.onPlaylistsMoveSongToBottom(data.playlistId, data.songId);
+					});
+					socket.on("event:playlist.moveSongToTop", data => {
+						this.props.onPlaylistsMoveSongToTop(data.playlistId, data.songId);
+					});
+					socket.on("event:playlist.removeSong", data => {
+						this.props.onPlaylistsRemoveSong(data.playlistId, data.songId);
 					});
 
 					if (this.props.station.type === "community") {

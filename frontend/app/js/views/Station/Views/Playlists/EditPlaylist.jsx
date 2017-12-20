@@ -11,111 +11,13 @@ import { closeOverlay2, openOverlay3, closeOverlay3 } from "actions/stationOverl
 import io from "io";
 
 @connect(state => ({
-	stationId: state.station.get("id"),
+	playlists: state.station.playlists,
 }))
 export default class EditPlaylist extends Component {
 	constructor(props) {
 		super(props);
 
 		CustomInput.initialize(this);
-
-		this.state = {
-			gotPlaylist: false,
-			playlist: {},
-		};
-
-		io.getSocket((socket) => {
-			socket.emit('playlists.getPlaylist', this.props.playlistId, res => {
-				if (res.status === 'success') {
-					this.input.displayName.setValue(res.data.displayName, true);
-					this.setState({
-						gotPlaylist: true,
-						playlist: res.data,
-					});
-				}
-			});
-
-			socket.on('event:playlist.addSong', data => {
-				if (this.props.playlistId === data.playlistId) {
-					let songs = this.state.playlist.songs;
-					songs.push(data.song);
-					this.setState({
-						playlist: {
-							...this.state.playlist,
-							songs,
-						},
-					});
-				}
-			});
-
-			socket.on('event:playlist.updateDisplayName', data => {
-				if (this.props.playlistId === data.playlistId) {
-					this.setState({
-						playlist: {
-							...this.state.playlist,
-							displayName: data.displayName,
-						},
-					});
-				}
-			});
-
-			socket.on('event:playlist.moveSongToBottom', data => {
-				if (this.props.playlistId === data.playlistId) {
-					let songs = this.state.playlist.songs;
-					let songIndex;
-					songs.forEach((song, index) => {
-						if (song.songId === data.songId) songIndex = index;
-					});
-					let song = songs.splice(songIndex, 1)[0];
-					songs.push(song);
-
-					this.setState({
-						playlist: {
-							...this.state.playlist,
-							songs,
-						},
-					});
-				}
-			});
-
-			socket.on('event:playlist.moveSongToTop', (data) => {
-				if (this.props.playlistId === data.playlistId) {
-					let songs = this.state.playlist.songs;
-					let songIndex;
-					songs.forEach((song, index) => {
-						if (song.songId === data.songId) songIndex = index;
-					});
-					let song = songs.splice(songIndex, 1)[0];
-					songs.unshift(song);
-
-					this.setState({
-						playlist: {
-							...this.state.playlist,
-							songs,
-						},
-					});
-				}
-			});
-
-			socket.on('event:playlist.removeSong', data => {
-				if (this.props.playlistId === data.playlistId) {
-					//TODO Somehow make this sync, so when 2 songs get removed at the same ms it removes both not just one
-					let songs = this.state.playlist.songs;
-					songs.forEach((song, index) => {
-						if (song.songId === data.songId) songs.splice(index, 1);
-					});
-
-					this.setState({
-						playlist: {
-							...this.state.playlist,
-							songs,
-						},
-					});
-				}
-			});
-		});
-
-		console.log("edit Playlist", props);
 	}
 
 	addSongToPlaylistCallback = (songId) => {
@@ -211,33 +113,34 @@ export default class EditPlaylist extends Component {
 	};
 
 	render() {
+		const { playlistId } = this.props;
+		const playlist = this.props.playlists.find((playlist) => {
+			return playlist.get("playlistId") === playlistId;
+		});
+
 		return (
 			<div className="overlay">
 				<button onClick={ this.close }>Back</button>
 				<h1>Edit Playlist</h1>
-				<CustomInput type="playlistDescription" name="displayName" label="Display name" placeholder="Display name" onRef={ ref => (this.input.displayName = ref) } />
+				<CustomInput type="playlistDescription" name="displayName" label="Display name" placeholder="Display name" onRef={ ref => (this.input.displayName = ref) } original={ playlist.get("displayName") }/>
 				<button onClick={ this.changeDisplayName }>Change displayname</button>
 
 
 				{
-					(this.state.gotPlaylist)
-					? (
-						<ul>
-							{
-								this.state.playlist.songs.map((song) => {
-									return (
-										<li key={ song.songId }>
-											<p>{ song.title }</p>
-											<span onClick={ () => { this.deleteSong(song.songId) }}>DELETE</span><br/>
-											<span onClick={ () => { this.promoteSong(song.songId) }}>UP</span><br/>
-											<span onClick={ () => { this.demoteSong(song.songId) }}>DOWN</span>
-										</li>
-									);
-								})
-							}
-						</ul>
-					)
-					: null
+					<ul>
+						{
+							playlist.get("songs").map((song) => {
+								return (
+									<li key={ song.get("songId") }>
+										<p>{ song.get("title") }</p>
+										<span onClick={ () => { this.deleteSong(song.get("songId")) }}>DELETE</span><br/>
+										<span onClick={ () => { this.promoteSong(song.get("songId")) }}>UP</span><br/>
+										<span onClick={ () => { this.demoteSong(song.get("songId")) }}>DOWN</span>
+									</li>
+								);
+							})
+						}
+					</ul>
 				}
 
 
