@@ -37,33 +37,6 @@ import io from "io";
 export default class QueueList extends Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			playlists: [],
-		};
-
-		io.getSocket((socket) => {
-			socket.emit('playlists.indexForUser', res => {
-				if (res.status === 'success') this.setState({
-					playlists: res.data,
-				});
-			});
-
-			socket.on('event:playlist.create', () => {
-				socket.emit('playlists.indexForUser', res => {
-					if (res.status === 'success') this.setState({
-						playlists: res.data,
-					});
-				});
-			});
-			socket.on('event:playlist.delete', () => {
-				socket.emit('playlists.indexForUser', res => {
-					if (res.status === 'success') this.setState({
-						playlists: res.data,
-					});
-				});
-			});
-		});
 	}
 
 	addSongToQueueCallback = (songId) => {

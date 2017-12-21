@@ -1,4 +1,4 @@
-import { Map, List } from "immutable";
+import { Map, List, fromJS } from "immutable";
 
 const JOIN = "STATION_INFO::JOIN";
 const LEAVE = "STATION_INFO::LEAVE";
@@ -12,6 +12,8 @@ const QUEUE_INDEX = "STATION_INFO::QUEUE_INDEX";
 const QUEUE_UPDATE = "STATION_INFO::QUEUE_UPDATE";
 const PAUSE = "STATION_INFO::PAUSE";
 const RESUME = "STATION_INFO::RESUME";
+const SELECT_PLAYLIST = "STATION_INFO::SELECT_PLAYLIST";
+const SELECT_PLAYLIST_QUEUE = "STATION_INFO::SELECT_PLAYLIST_QUEUE";
 
 function joinStation(station) {
 	return {
@@ -94,6 +96,20 @@ function resume() {
 	}
 }
 
+function selectPlaylist(playlistId) {
+	return {
+		type: SELECT_PLAYLIST,
+		playlistId,
+	}
+}
+
+function selectPlaylistQueue(playlistId) {
+	return {
+		type: SELECT_PLAYLIST_QUEUE,
+		playlistId,
+	}
+}
+
 
 
 const initialState = Map({
@@ -110,6 +126,7 @@ const initialState = Map({
 	"userCount": 0,
 	"songList": List([]),
 	"privatePlaylist": "",
+	"privatePlaylistQueue": "",
 });
 
 function reducer(state = initialState, action) {
@@ -148,16 +165,16 @@ function reducer(state = initialState, action) {
 			ownerId,
 			paused,
 			mode: (getModeTemp(action.station.partyMode, action.station.locked)),
-			userList: List(action.station.userList),
+			userList: fromJS(action.station.userList),
 			userCount,
-			songList: List(action.station.songList),
+			songList: fromJS(action.station.songList),
 			privatePlaylist: action.station.privatePlaylist,
 		});
 	case LEAVE:
 		return initialState;
 	case USER_LIST_UPDATE:
 		return state.merge({
-			userList: List(action.userList),
+			userList: fromJS(action.userList),
 		});
 	case USER_COUNT_UPDATE:
 		return state.merge({
@@ -181,11 +198,11 @@ function reducer(state = initialState, action) {
 		});
 	case QUEUE_INDEX:
 		return state.merge({
-			songList: List(action.songList),
+			songList: fromJS(action.songList),
 		});
 	case QUEUE_UPDATE:
 		return state.merge({
-			songList: List(action.songList),
+			songList: fromJS(action.songList),
 		});
 	case PAUSE:
 		return state.merge({
@@ -194,6 +211,14 @@ function reducer(state = initialState, action) {
 	case RESUME:
 		return state.merge({
 			paused: false,
+		});
+	case SELECT_PLAYLIST:
+		return state.merge({
+			privatePlaylist: action.playlistId,
+		});
+	case SELECT_PLAYLIST_QUEUE:
+		return state.merge({
+			privatePlaylistQueue: action.playlistId,
 		});
 	}
 	return state;
@@ -212,6 +237,8 @@ const actionCreators = {
 	queueUpdate,
 	pause,
 	resume,
+	selectPlaylist,
+	selectPlaylistQueue,
 };
 
 const actionTypes = {
@@ -227,6 +254,8 @@ const actionTypes = {
 	QUEUE_UPDATE,
 	PAUSE,
 	RESUME,
+	SELECT_PLAYLIST,
+	SELECT_PLAYLIST_QUEUE,
 };
 
 export {

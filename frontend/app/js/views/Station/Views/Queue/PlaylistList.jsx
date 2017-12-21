@@ -16,7 +16,7 @@ export default class PlaylistList extends Component {
 	}
 
 	render() {
-		const { playlists } = this.props;
+		const { playlists } = this.props.station;
 
 		return (
 			<ul>

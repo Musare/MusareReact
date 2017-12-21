@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 	exists: state.station.currentSong.get("songId") !== "",
 	paused: state.station.info.get("paused"),
 	mode: state.station.info.get("mode"),
+	privatePlaylistQueue: state.station.info.get("privatePlaylistQueue"),
 }))
 export default class PlayerDebug extends Component {
 	static propTypes = {
@@ -57,6 +58,9 @@ export default class PlayerDebug extends Component {
 				<b>Paused at: </b> { this.props.pausedAt } <br/>
 				<b>Started at: </b> { this.props.startedAt } <br/>
 				<b>Exists: </b> { this.props.exists.toString() } <br/>
+				<h3>Adding to queue</h3>
+				<b>Playlist to queue: </b> { this.props.privatePlaylistQueue } <br/>
+
 				<hr/>
 			</div>
 		);

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import { Map, List } from "immutable";
+import async from "async";
 
 import PropTypes from "prop-types";
 import { translate, Trans } from "react-i18next";
@@ -45,13 +46,16 @@ import config from "config";
 		title: state.station.currentSong.get("title"),
 		artists: state.station.currentSong.get("artists"),
 	},
+	playlists: state.station.playlists,
 	station: {
 		stationId: state.station.info.get("stationId"),
 		name: state.station.info.get("name"),
 		displayName: state.station.info.get("displayName"),
 		type: state.station.info.get("type"),
+		songList: state.station.info.get("songList"),
 		paused: state.station.info.get("paused"),
 		ownerId: state.station.info.get("ownerId"),
+		privatePlaylistQueue: state.station.info.get("privatePlaylistQueue"),
 	},/*
 	selectedPlaylistObject: {
 		addedSongId: state.playlistQueue.get("addedSongId"),
@@ -97,6 +101,7 @@ export default class Station extends Component {
 			timeElapsedInterval: setInterval(() => {
 				props.onTimeElapsedUpdate();
 			}, 500),
+			automaticallyAddedSongId: null,
 		};
 		/*this.state = {
 			mode: this.getModeTemp(props.partyEnabled, props.queueLocked),
@@ -136,7 +141,7 @@ export default class Station extends Component {
 					});
 
 					socket.on("event:songs.next", data => {
-						//this.addTopToQueue();
+						this.addTopToQueue();
 						if (data.currentSong) {
 							let song = {
 								songId: data.currentSong.songId,
@@ -244,111 +249,81 @@ export default class Station extends Component {
 				}
 			});
 		});
-
-		/*setInterval(() => {
-			if (this.props.song.exists) {
-				this.props.dispatch(setTimeElapsed(this.props.station.paused, this.props.station.pausedAt)); // TODO Fix
-			}
-		}, 1000);*/
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.state.timeElapsedInterval);
 	}
 
-	/*isInQueue = (songId, cb) => {
+	addTopToQueue = () => {
+		const randomIdentifier = Math.floor(Math.random() * 10000000000);
+		console.log("ADDTOPTOQUEUE", randomIdentifier);
+		const automaticallyAddedSongId = this.state.automaticallyAddedSongId;
+		const privatePlaylistQueue = this.props.station.privatePlaylistQueue;
 		io.getSocket((socket) => {
-			socket.emit('stations.getQueue', this.props.stationId, data => {
-				if (data.status === 'success') {
-					data.queue.forEach((song) => {
-						if (song._id === songId) {
-							return cb(true);
+			async.waterfall([
+				(next) => {
+					if (this.state.mode === "normal") return next("Mode invalid."); //
+					if (!privatePlaylistQueue) return next("No playlist selected."); // There hasn't been any playlist that has been selected
+					if (!automaticallyAddedSongId) return next(); // There hasn't been any song that automatically got added to the queue
+					//if (this.props.song.exists && automaticallyAddedSongId === this.props.song.songId) return next("Previously automatically added song is still playing."); // The song that was previously automatically added is already currently playing
+					let alreadyAdded = false;
+					this.props.station.songList.forEach((song) => {
+						if (automaticallyAddedSongId === song.get("songId")) alreadyAdded = true;
+					});
+					if (alreadyAdded) return next("Previously automatically added song is still in the queue."); // The song that was automatically added previously is already currently in the queue
+					return next();
+				},
+				(next) => {
+					const playlist = this.props.playlists.find((playlist) => {
+						return privatePlaylistQueue === playlist.get("playlistId");
+					});
+					if (!playlist) return next("Selected playlist isn't found.");
+					const song = playlist.get("songs").get(0);
+					if (!song) return next("Top song couldn't be found.");
+					if (song.get("duration") > 15 * 60) return next("BOTTOM");
+					const songId = song.get("songId");
+					this.setState({
+						...this.state,
+						automaticallyAddedSongId: songId,
+					});
+					socket.emit("stations.addToQueue", this.props.station.stationId, songId, data => {
+						return next(null, data, songId);
+					});
+				},
+				(data, songId, next) => {
+					if (data.status !== "success") return next("Song couldn't be added to the queue.");
+					this.moveToBottom(privatePlaylistQueue, songId, (data) => {
+						return next(null, data);
+					});
+				},
+				(data, next) => {
+					if (data.status !== "success") return next("Song couldn't be moved to the bottom of the playlist.");
+					return next();
+				},
+			], (err, res) => {
+				if (err) console.log("ADDTOPTOQUEUE ERROR", randomIdentifier, err, res);
+				else console.log("ADDTOPTOQUEUE SUCCESS", randomIdentifier);
+ 				if (err === "BOTTOM") {
+					this.moveToBottom(privatePlaylistQueue, res.songId, (data) => {
+						if (data.status === "success" && res.status !== "success") {
+							setTimeout(() => {
+								this.addTopToQueue();
+							}, 2000);
 						}
 					});
 				}
-
-				return cb(false);
 			});
 		});
-	};*/
+	};
 
-	/*checkIfCanAdd = (cb) => {
-		if (this.state.mode === "normal") return cb(false);
-		let playlistId = this.props.selectedPlaylistObject.selectedPlaylistId;
-		let songId = this.props.selectedPlaylistObject.addedSongId;
-		console.log(playlistId, songId, this.props.song.songId);
-		if (playlistId) {
-			if (songId === this.props.song.songId) return cb(true);
-			else if (songId === null) return cb(true);
-			else {
-				this.isInQueue(songId, (res) => {
-					return cb(res);
-				});
-			}
-		}
-	}*/
-
-	/*addTopToQueue = () => {
-		console.log("ADD TOP TO QUEUE!!!");
-		this.checkIfCanAdd((can) => {
-			if (!can) return;
-			let playlistId = this.props.selectedPlaylistObject.selectedPlaylistId;
-			console.log(can);
-			io.getSocket((socket) => {
-				socket.emit('playlists.getFirstSong', this.props.selectedPlaylistObject.selectedPlaylistId, data => {
-					if (data.status === 'success') {
-						let songId = data.song.songId;
-						if (data.song.duration < 15 * 60) {
-							this.props.dispatch(addSong(songId));
-
-							socket.emit('stations.addToQueue', this.props.station.stationId, songId, data2 => {
-								if (data2.status === 'success') {
-									this.moveToBottom(playlistId, songId, (data3) => {
-										if (data3.status === 'success') {
-										}
-									});
-								} else {
-									this.messages.clearAddError("Could not automatically add top song of playlist to queue.", data2.message);
-								}
-							});
-						} else {
-							this.messages.clearAddError("Top song in playlist was too long to be added. Moving to the next song.");
-							this.moveToBottom(playlistId, songId, (data3) => {
-								if (data3.status === 'success') {
-									setTimeout(() => {
-										this.addTopToQueue();
-									}, 2000);
-								}
-							});
-						}
-					}
-				});
-			});
-		});
-	};*/
-
-	/*moveToBottom = (playlistId, songId, cb) => {
+	moveToBottom = (playlistId, songId, cb) => {
 		io.getSocket((socket) => {
-			socket.emit('playlists.moveSongToBottom', playlistId, songId, data => {
+			socket.emit("playlists.moveSongToBottom", playlistId, songId, data => {
 				cb(data);
 			});
 		});
-	}*/
-
-	/*getModeTemp = (partyEnabled, queueLocked) => {
-		// If party enabled
-		// If queue locked
-		// Mode is DJ
-		// If queue not locked
-		// Mode party
-		// If party not enabled
-		// Mode is normal
-
-		if (partyEnabled) {
-			if (queueLocked) return "dj";
-			else return "party";
-		} else return "normal";
-	}*/
+	}
 
 	fetchOwnRatings = () => {
 		io.getSocket((socket) => {

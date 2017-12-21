@@ -66,7 +66,6 @@ function reducer(state = initialState, action) {
 	function updatePlaylist(playlistId, updater) {
 		return state.update(
 			state.findIndex(function(playlist) {
-				console.log(55544, playlist);
 				return playlist.get("playlistId") === playlistId;
 			}),
 			updater
