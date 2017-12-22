@@ -3,38 +3,54 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 
+@connect(state => ({
+	user: {
+		loggedIn: state.session.get("loggedIn"),
+		userId: state.session.get("userId"),
+		role: state.session.get("role"),
+	},
+}))
 @translate(["home"], { wait: true })
 export default class StationCard extends Component {
+	isOwner = () => {
+		if (this.props.user.loggedIn) {
+			if (this.props.user.role === "admin") return true;
+			if (this.props.user.userId === this.props.station.get("stationOwner")) return true;
+		}
+
+		return false;
+	};
+
 	render() {
-		const { station, isOwner } = this.props;
+		const { station } = this.props;
 		let icon = null;
-		if (station.type === "official") {
-			if (station.privacy !== "public") icon =
+		if (station.get("type") === "official") {
+			if (station.get("privacy") !== "public") icon =
 				<i className="material-icons" title={ this.props.t("home:thisStationIsNotVisible") }>lock</i>;
 		} else {
-			if (isOwner) icon =
+			if (this.isOwner()) icon =
 				<i className="material-icons" title={ this.props.t("home:thisIsYourStation") }>home</i>;
-			if (station.privacy !== "public") icon =
+			if (station.get("privacy") !== "public") icon =
 				<i className="material-icons" title={ this.props.t("home:thisStationIsNotVisible") }>lock</i>;
 		}
 
 		return (
 			<div className="station-card">
 				<div className="station-media">
-					<img src={(station.currentSong) ? station.currentSong.thumbnail : ""}/>
+					<img src={(station.get("currentSong")) ? station.getIn(["currentSong", "thumbnail"]) : ""}/>
 				</div>
 				<div className="station-body">
-					<h3 className="displayName">{station.displayName}</h3>
-					<p className="description">{station.description}</p>
+					<h3 className="displayName">{station.get("displayName")}</h3>
+					<p className="description">{station.get("description")}</p>
 				</div>
 				<div className="station-footer">
 					<div className="user-count" title={ this.props.t("home:howManyOtherUsers") }>
 						<i className="material-icons">people</i>
-						<span>{station.userCount}</span>
+						<span>{station.get("userCount")}</span>
 					</div>
 					{ icon }
 				</div>
-				<a href={station.type + "/" + station.name}/>
+				<a href={station.get("type") + "/" + station.get("name")}/>
 			</div>
 		);
 	}

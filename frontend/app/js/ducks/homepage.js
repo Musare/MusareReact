@@ -1,4 +1,4 @@
-import { Map, List } from "immutable";
+import { Map, List, fromJS } from "immutable";
 
 const STATION_INDEX = "HOMEPAGE::STATION_INDEX";
 const STATION_CREATE = "HOMEPAGE::STATION_CREATE";
@@ -71,11 +71,17 @@ function reducer(state = initialState, action) {
 
 	switch (action.type) {
 	case STATION_INDEX:
-		state.setIn(["stations", "official"], List([]));
-		state.setIn(["stations", "community"], List([]));
+		state = Map({
+			stations: Map({
+				official: List([]),
+				community: List([]),
+			}),
+		});
 		stations.forEach((station) => {
-			state = state.updateIn(["stations", station.type], function(list) {
-				return list.push(station);
+			station.stationId = station._id;
+			delete station._id;
+			state = state.updateIn(["stations", station.type], (stations) => {
+				return stations.push(fromJS(station));
 			});
 		});
 		return state;

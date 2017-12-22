@@ -55,7 +55,6 @@ export default class Homepage extends Component {
 		io.getSocket(socket => {
 			socket.emit("stations.index", data => {
 				if (data.status === "success") {
-					console.log(data.stations)
 					this.props.onStationIndex(data.stations);
 				}
 			});
@@ -124,7 +123,7 @@ export default class Homepage extends Component {
 				<h2>{ t("home:officialStations") }</h2>
 				<div className="official-stations stations">
 					{ this.props.officialStations.map((station) => {
-						return <StationCard station={ station } />;
+						return <StationCard station={ station } key={ station.get("stationId") } />;
 					}) }
 				</div>
 				<h2>{ t("home:communityStations") }</h2>
@@ -151,7 +150,7 @@ export default class Homepage extends Component {
 						</div>
 					) : null }
 					{ this.props.communityStations.map((station) => {
-						return <StationCard station={ station } isOwner={ this.isOwner(station.ownerId) } key={ station.stationId }/>;
+						return <StationCard station={ station } key={ station.get("stationId") }/>;
 					}) }
 				</div>
 			</main>
