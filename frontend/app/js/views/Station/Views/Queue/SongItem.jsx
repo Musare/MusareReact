@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import { formatTime } from "utils";
+
 import { connect } from "react-redux";
 
 import io from "io";
@@ -8,6 +10,7 @@ import io from "io";
 @connect(state => ({
 	station: {
 		stationId: state.station.info.get("id"),
+		owner: state.station.info.get("ownerId"),
 	},
 }))
 export default class SongItem extends Component {
@@ -35,29 +38,29 @@ export default class SongItem extends Component {
 
 	render() {
 		const { song } = this.props;
-		const showRequestedBy = (song.requestedByUsername && song.requestedByUsername !== "Unknown");
+		const showRequestedBy = (song.get("requestedByUsername") && song.get("requestedByUsername") !== "Unknown");
 		const showDelete = (this.isOwner());
 
 		return (
 			<li>
 				<div className="left">
-					<img src={ song.thumbnail } onError={function(e) {e.target.src="/assets/images/notes.png"}}/>
+					<img src={ song.get("thumbnail") } onError={function(e) {e.target.src="/assets/images/notes.png"}}/>
 				</div>
 				<div className="right">
-					<span className="duration">{ song.duration }</span>
-					<p className="title">{ song.title }</p>
+					<span className="duration">{ formatTime(song.get("duration")) }</span>
+					<p className="title">{ song.get("title") }</p>
 					<span className="title-artists-spacing"/>
-					<p className="artists">{ song.artists.join(", ") }</p>
+					<p className="artists">{ song.get("artists").join(", ") }</p>
 					{
 						(showRequestedBy) ?
 						<span>
 							<span>Requested by: </span>
-							<a href={`/u/${ song.requestedByUsername }`}>{ song.requestedByUsername }</a>
+							<a href={`/u/${ song.get("requestedByUsername") }`}>{ song.get("requestedByUsername") }</a>
 						</span> : null
 					}
 					{
 						(showDelete)
-						? <i onClick={ () => { this.deleteSong(song.songId) } }>Delete</i>
+						? <i onClick={ () => { this.deleteSong(song.get("songId")) } }>Delete</i>
 						: null
 					}
 				</div>

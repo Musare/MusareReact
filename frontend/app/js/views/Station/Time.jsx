@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { connect } from "react-redux";
+import { formatTime } from "utils";
 
-const formatTime = (duration) => {
-	let d = moment.duration(duration, "seconds");
-	if (duration < 0) return "0:00";
-	return ((d.hours() > 0) ? (d.hours() < 10 ? ("0" + d.hours() + ":") : (d.hours() + ":")) : "") + (d.minutes() + ":") + (d.seconds() < 10 ? ("0" + d.seconds()) : d.seconds());
-};
+import { connect } from "react-redux";
 
 @connect(state => ({
 	duration: state.station.currentSong.getIn(["timings", "duration"]),

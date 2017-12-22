@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import CustomInput from "components/CustomInput.jsx";
 import CustomErrors from "components/CustomMessages.jsx";
 
+import SongList from "./SongList.jsx";
+
 import { connect } from "react-redux";
 
 import { closeOverlay3, closeOverlay2 } from "actions/stationOverlay";
@@ -81,29 +83,11 @@ export default class SearchYouTube extends Component {
 						? (
 							<div className="search-youtube-results">
 								<h2>Results</h2>
-								<ul>
-								{
-									this.state.results.map((result) => {
-										return (
-											<li key={ this.input.query.getValue() + result.songId }>
-												<img src={ result.thumbnail }/>
-												<a href={ result.url } target="_blank">{ result.title }</a>
-												<div>
-													<span className="duration">12:12</span>
-													<span onClick={ () => { this.props.callback(result.songId); } } className="add" tabIndex="0"><i className="material-icons">add</i></span>
-												</div>
-											</li>
-										);
-									})
-								}
-								</ul>
+								<SongList songs={ this.state.results } callback={ this.props.callback }/>
 							</div>
 						)
 						: null
 					}
-					<ul>
-						{}
-					</ul>
 
 					<CustomErrors onRef={ ref => (this.messages = ref) } />
 				</div>

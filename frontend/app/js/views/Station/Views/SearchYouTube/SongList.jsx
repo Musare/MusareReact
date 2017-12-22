@@ -5,30 +5,22 @@ import { connect } from "react-redux";
 
 import SongItem from "./SongItem.jsx";
 
-@connect(state => ({
-	station: {
-		songList: state.station.info.get("songList"),
-	},
-}))
 export default class SongList extends Component {
 	constructor(props) {
 		super(props);
 	}
 
 	render() {
-		const { songList } = this.props.station;
+		const { callback, songs } = this.props;
 
 		return (
 			<ul>
 				{
-					songList.map((song) => {
-						return <SongItem key={ song.get("songId") } song={ song }/>;
+					songs.map((song) => {
+						return (
+							<SongItem key={ song.songId } song={ song } callback={ callback }/>
+						);
 					})
-				}
-				{
-					(songList.length === 0)
-					? <li>No songs in queue.</li>
-					: null
 				}
 			</ul>
 		);

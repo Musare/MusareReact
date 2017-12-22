@@ -155,6 +155,12 @@ function reducer(state = initialState, action) {
 		description = action.station.description;
 		userCount = action.station.userCount;
 
+		songList = fromJS(action.station.songList.map((song) => {
+			song.songId = song._id;
+			delete song._id;
+			return song;
+		}));
+
 		return state.merge({
 			stationId,
 			name: action.station.name,
@@ -167,7 +173,7 @@ function reducer(state = initialState, action) {
 			mode: (getModeTemp(action.station.partyMode, action.station.locked)),
 			userList: fromJS(action.station.userList),
 			userCount,
-			songList: fromJS(action.station.songList),
+			songList: fromJS(songList),
 			privatePlaylist: action.station.privatePlaylist,
 		});
 	case LEAVE:
@@ -197,12 +203,24 @@ function reducer(state = initialState, action) {
 			mode: action.mode,
 		});
 	case QUEUE_INDEX:
+		songList = fromJS(action.station.songList.map((song) => {
+			song.songId = song._id;
+			delete song._id;
+			return song;
+		}));
+
 		return state.merge({
-			songList: fromJS(action.songList),
+			songList,
 		});
 	case QUEUE_UPDATE:
+		songList = fromJS(action.station.songList.map((song) => {
+			song.songId = song._id;
+			delete song._id;
+			return song;
+		}));
+
 		return state.merge({
-			songList: fromJS(action.songList),
+			songList,
 		});
 	case PAUSE:
 		return state.merge({

@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import Settings from "./Settings";
 import Playlists from "./Playlists/index.jsx";
 import EditPlaylist from "./Playlists/EditPlaylist";
-import SearchYouTube from "./SearchYouTube";
+import SearchYouTube from "./SearchYouTube/index.jsx";
 import QueueList from "./Queue/index.jsx";
 
 @connect(state => ({
