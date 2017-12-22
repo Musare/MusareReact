@@ -55,6 +55,7 @@ import config from "config";
 		songList: state.station.info.get("songList"),
 		paused: state.station.info.get("paused"),
 		ownerId: state.station.info.get("ownerId"),
+		mode: state.station.info.get("mode"),
 		privatePlaylistQueue: state.station.info.get("privatePlaylistQueue"),
 	},/*
 	selectedPlaylistObject: {
@@ -74,6 +75,7 @@ import config from "config";
 	onResume: bindActionCreators(stationInfoActionCreators.resume, dispatch),
 	onQueueIndex: bindActionCreators(stationInfoActionCreators.queueIndex, dispatch),
 	onQueueUpdate: bindActionCreators(stationInfoActionCreators.queueUpdate, dispatch),
+	onModeUpdate: bindActionCreators(stationInfoActionCreators.modeUpdate, dispatch),
 	onTimeElapsedUpdate: bindActionCreators(stationCurrentSongActionCreators.timeElapsedUpdate, dispatch),
 	onPlaylistsUpdate: bindActionCreators(stationPlaylistsActionCreators.update, dispatch),
 	onPlaylistsAddSong: bindActionCreators(stationPlaylistsActionCreators.addSong, dispatch),
@@ -233,6 +235,20 @@ export default class Station extends Component {
 					socket.on("event:playlist.removeSong", data => {
 						this.props.onPlaylistsRemoveSong(data.playlistId, data.songId);
 					});
+					socket.on("event:partyMode.updated", partyEnabled => {
+						this.setState({
+							...this.state,
+							partyEnabled,
+						});
+						this.props.onModeUpdate(partyEnabled, this.state.queueLocked);
+					});
+					socket.on("event:queueLockToggled", queueLocked => {
+						this.setState({
+							...this.state,
+							queueLocked,
+						});
+						this.props.onModeUpdate(this.state.partyEnabled, queueLocked);
+					});
 
 					if (this.props.station.type === "community") {
 						socket.emit("stations.getQueue", this.props.station.stationId, data => {
@@ -387,8 +403,17 @@ export default class Station extends Component {
 
 				<div id="sidebar">
 					<button onClick={ () => { this.props.openOverlay1("users") } }><i className="material-icons">people</i></button>
-					<button onClick={ () => { this.props.openOverlay1("queueList") } }><i className="material-icons">queue_music</i></button>
-					<button onClick={ () => { this.props.openOverlay1("playlists") } }><i className="material-icons">library_music</i></button>
+					{
+						(this.props.station.type === "community" && this.props.station.mode !== "normal")
+						? <button onClick={ () => { this.props.openOverlay1("queueList") } }><i className="material-icons">queue_music</i></button>
+						: null
+					}
+					{
+						(this.props.station.type === "community")
+						? <button onClick={ () => { this.props.openOverlay1("playlists") } }><i className="material-icons">library_music</i></button>
+						: null
+					}
+
 					<hr/>
 					{
 						(this.isOwner())

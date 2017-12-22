@@ -63,10 +63,11 @@ function descriptionUpdate(description) {
 	}
 }
 
-function modeUpdate(mode) {
+function modeUpdate(partyMode, locked) {
 	return {
 		type: MODE_UPDATE,
-		mode,
+		partyMode,
+		locked,
 	}
 }
 
@@ -200,10 +201,10 @@ function reducer(state = initialState, action) {
 		});
 	case MODE_UPDATE:
 		return state.merge({
-			mode: action.mode,
+			mode: getModeTemp(action.partyMode, action.locked),
 		});
 	case QUEUE_INDEX:
-		songList = fromJS(action.station.songList.map((song) => {
+		songList = fromJS(action.songList.map((song) => {
 			song.songId = song._id;
 			delete song._id;
 			return song;
@@ -213,7 +214,7 @@ function reducer(state = initialState, action) {
 			songList,
 		});
 	case QUEUE_UPDATE:
-		songList = fromJS(action.station.songList.map((song) => {
+		songList = fromJS(action.songList.map((song) => {
 			song.songId = song._id;
 			delete song._id;
 			return song;
