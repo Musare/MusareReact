@@ -4,6 +4,8 @@ import {connect} from "react-redux";
 import { Redirect } from "react-router-dom";
 import {translate} from "react-i18next";
 
+import { fallbackImage } from "constants.js";
+
 import CustomMessages from "components/CustomMessages.jsx";
 
 import io from "io";
@@ -110,7 +112,8 @@ export default class Profile extends Component {
 				<main id="profile">
 					<h1>{user.username}</h1>
 					<CustomMessages onRef={ref => (this.messages = ref)}/>
-					<img src={ user.image }/>
+					<img
+						src={ user.image } onError={function(e) {e.target.src=fallbackImage}}/>
 					<p>{ t("profile:aMemberSince") } {user.joinDatePretty}</p>
 					<div className="profile-details-list">
 						<span>

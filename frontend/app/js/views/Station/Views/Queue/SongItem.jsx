@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { formatTime } from "utils";
+import { fallbackImage } from "constants.js";
 
 import { connect } from "react-redux";
 
@@ -44,7 +45,7 @@ export default class SongItem extends Component {
 		return (
 			<li>
 				<div className="left">
-					<img src={ song.get("thumbnail") } onError={function(e) {e.target.src="/assets/images/notes.png"}}/>
+					<img src={ song.get("thumbnail") } onError={function(e) {e.target.src=fallbackImage}}/>
 				</div>
 				<div className="right">
 					<span className="duration">{ formatTime(song.get("duration")) }</span>

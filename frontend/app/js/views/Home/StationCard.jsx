@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 
+import { fallbackImage } from "constants.js";
+
 import { connect } from "react-redux";
 import { translate } from "react-i18next";
 
@@ -37,7 +39,7 @@ export default class StationCard extends Component {
 		return (
 			<div className="station-card">
 				<div className="station-media">
-					<img src={(station.get("currentSong")) ? station.getIn(["currentSong", "thumbnail"]) : ""}/>
+					<img src={(station.get("currentSong")) ? station.getIn(["currentSong", "thumbnail"]) : ""} onError={function(e) {e.target.src=fallbackImage}}/>
 				</div>
 				<div className="station-body">
 					<h3 className="displayName">{station.get("displayName")}</h3>
