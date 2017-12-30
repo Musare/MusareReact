@@ -6,7 +6,7 @@ const i18n = i18next
 	.use(XHR)
 	.init({
 		lng: "en",
-		debug: true,
+		debug: false,
 		fallbackLng: "en",
 		referenceLng: "en",
 		backend: {

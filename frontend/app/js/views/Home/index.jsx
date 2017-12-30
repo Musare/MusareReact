@@ -128,7 +128,7 @@ export default class Homepage extends Component {
 				</div>
 				<h2>{ t("home:communityStations") }</h2>
 				<div className="community-stations stations">
-					{ (this.props.loggedIn) ? (
+					{ (this.props.user.loggedIn) ? (
 						<div className="station-card">
 							<div className="station-media station-media-icon">
 								<div className="create-station-header">

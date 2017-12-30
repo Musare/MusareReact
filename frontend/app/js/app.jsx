@@ -73,6 +73,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 				<Switch>
 					<AuthRoute
 						exact
+						key="login"
 						path="/login"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Auth/Login"),
@@ -83,6 +84,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						exact
+						key="logout"
 						path="/logout"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Auth/Logout"),
@@ -93,6 +95,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						exact
+						key="register"
 						path="/register"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Auth/Register"),
@@ -103,6 +106,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						exact
+						key="settings"
 						path="/settings"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Auth/Settings"),
@@ -113,6 +117,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						exact
+						key="setpassword"
 						path="/settings/setpassword"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Auth/Settings/SetPassword"),
@@ -123,6 +128,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						exact
+						key="resetoasswird"
 						path="/reset_password"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Auth/ForgotPassword"),
@@ -133,6 +139,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						path="/terms"
+						key="terms"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Terms"),
 							name: "Terms"
@@ -142,6 +149,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						path="/privacy"
+						key="privacy"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Privacy"),
 							name: "Privacy"
@@ -151,6 +159,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						path="/team"
+						key="team"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Team"),
 							name: "Team"
@@ -160,6 +169,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						path="/u/:username"
+						key="profile"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Profile"),
 							name: "Profile"
@@ -168,6 +178,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						path="/community/:name"
+						key="community"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Station"),
 							name: "Station",
@@ -177,6 +188,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						path="/official/:name"
+						key="official"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Station"),
 							name: "Station",
@@ -187,6 +199,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					<AuthRoute
 						exact
 						path="/"
+						key="home"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Home"),
 							name: "Home",
@@ -196,6 +209,7 @@ class App extends Component { // eslint-disable-line react/no-multi-comp
 					/>
 					<AuthRoute
 						path="*"
+						key="404"
 						component={ asyncComponent({
 							resolve: () => System.import("views/Errors/Error404"),
 							name: "Error404",
