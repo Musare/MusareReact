@@ -157,8 +157,10 @@ function reducer(state = initialState, action) {
 		userCount = action.station.userCount;
 
 		songList = fromJS(action.station.songList.map((song) => {
-			song.songId = song._id;
-			delete song._id;
+			if (!song.songId) {
+				song.songId = song._id;
+				delete song._id;
+			}
 			return song;
 		}));
 
@@ -205,8 +207,10 @@ function reducer(state = initialState, action) {
 		});
 	case QUEUE_INDEX:
 		songList = fromJS(action.songList.map((song) => {
-			song.songId = song._id;
-			delete song._id;
+			if (!song.songId) {
+				song.songId = song._id;
+				delete song._id;
+			}
 			return song;
 		}));
 
@@ -215,8 +219,10 @@ function reducer(state = initialState, action) {
 		});
 	case QUEUE_UPDATE:
 		songList = fromJS(action.songList.map((song) => {
-			song.songId = song._id;
-			delete song._id;
+			if (!song.songId) {
+				song.songId = song._id;
+				delete song._id;
+			}
 			return song;
 		}));
 

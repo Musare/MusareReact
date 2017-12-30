@@ -9,8 +9,13 @@ import { connect } from "react-redux";
 import io from "io";
 
 @connect(state => ({
+	user: {
+		loggedIn: state.session.get("loggedIn"),
+		userId: state.session.get("userId"),
+		role: state.session.get("role"),
+	},
 	station: {
-		stationId: state.station.info.get("id"),
+		stationId: state.station.info.get("stationId"),
 		owner: state.station.info.get("ownerId"),
 	},
 }))
@@ -22,14 +27,14 @@ export default class SongItem extends Component {
 	deleteSong = (songId) => {
 		io.getSocket((socket) => {
 			socket.emit("stations.removeFromQueue", this.props.station.stationId, songId, (data) => {
-				if (data.status === "success") this.messages.clearAddSuccess("Successfully removed song.");
-				else this.messages.clearAddError("Failed to remove song.", data.message);
+				//if (data.status === "success") this.messages.clearAddSuccess("Successfully removed song.");
+				//else this.messages.clearAddError("Failed to remove song.", data.message);
 			});
 		});
 	};
 
 	isOwner = () => {
-		if (this.props.loggedIn) {
+		if (this.props.user.loggedIn) {
 			if (this.props.user.role === "admin") return true;
 			if (this.props.user.userId === this.props.station.owner) return true;
 		}
@@ -61,7 +66,7 @@ export default class SongItem extends Component {
 					}
 					{
 						(showDelete)
-						? <i onClick={ () => { this.deleteSong(song.get("songId")) } }>Delete</i>
+						? <i style={{ color: "black" }} onClick={ () => { this.deleteSong(song.get("songId")) } }>Delete</i>
 						: null
 					}
 				</div>
