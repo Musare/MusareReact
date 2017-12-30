@@ -27,10 +27,12 @@ export default class VolumeSlider extends Component {
 	};
 
 	muteVolume = () => {
+		localStorage.setItem("muted", true);
 		this.props.onVolumeMute();
 	};
 
 	unmuteVolume = () => {
+		localStorage.setItem("muted", false);
 		this.props.onVolumeUnmute();
 	};
 
