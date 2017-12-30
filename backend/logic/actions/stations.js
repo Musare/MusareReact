@@ -147,13 +147,18 @@ cache.sub('station.resume', stationId => {
 
 cache.sub('station.queueUpdate', stationId => {
 	stations.getStation(stationId, (err, station) => {
-		station.queue = station.queue.map((song) => {
-			let username = utils.getUsernameFromUserId(song.requestedBy);
-			if (username === null) username = "Unknown";
-			song.requestedByUsername = username;
-			return song;
+		async.map(station.queue, (song, next) => {
+			utils.getUsernameFromUserId(song.requestedBy, username => {
+				if (username === null) username = "Unknown";
+				song = JSON.parse(JSON.stringify(song));
+				song.requestedByUsername = username;
+				next(null, song);
+			});
+		}, (err, queue) => {
+			station = JSON.parse(JSON.stringify(station));
+			station.queue = queue;
+			if (!err) utils.emitToRoom(`station.${stationId}`, "event:queue.update", station.queue);
 		});
-		if (!err) utils.emitToRoom(`station.${stationId}`, "event:queue.update", station.queue);
 	});
 });
 
@@ -274,6 +279,21 @@ module.exports = {
 			(station, next) => {
 				if (!station) return next('Station not found.');
 				next(null, station);
+			},
+
+			(station, next) => {
+				async.map(station.queue, (song, next) => {
+					utils.getUsernameFromUserId(song.requestedBy, username => {
+						if (username === null) username = "Unknown";
+						song = JSON.parse(JSON.stringify(song));
+						song.requestedByUsername = username;
+						next(null, song);
+					});
+				}, (err, queue) => {
+					station = JSON.parse(JSON.stringify(station));
+					station.queue = queue;
+					next(null, station);
+				});
 			}
 		], (err, station) => {
 			if (err) {
@@ -1072,13 +1092,18 @@ module.exports = {
 			},
 
 			(station, next) => {
-				station.queue = station.queue.map((song) => {
-					let username = utils.getUsernameFromUserId(song.requestedBy);
-					if (username === null) username = "Unknown";
-					song.requestedByUsername = username;
-					return song;
+				async.map(station.queue, (song, next) => {
+					utils.getUsernameFromUserId(song.requestedBy, username => {
+						if (username === null) username = "Unknown";
+						song = JSON.parse(JSON.stringify(song));
+						song.requestedByUsername = username;
+						next(null, song);
+					});
+				}, (err, queue) => {
+					station = JSON.parse(JSON.stringify(station));
+					station.queue = queue;
+					next(null, station);
 				});
-				next(null, station);
 			}
 		], (err, station) => {
 			if (err) {

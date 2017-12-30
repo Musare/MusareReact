@@ -479,18 +479,18 @@ module.exports = {
 			return cb(false);
 		});
 	},
-	getUsernameFromUserId: (userId) => {
+	getUsernameFromUserId: (userId, cb) => {
 		async.waterfall([
 			(next) => {
 				if (!userId) return next(false);
 				db.models.user.findOne({_id: userId}, next);
 			}
 		], (err, user) => {
-			if (err === false) return null;
+			if (err === false) return cb(null);
 			else if (err) {
-				return null;
+				return cb(null);
 			}
-			return user.username;
+			return cb(user.username);
 		});
 	}
 };
