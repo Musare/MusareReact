@@ -25,7 +25,7 @@ export default class Seekerbar extends Component {
 			percentage: 0,
 		};
 
-		/*setInterval(() => {
+		setInterval(() => {
 			if (!this.props.paused) {
 				let timeElapsedGuess = this.state.timeElapsedGuess;
 				timeElapsedGuess += 15;
@@ -43,7 +43,7 @@ export default class Seekerbar extends Component {
 					percentage: (this.props.timeElapsed / this.props.timeTotal) * 100,
 				});
 			}
-		}, 50);*/
+		}, 50);
 	}
 
 	render() {
