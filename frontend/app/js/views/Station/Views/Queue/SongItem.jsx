@@ -45,7 +45,7 @@ export default class SongItem extends Component {
 	render() {
 		const { song } = this.props;
 		const showRequestedBy = (song.get("requestedByUsername") && song.get("requestedByUsername") !== "Unknown");
-		const showDelete = (this.isOwner());
+		const showDelete = (this.isOwner() && this.props.deleteable !== false);
 
 		return (
 			<li>
