@@ -22,7 +22,7 @@ export default class PlaylistList extends Component {
 			<ul>
 				{
 					playlists.map((playlist) => {
-						return <PlaylistItem key={ playlist.get("displayName") } playlist={ playlist }/>;
+						return <PlaylistItem key={ playlist.get("playlistId") } playlist={ playlist }/>;
 					})
 				}
 			</ul>
