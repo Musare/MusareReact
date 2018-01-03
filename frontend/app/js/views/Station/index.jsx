@@ -143,7 +143,7 @@ export default class Station extends Component {
 					});
 
 					socket.on("event:songs.next", data => {
-						this.addTopToQueue();
+						this.addTopToQueue(false);
 						if (data.currentSong) {
 							let song = {
 								songId: data.currentSong.songId,
@@ -271,9 +271,14 @@ export default class Station extends Component {
 		clearInterval(this.state.timeElapsedInterval);
 	}
 
-	addTopToQueue = () => {
+	componentDidUpdate(prevProps) {
+		if (this.props.station.privatePlaylistQueue !== prevProps.station.privatePlaylistQueue && !!this.props.station.privatePlaylistQueue) this.addTopToQueue(false);
+	}
+
+	addTopToQueue = (fromTimeout) => {
+		console.log("ADDTOPTOQUEUE", fromTimeout);
+		if (this.state.addSongTimeout && !fromTimeout) return console.log("RETURN!");
 		const randomIdentifier = Math.floor(Math.random() * 10000000000);
-		console.log("ADDTOPTOQUEUE", randomIdentifier);
 		const automaticallyAddedSongId = this.state.automaticallyAddedSongId;
 		const privatePlaylistQueue = this.props.station.privatePlaylistQueue;
 		io.getSocket((socket) => {
@@ -297,7 +302,7 @@ export default class Station extends Component {
 					if (!playlist) return next("Selected playlist isn't found.");
 					const song = playlist.get("songs").get(0);
 					if (!song) return next("Top song couldn't be found.");
-					if (song.get("duration") > 15 * 60) return next("BOTTOM");
+					if (song.get("duration") > 15 * 60) return next("BOTTOM", { songId: song.get("songId") });
 					const songId = song.get("songId");
 					this.setState({
 						...this.state,
@@ -323,9 +328,15 @@ export default class Station extends Component {
  				if (err === "BOTTOM") {
 					this.moveToBottom(privatePlaylistQueue, res.songId, (data) => {
 						if (data.status === "success" && res.status !== "success") {
-							setTimeout(() => {
-								this.addTopToQueue();
-							}, 2000);
+							this.setState({
+								addSongTimeout: setTimeout(() => {
+									this.setState({
+										addSongTimeout: null,
+									}, () => {
+										this.addTopToQueue(true);
+									});
+								}, 2000),
+							});
 						}
 					});
 				}
