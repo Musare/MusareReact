@@ -8,7 +8,7 @@ import PlaylistList from "./PlaylistList.jsx";
 
 import { connect } from "react-redux";
 
-import { closeOverlay1 } from "actions/stationOverlay";
+import { closeOverlay1, openOverlay2 } from "actions/stationOverlay";
 
 import io from "io";
 

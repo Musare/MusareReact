@@ -117,6 +117,7 @@ export default class EditPlaylist extends Component {
 		const playlist = this.props.playlists.find((playlist) => {
 			return playlist.get("playlistId") === playlistId;
 		});
+		if (!playlist) return null;
 
 		return (
 			<div className="overlay">
