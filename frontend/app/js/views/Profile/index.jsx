@@ -12,8 +12,8 @@ import io from "io";
 
 @connect(state => ({
 	user: {
-		userId: state.user.get("userId"),
-		role: state.user.get("role"),
+		userId: state.session.get("userId"),
+		role: state.session.get("role"),
 	},
 }))
 
