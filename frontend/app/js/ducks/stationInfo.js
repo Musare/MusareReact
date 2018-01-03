@@ -14,6 +14,7 @@ const PAUSE = "STATION_INFO::PAUSE";
 const RESUME = "STATION_INFO::RESUME";
 const SELECT_PLAYLIST = "STATION_INFO::SELECT_PLAYLIST";
 const SELECT_PLAYLIST_QUEUE = "STATION_INFO::SELECT_PLAYLIST_QUEUE";
+const DESELECT_PLAYLIST_QUEUE = "STATION_INFO::DESELECT_PLAYLIST_QUEUE";
 
 function joinStation(station) {
 	return {
@@ -108,6 +109,12 @@ function selectPlaylistQueue(playlistId) {
 	return {
 		type: SELECT_PLAYLIST_QUEUE,
 		playlistId,
+	}
+}
+
+function deselectPlaylistQueue() {
+	return {
+		type: DESELECT_PLAYLIST_QUEUE,
 	}
 }
 
@@ -245,6 +252,10 @@ function reducer(state = initialState, action) {
 		return state.merge({
 			privatePlaylistQueue: action.playlistId,
 		});
+	case DESELECT_PLAYLIST_QUEUE:
+		return state.merge({
+			privatePlaylistQueue: null,
+		});
 	}
 	return state;
 }
@@ -264,6 +275,7 @@ const actionCreators = {
 	resume,
 	selectPlaylist,
 	selectPlaylistQueue,
+	deselectPlaylistQueue,
 };
 
 const actionTypes = {
@@ -281,6 +293,7 @@ const actionTypes = {
 	RESUME,
 	SELECT_PLAYLIST,
 	SELECT_PLAYLIST_QUEUE,
+	DESELECT_PLAYLIST_QUEUE,
 };
 
 export {

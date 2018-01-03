@@ -4,13 +4,15 @@ import PropTypes from "prop-types";
 import CustomInput from "components/CustomInput.jsx";
 import CustomErrors from "components/CustomMessages.jsx";
 
+import { actionCreators as stationInfoActionCreators } from "ducks/stationInfo";
+import { bindActionCreators } from "redux";
+
 import SongList from "./SongList.jsx";
 import PlaylistList from "./PlaylistList.jsx";
 
 import { connect } from "react-redux";
 
 import { closeOverlay1, openOverlay2, closeOverlay2 } from "actions/stationOverlay";
-import { selectPlaylist, deselectPlaylists } from "actions/playlistQueue";
 
 import io from "io";
 
@@ -23,7 +25,7 @@ import io from "io";
 	station: {
 		stationId: state.station.info.get("stationId"),
 		owner: state.station.info.get("ownerId"),
-		playlistSelectedId: state.station.info.get("playlistSelected"),
+		privatePlaylistQueue: state.station.info.get("privatePlaylistQueue"),
 		songList: state.station.info.get("songList"),
 	},
 	song: {
@@ -33,6 +35,9 @@ import io from "io";
 		duration: state.station.currentSong.getIn(["timings", "duration"]),
 		thumbnail: state.station.currentSong.get("thumbnail"),
 	},
+}),
+(dispatch) => ({
+	onDeselectPlaylistQueue: bindActionCreators(stationInfoActionCreators.deselectPlaylistQueue, dispatch),
 }))
 export default class QueueList extends Component {
 	constructor(props) {
@@ -59,7 +64,7 @@ export default class QueueList extends Component {
 	};
 
 	deselectAll = () => {
-		this.props.dispatch(deselectPlaylists());
+		this.props.onDeselectPlaylistQueue();
 	}
 
 	close = () => {
@@ -79,7 +84,7 @@ export default class QueueList extends Component {
 					<hr/>
 					<PlaylistList/>
 					{
-						(this.props.station.playlistSelectedId)
+						(this.props.station.privatePlaylistQueue)
 							? <button onClick={ this.deselectAll }>Deselect all playlists</button>
 							: null
 					}
