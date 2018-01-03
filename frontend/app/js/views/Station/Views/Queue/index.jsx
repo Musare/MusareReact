@@ -38,6 +38,9 @@ import io from "io";
 }),
 (dispatch) => ({
 	onDeselectPlaylistQueue: bindActionCreators(stationInfoActionCreators.deselectPlaylistQueue, dispatch),
+	closeOverlay1: bindActionCreators(closeOverlay1, dispatch),
+	closeOverlay2: bindActionCreators(closeOverlay2, dispatch),
+	openOverlay2: bindActionCreators(openOverlay2, dispatch),
 }))
 export default class QueueList extends Component {
 	constructor(props) {
@@ -54,13 +57,13 @@ export default class QueueList extends Component {
 				} else {
 					this.messages.addError(res.message);
 				}
-				this.props.dispatch(closeOverlay2());
+				this.props.closeOverlay2();
 			});
 		});
 	};
 
 	addSongToQueue = () => {
-		this.props.dispatch(openOverlay2("searchYouTube", null, this.addSongToQueueCallback));
+		this.props.openOverlay2("searchYouTube", null, this.addSongToQueueCallback);
 	};
 
 	deselectAll = () => {
@@ -68,7 +71,7 @@ export default class QueueList extends Component {
 	}
 
 	close = () => {
-		this.props.dispatch(closeOverlay1());
+		this.props.closeOverlay1();
 	};
 
 	render() {
