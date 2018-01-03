@@ -44,6 +44,7 @@ export default class SearchYouTube extends Component {
 								songId: result.id.videoId,
 								url: `https://www.youtube.com/watch?v=${ result.id.videoId }`,
 								title: result.snippet.title,
+								duration: result.duration,
 								thumbnail: result.snippet.thumbnails.default.url,
 							};
 						});

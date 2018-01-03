@@ -19,7 +19,7 @@ export default class SongItem extends Component {
 				<img src={ song.thumbnail } onError={function(e) {e.target.src=fallbackImage}}/>
 				<a href={ song.url } target="_blank">{ song.title }</a>
 				<div>
-					{ /*<span className="duration">{ formatTime(song.duration) }</span>*/ }
+					{ <span className="duration">{ formatTime(song.duration) }</span> }
 					<span onClick={ () => { callback(song.songId); } } className="add" tabIndex="0"><i className="material-icons">add</i></span>
 				</div>
 			</li>

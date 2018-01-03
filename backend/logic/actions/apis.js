@@ -18,7 +18,7 @@ module.exports = {
 	 * @return {{ status: String, data: Object }}
 	 */
 	searchYoutube: (session, query, cb) => {
-		const params = [
+		const params1 = [
 			'part=snippet',
 			`q=${encodeURIComponent(query)}`,
 			`key=${config.get('apis.youtube.key')}`,
@@ -26,13 +26,59 @@ module.exports = {
 			'maxResults=15'
 		].join('&');
 
+		let params2 = [
+			'part=contentDetails',
+			`key=${config.get('apis.youtube.key')}`,
+			'fields=etag,items/contentDetails/duration'
+		];
+
 		async.waterfall([
 			(next) => {
-				request(`https://www.googleapis.com/youtube/v3/search?${params}`, next);
+				request(`https://www.googleapis.com/youtube/v3/search?${params1}`, next);
 			},
 
 			(res, body, next) => {
 				next(null, JSON.parse(body));
+			},
+
+			(body, next) => {
+				let ids = [];
+				body.items.forEach((item) => {
+					ids.push(item.id.videoId);
+				});
+				ids = ids.join(',');
+				params2.push(`id=${ids}`);
+				params2 = params2.join('&');
+				request(`https://www.googleapis.com/youtube/v3/videos?${params2}`, (err, res, body2) => {
+					next(err, body2, body);
+				});
+			},
+
+			(durationBody, body, next) => {
+				durationBody = JSON.parse(durationBody);
+				body.items = body.items.map((item, index) => {
+					let dur = durationBody.items[index].contentDetails.duration;
+					dur = dur.replace('PT', '');
+					let duration = 0;
+					dur = dur.replace(/([\d]*)H/, (v, v2) => {
+						v2 = Number(v2);
+						duration = (v2 * 60 * 60);
+						return '';
+					});
+					dur = dur.replace(/([\d]*)M/, (v, v2) => {
+						v2 = Number(v2);
+						duration += (v2 * 60);
+						return '';
+					});
+					dur = dur.replace(/([\d]*)S/, (v, v2) => {
+						v2 = Number(v2);
+						duration += v2;
+						return '';
+					});
+					item.duration = duration;
+					return item;
+				});
+				next(null, body);
 			}
 		], (err, data) => {
 			if (err) {
